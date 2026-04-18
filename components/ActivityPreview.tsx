@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ActivityConfig, SUBJECTS } from "@/lib/types";
 
 interface Props {
@@ -17,9 +17,47 @@ export default function ActivityPreview({
   source,
 }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadWord = async () => {
+    if (!printRef.current || !activity) return;
+    
+    setDownloading(true);
+    try {
+      const htmlContent = printRef.current.innerHTML;
+      
+      const response = await fetch("/api/export-word", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          html: htmlContent,
+          filename: `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao gerar documento");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Erro ao baixar Word:", error);
+      alert("Erro ao gerar arquivo Word. Tente novamente.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const subject = SUBJECTS[config.subject];
@@ -48,12 +86,21 @@ export default function ActivityPreview({
         </div>
 
         {activity && (
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
-          >
-            Imprimir / Salvar PDF
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+            >
+              Imprimir / PDF
+            </button>
+            <button
+              onClick={handleDownloadWord}
+              disabled={downloading}
+              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-green-600 hover:to-emerald-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {downloading ? "Gerando..." : "Baixar Word"}
+            </button>
+          </div>
         )}
       </div>
 
