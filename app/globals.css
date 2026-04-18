@@ -732,6 +732,233 @@ body {
   min-height: 28px;
 }
 
+/* ── Figurinhas ── */
+.figurinhas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.figurinhas-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.figurinha-card {
+  border: 2px solid #ddd6fe;
+  border-radius: 14px;
+  padding: 10px 6px 8px;
+  text-align: center;
+  background: linear-gradient(160deg, #faf5ff, #f5f3ff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.figurinha-card.green {
+  border-color: #bbf7d0;
+  background: linear-gradient(160deg, #f0fdf4, #dcfce7);
+}
+
+.figurinha-card.blue {
+  border-color: #bfdbfe;
+  background: linear-gradient(160deg, #eff6ff, #dbeafe);
+}
+
+.figurinha-card.yellow {
+  border-color: #fde68a;
+  background: linear-gradient(160deg, #fffbeb, #fef3c7);
+}
+
+.figurinha-card.pink {
+  border-color: #fbcfe8;
+  background: linear-gradient(160deg, #fdf2f8, #fce7f3);
+}
+
+.figurinha-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  display: block;
+  margin: 0 auto;
+}
+
+.figurinha-img-lg {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  display: block;
+  margin: 0 auto;
+}
+
+.figurinha-emoji {
+  font-size: 3rem;
+  line-height: 1;
+  display: block;
+  margin: 4px 0;
+}
+
+.figurinha-emoji-sm {
+  font-size: 2rem;
+  line-height: 1;
+  display: block;
+  margin: 2px 0;
+}
+
+.figurinha-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  min-height: 18px;
+}
+
+.figurinha-write {
+  border-bottom: 2px solid #a78bfa;
+  width: 90%;
+  min-height: 22px;
+}
+
+.figurinha-write.green { border-color: #34d399; }
+.figurinha-write.blue { border-color: #60a5fa; }
+.figurinha-write.yellow { border-color: #fbbf24; }
+
+.figurinha-hint {
+  font-size: 0.6rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Counting with figurinhas */
+.counting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.counting-card {
+  border: 2px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  background: #f0fdf4;
+}
+
+.counting-emojis {
+  font-size: 1.5rem;
+  line-height: 1.7;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.counting-answer {
+  border: 2px solid #86efac;
+  border-radius: 8px;
+  height: 34px;
+  background: white;
+  margin: 0 auto;
+  width: 50px;
+}
+
+/* Coloring activity */
+.coloring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 12px 0;
+}
+
+.coloring-card {
+  border: 2px dashed #fbbf24;
+  border-radius: 14px;
+  padding: 12px 8px;
+  text-align: center;
+  background: #fffbeb;
+}
+
+.coloring-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+.coloring-instruction {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  margin-top: 3px;
+}
+
+.coloring-box {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  height: 90px;
+  background: white;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #d1d5db;
+}
+
+/* Image with label (illustrated match) */
+.illustrated-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.illustrated-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.illustrated-emoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 44px;
+  text-align: center;
+}
+
+.illustrated-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.illustrated-content {
+  flex: 1;
+}
+
+.illustrated-blank {
+  border-bottom: 2px solid #9ca3af;
+  min-height: 24px;
+  margin-top: 4px;
+}
+
 /* Print styles */
 @media print {
   .no-print {

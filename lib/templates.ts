@@ -1,5 +1,12 @@
 import { ActivityConfig } from "./types";
 
+function img(prompt: string, seed: number = 1): string {
+  const encoded = encodeURIComponent(
+    `simple cute cartoon ${prompt} for kids educational worksheet white background no text`
+  );
+  return `https://image.pollinations.ai/prompt/${encoded}?width=110&height=110&nologo=true&seed=${seed}`;
+}
+
 export function generateMockActivity(config: ActivityConfig): string {
   const { year, subject, activityType, topic } = config;
   const topicLabel = topic || getDefaultTopic(subject, activityType, year);
@@ -91,26 +98,115 @@ function generateMatematica(type: string, topic: string, year: string): string {
 }
 
 function generateCiencias(type: string, topic: string, year: string): string {
+  const isAnimais = type === "Animais" || topic.toLowerCase().includes("animal");
+  const isPlants = type === "Plantas e Natureza" || topic.toLowerCase().includes("plant");
+  const isCorpo = type === "Corpo Humano";
+
+  if (isAnimais) {
+    const animals = [
+      { emoji: "🦁", imgPrompt: "lion wild animal safari", name: "LEÃO", tipo: "Mamífero", habitat: "Savana" },
+      { emoji: "🐘", imgPrompt: "elephant wild animal", name: "ELEFANTE", tipo: "Mamífero", habitat: "Savana" },
+      { emoji: "🦜", imgPrompt: "parrot tropical bird colorful", name: "PAPAGAIO", tipo: "Ave", habitat: "Floresta" },
+      { emoji: "🐊", imgPrompt: "crocodile reptile river", name: "CROCODILO", tipo: "Réptil", habitat: "Rio" },
+      { emoji: "🐟", imgPrompt: "fish tropical sea colorful", name: "PEIXE", tipo: "Peixe", habitat: "Mar" },
+      { emoji: "🐸", imgPrompt: "frog amphibian pond green", name: "SAPO", tipo: "Anfíbio", habitat: "Lagoa" },
+    ];
+    return `
+      <div class="activity-section">
+        <h3 class="activity-subtitle">🔬 Ciências: ${topic || "Animais"}</h3>
+        <p class="activity-instruction">1) Observe os animais e complete a tabela:</p>
+        <div class="figurinhas-grid">
+          ${animals.map((a, i) => `
+            <div class="figurinha-card ${["yellow","blue","green","pink","blue","green"][i]}">
+              <img class="figurinha-img" src="${img(a.imgPrompt, i + 20)}" alt="${a.name}" loading="lazy"/>
+              <span class="figurinha-emoji-sm">${a.emoji}</span>
+              <span class="figurinha-name">${a.name}</span>
+            </div>`).join("")}
+        </div>
+
+        <p class="activity-instruction">2) Complete a tabela com as informações dos animais:</p>
+        <div class="text-box" style="padding:0; overflow:hidden;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+            <thead>
+              <tr style="background:#dbeafe;">
+                <th style="padding:6px 8px; border:1px solid #bfdbfe; text-align:left;">Animal</th>
+                <th style="padding:6px 8px; border:1px solid #bfdbfe;">Tipo</th>
+                <th style="padding:6px 8px; border:1px solid #bfdbfe;">Habitat</th>
+                <th style="padding:6px 8px; border:1px solid #bfdbfe;">O que come?</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${animals.map((a, i) => `
+                <tr style="background:${i % 2 === 0 ? "white" : "#f9fafb"}">
+                  <td style="padding:6px 8px; border:1px solid #e5e7eb;">${a.emoji} ${a.name}</td>
+                  <td style="padding:6px 8px; border:1px solid #e5e7eb; text-align:center;">${a.tipo}</td>
+                  <td style="padding:6px 8px; border:1px solid #e5e7eb; text-align:center;">${a.habitat}</td>
+                  <td style="padding:6px 8px; border:1px solid #e5e7eb;"></td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+
+        <p class="activity-instruction">3) Desenhe seu animal favorito:</p>
+        <div class="drawing-box small"></div>
+      </div>
+    `;
+  }
+
+  if (isPlants) {
+    const plants = [
+      { emoji: "🌻", imgPrompt: "sunflower plant garden", name: "GIRASSOL" },
+      { emoji: "🌵", imgPrompt: "cactus desert plant", name: "CACTO" },
+      { emoji: "🌳", imgPrompt: "tree big nature", name: "ÁRVORE" },
+      { emoji: "🌿", imgPrompt: "herb medicinal plant green", name: "ERVA" },
+      { emoji: "🍄", imgPrompt: "mushroom nature forest", name: "COGUMELO" },
+      { emoji: "🌱", imgPrompt: "seedling sprout plant growing", name: "MUDA" },
+    ];
+    return `
+      <div class="activity-section">
+        <h3 class="activity-subtitle">🌿 Ciências: Plantas e Natureza</h3>
+        <p class="activity-instruction">1) Observe as plantas:</p>
+        <div class="figurinhas-grid">
+          ${plants.map((p, i) => `
+            <div class="figurinha-card green">
+              <img class="figurinha-img" src="${img(p.imgPrompt, i + 30)}" alt="${p.name}" loading="lazy"/>
+              <span class="figurinha-emoji-sm">${p.emoji}</span>
+              <span class="figurinha-name">${p.name}</span>
+            </div>`).join("")}
+        </div>
+        <p class="activity-instruction">2) Quais partes uma planta tem? Escreva:</p>
+        <ol class="activity-list">
+          <li>As plantas precisam de ___________, ___________ e ___________ para viver.</li>
+          <li>A parte que absorve água do solo é: ___________</li>
+          <li>A parte que faz fotossíntese é: ___________</li>
+          <li>Cite 2 plantas que você conhece: ___________ e ___________</li>
+        </ol>
+        <p class="activity-instruction">3) Desenhe uma planta e identifique suas partes:</p>
+        <div class="drawing-box"></div>
+      </div>
+    `;
+  }
+
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">🔬 ${type}: ${topic}</h3>
       <p class="activity-instruction">Observe as imagens e responda:</p>
-      <ol class="activity-list">
-        <li>Quais são as características principais de ${topic.toLowerCase()}?<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
-        <li>Onde podemos encontrar ${topic.toLowerCase()} na natureza?<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
-        <li>Qual a importância de ${topic.toLowerCase()} para o meio ambiente?<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
-        <li>Desenhe o que você aprendeu sobre ${topic.toLowerCase()}:</li>
-      </ol>
+
+      <div class="figurinhas-grid-3">
+        <div class="figurinha-card blue">
+          <img class="figurinha-img-lg" src="${img(topic + " science educational", 40)}" alt="${topic}" loading="lazy"/>
+          <span class="figurinha-name">${topic.toUpperCase()}</span>
+        </div>
+        <div class="figurinha-card green" style="grid-column: span 2; padding: 14px;">
+          <ol class="activity-list" style="text-align:left; width:100%;">
+            <li>O que você vê na imagem?<div class="answer-line"></div></li>
+            <li>Onde encontramos isso na natureza?<div class="answer-line"></div></li>
+            <li>Qual sua importância?<div class="answer-line"></div><div class="answer-line"></div></li>
+          </ol>
+        </div>
+      </div>
+
+      <p class="activity-instruction">Desenhe o que você aprendeu:</p>
       <div class="drawing-box"></div>
     </div>
   `;
@@ -173,26 +269,64 @@ function familiasSilabicas(topic: string): string {
   const letra = topic.includes("Letra") ? topic.split("Letra")[1].trim() : "B";
   const L = letra.charAt(0).toUpperCase();
 
-  const familias: Record<string, { silabas: string[]; palavras: [string, string][] }> = {
+  const familias: Record<string, {
+    silabas: string[];
+    figurinhas: { emoji: string; imgPrompt: string; word: string; blank: string }[];
+  }> = {
     B: {
       silabas: ["BA", "BE", "BI", "BO", "BU"],
-      palavras: [["B__LA", "BOLA"], ["B__CO", "BICO"], ["B__FE", "BIFE"], ["B__CO", "BUCO"], ["B__LA", "BELA"]],
+      figurinhas: [
+        { emoji: "⚽", imgPrompt: "ball soccer", word: "BOLA", blank: "___LA" },
+        { emoji: "🐄", imgPrompt: "ox bull animal farm", word: "BOI", blank: "___I" },
+        { emoji: "🍌", imgPrompt: "banana fruit", word: "BANANA", blank: "___NANA" },
+        { emoji: "🎈", imgPrompt: "balloon party", word: "BEXIGA", blank: "___XIGA" },
+        { emoji: "🐛", imgPrompt: "caterpillar bug", word: "BICHO", blank: "___CHO" },
+        { emoji: "🥊", imgPrompt: "boxing glove", word: "LUVA DE BOXE", blank: "___XE" },
+      ],
     },
     C: {
       silabas: ["CA", "CE", "CI", "CO", "CU"],
-      palavras: [["C__SA", "CASA"], ["C__MA", "CIMA"], ["C__PO", "COPO"], ["C__RO", "CARO"], ["C__BO", "CUBO"]],
+      figurinhas: [
+        { emoji: "🏠", imgPrompt: "house cartoon", word: "CASA", blank: "___SA" },
+        { emoji: "🐴", imgPrompt: "horse animal", word: "CAVALO", blank: "___VALO" },
+        { emoji: "🦓", imgPrompt: "zebra animal", word: "CEBOLA", blank: "___BOLA" },
+        { emoji: "🐇", imgPrompt: "rabbit animal", word: "COELHO", blank: "___ELHO" },
+        { emoji: "☁️", imgPrompt: "cloud sky", word: "CHUVA", blank: "___UVIA" },
+        { emoji: "🎯", imgPrompt: "cube 3d shape", word: "CUBO", blank: "___BO" },
+      ],
     },
     M: {
       silabas: ["MA", "ME", "MI", "MO", "MU"],
-      palavras: [["M__CA", "MACA"], ["M__LA", "MELA"], ["M__DO", "MIDO"], ["M__TO", "MOTO"], ["M__LA", "MULA"]],
+      figurinhas: [
+        { emoji: "🍎", imgPrompt: "apple fruit", word: "MAÇÃ", blank: "___ÇÃ" },
+        { emoji: "🌊", imgPrompt: "sea ocean waves", word: "MAR", blank: "___R" },
+        { emoji: "🍯", imgPrompt: "honey jar", word: "MEL", blank: "___L" },
+        { emoji: "🌽", imgPrompt: "corn vegetable", word: "MILHO", blank: "___LHO" },
+        { emoji: "🏍️", imgPrompt: "motorcycle vehicle", word: "MOTO", blank: "___TO" },
+        { emoji: "🐄", imgPrompt: "cow animal", word: "MULA", blank: "___LA" },
+      ],
     },
     P: {
       silabas: ["PA", "PE", "PI", "PO", "PU"],
-      palavras: [["P__TO", "PATO"], ["P__RA", "PERA"], ["P__PA", "PIPA"], ["P__VO", "POVO"], ["P__LA", "PULA"]],
+      figurinhas: [
+        { emoji: "🦆", imgPrompt: "duck bird animal", word: "PATO", blank: "___TO" },
+        { emoji: "🍐", imgPrompt: "pear fruit", word: "PERA", blank: "___RA" },
+        { emoji: "🐟", imgPrompt: "fish sea animal", word: "PEIXE", blank: "___IXE" },
+        { emoji: "🪁", imgPrompt: "kite toy flying", word: "PIPA", blank: "___PA" },
+        { emoji: "🐔", imgPrompt: "chicken bird", word: "PERU", blank: "___RU" },
+        { emoji: "🌉", imgPrompt: "bridge architecture", word: "PONTE", blank: "___NTE" },
+      ],
     },
     V: {
       silabas: ["VA", "VE", "VI", "VO", "VU"],
-      palavras: [["V__CA", "VACA"], ["V__LA", "VELA"], ["V__DA", "VIDA"], ["V__O", "VOO"], ["V__OO", "VUOO"]],
+      figurinhas: [
+        { emoji: "🐄", imgPrompt: "cow animal farm", word: "VACA", blank: "___CA" },
+        { emoji: "🕯️", imgPrompt: "candle light", word: "VELA", blank: "___LA" },
+        { emoji: "🍇", imgPrompt: "grapes fruit", word: "UVA", blank: "U___" },
+        { emoji: "🦊", imgPrompt: "fox animal", word: "RAPOSA", blank: "___IXEN" },
+        { emoji: "🏘️", imgPrompt: "village neighborhood", word: "VILA", blank: "___LA" },
+        { emoji: "✈️", imgPrompt: "airplane flight", word: "VOO", blank: "___O" },
+      ],
     },
   };
 
@@ -209,70 +343,71 @@ function familiasSilabicas(topic: string): string {
         </div>
       </div>
 
-      <p class="activity-instruction">1) Leia em voz alta as sílabas da família do <strong>${L}</strong>:</p>
-      <div class="read-aloud-box">
-        ${data.silabas.join(" — ")}
+      <p class="activity-instruction">1) Leia em voz alta e repita 3 vezes:</p>
+      <div class="read-aloud-box">${data.silabas.join(" — ")}</div>
+
+      <p class="activity-instruction">2) Observe as figurinhas e escreva o nome de cada uma:</p>
+      <div class="figurinhas-grid">
+        ${data.figurinhas.slice(0, 6).map((f, i) => `
+          <div class="figurinha-card ${["yellow","blue","green","pink","yellow","blue"][i]}">
+            <img class="figurinha-img" src="${img(f.imgPrompt, i + 1)}" alt="${f.word}" loading="lazy"/>
+            <span class="figurinha-emoji-sm">${f.emoji}</span>
+            <div class="figurinha-write ${["yellow","blue","green","pink","yellow","blue"][i]}"></div>
+            <span class="figurinha-hint">dica: ${f.blank}</span>
+          </div>`).join("")}
       </div>
 
-      <p class="activity-instruction">2) Complete as palavras com a sílaba correta:</p>
+      <p class="activity-instruction">3) Complete com a sílaba correta do ${L}${L.toLowerCase()}:</p>
       <div class="words-grid">
-        ${data.palavras
-          .slice(0, 4)
-          .map(([blank, word], i) => `
+        ${data.figurinhas.slice(0, 4).map((f, i) => `
           <div class="word-item">
             <span class="word-number">${i + 1})</span>
-            <span class="word-blank">${blank.replace("__", "____")}</span>
-            <span class="word-hint">(${word.toLowerCase()})</span>
-          </div>`)
-          .join("")}
+            <span class="word-blank">${f.blank}</span>
+            <span class="word-hint">${f.emoji}</span>
+          </div>`).join("")}
       </div>
 
-      <p class="activity-instruction">3) Forme palavras com as sílabas e escreva:</p>
-      <div class="form-words">
-        ${data.silabas
-          .slice(0, 3)
-          .map((s, i) => `
-          <div class="form-word-item">
-            <span class="silaba-highlight">${s}</span>
-            <span class="plus">+</span>
-            <div class="write-space"></div>
-            <span class="equals">=</span>
-            <div class="write-space wide"></div>
-          </div>`)
-          .join("")}
-      </div>
-
-      <p class="activity-instruction">4) Desenhe uma palavra que comece com a letra <strong>${L}</strong>:</p>
+      <p class="activity-instruction">4) Desenhe sua palavra favorita com a letra <strong>${L}</strong>:</p>
       <div class="drawing-box small"></div>
     </div>
   `;
 }
 
 function completeLacunas(topic: string): string {
+  const animals = [
+    { emoji: "🐄", imgPrompt: "cow dairy animal farm", name: "vaca", frase: "A ___________ dá leite para as crianças.", sound: "muuu" },
+    { emoji: "🐕", imgPrompt: "dog puppy animal", name: "cachorro", frase: "O ___________ faz "au au".", sound: "au au" },
+    { emoji: "🐔", imgPrompt: "hen chicken bird farm", name: "galinha", frase: "A ___________ bota ovos.", sound: "cocoricó" },
+    { emoji: "🦆", imgPrompt: "duck bird water animal", name: "pato", frase: "O ___________ nada na lagoa.", sound: "quá quá" },
+    { emoji: "🐴", imgPrompt: "horse animal running", name: "cavalo", frase: "O ___________ corre muito rápido.", sound: "iiihh" },
+    { emoji: "🐱", imgPrompt: "cat kitten animal", name: "gato", frase: "O ___________ faz "miau".", sound: "miau" },
+  ];
+
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">✏️ Complete as Lacunas: ${topic}</h3>
-      <p class="activity-instruction">Use as palavras do quadro para completar as frases:</p>
 
+      <p class="activity-instruction">1) Conheça os animais da fazenda:</p>
+      <div class="figurinhas-grid">
+        ${animals.map((a, i) => `
+          <div class="figurinha-card ${["yellow","blue","green","pink","yellow","blue"][i]}">
+            <img class="figurinha-img" src="${img(a.imgPrompt, i + 10)}" alt="${a.name}" loading="lazy"/>
+            <span class="figurinha-emoji-sm">${a.emoji}</span>
+            <span class="figurinha-name">${a.name.toUpperCase()}</span>
+            <span class="figurinha-hint">${a.sound}</span>
+          </div>`).join("")}
+      </div>
+
+      <p class="activity-instruction">2) Use os nomes acima para completar as frases:</p>
       <div class="word-box">
-        <span class="word-tag">galinha</span>
-        <span class="word-tag">vaca</span>
-        <span class="word-tag">cachorro</span>
-        <span class="word-tag">gato</span>
-        <span class="word-tag">cavalo</span>
-        <span class="word-tag">pato</span>
+        ${animals.map(a => `<span class="word-tag">${a.emoji} ${a.name}</span>`).join("")}
       </div>
 
       <ol class="activity-list">
-        <li>A ______________ dá leite para as crianças.</li>
-        <li>O ______________ faz "au au".</li>
-        <li>A ______________ bota ovos.</li>
-        <li>O ______________ nada na lagoa.</li>
-        <li>O ______________ corre muito rápido.</li>
-        <li>O ______________ faz "miau".</li>
+        ${animals.map(a => `<li>${a.frase}</li>`).join("")}
       </ol>
 
-      <p class="activity-instruction">Agora escreva uma frase com sua palavra favorita:</p>
+      <p class="activity-instruction">3) Escreva uma frase sobre seu animal favorito:</p>
       <div class="answer-line"></div>
       <div class="answer-line"></div>
     </div>
