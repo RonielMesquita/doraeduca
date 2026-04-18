@@ -1,0 +1,756 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  font-family: "Nunito", sans-serif;
+}
+
+body {
+  background-color: #fffbeb;
+}
+
+/* ── Activity sheet styles ── */
+.activity-section {
+  font-family: "Nunito", sans-serif;
+  color: #1f2937;
+}
+
+.activity-subtitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1e40af;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  background: #dbeafe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+}
+
+.activity-instruction {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #374151;
+  margin: 14px 0 8px;
+}
+
+.activity-list {
+  list-style: decimal;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.activity-list li {
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.answer-line {
+  border-bottom: 1.5px solid #9ca3af;
+  margin: 6px 0;
+  min-height: 28px;
+  width: 100%;
+}
+
+.drawing-box {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  height: 120px;
+  margin: 10px 0;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.drawing-box.small {
+  height: 90px;
+}
+
+.drawing-box::after {
+  content: "✏️ Desenhe aqui";
+}
+
+/* Família silábica */
+.familia-box {
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
+  background: #fffbeb;
+  text-align: center;
+}
+
+.familia-header {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #92400e;
+  margin-bottom: 10px;
+}
+
+.silabas-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.silaba-card {
+  background: #f59e0b;
+  color: white;
+  font-weight: 900;
+  font-size: 1.3rem;
+  padding: 6px 14px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1px;
+}
+
+.read-aloud-box {
+  background: #fef3c7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #92400e;
+  margin: 6px 0 14px;
+}
+
+.words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.word-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.word-number {
+  font-weight: 800;
+  color: #6b7280;
+}
+
+.word-blank {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  flex: 1;
+}
+
+.word-hint {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.form-words {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.form-word-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.silaba-highlight {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.plus,
+.equals {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.write-space {
+  border-bottom: 2px solid #9ca3af;
+  width: 60px;
+  min-height: 24px;
+}
+
+.write-space.wide {
+  width: 100px;
+}
+
+/* Word box */
+.word-box {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.word-tag {
+  background: #22c55e;
+  color: white;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+/* Text box */
+.text-box {
+  background: #fef9ee;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.text-box h4 {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.text-box p {
+  margin-bottom: 6px;
+}
+
+/* Two columns */
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Word search */
+.ws-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.ws-table td {
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.word-list-box {
+  padding: 8px;
+}
+
+.word-list-box ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Crossword */
+.cw-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.cw-cell {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #374151;
+  text-align: center;
+  position: relative;
+  font-size: 0.8rem;
+}
+
+.cw-num {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  font-size: 0.6rem;
+  color: #6b7280;
+}
+
+.cw-black {
+  width: 36px;
+  height: 36px;
+  background: #374151;
+}
+
+.crossword-clues {
+  font-size: 0.9rem;
+  padding: 8px;
+  line-height: 1.8;
+}
+
+/* Math */
+.math-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 10px 0 16px;
+  justify-content: center;
+}
+
+.math-op {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 18px;
+  text-align: right;
+  min-width: 100px;
+}
+
+.math-op.division {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.math-num {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: monospace;
+  white-space: pre;
+}
+
+.math-line {
+  border-top: 2px solid #374151;
+  margin: 4px 0;
+}
+
+.math-result {
+  min-height: 28px;
+}
+
+.math-result-inline {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.complete-ops {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+
+.complete-op {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.problem-box {
+  background: #eff6ff;
+  border: 2px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 0.9rem;
+  line-height: 1.9;
+}
+
+.problem-box p {
+  margin-bottom: 6px;
+}
+
+.problem-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.problem-item {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 12px;
+  border-left: 4px solid #f59e0b;
+}
+
+.problem-item p {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.problem-solve {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+/* Tabuada */
+.tabuada-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.tabuada-item {
+  background: #f3f4f6;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.tabuada-blank {
+  color: #6b7280;
+  border-bottom: 1px solid #9ca3af;
+  min-width: 28px;
+  display: inline-block;
+}
+
+/* Sequences */
+.sequences {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.seq-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.seq-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #6b7280;
+  min-width: 100px;
+}
+
+.seq-num {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.seq-blank {
+  border-bottom: 2px solid #9ca3af;
+  min-width: 40px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #d1d5db;
+}
+
+.order-numbers {
+  background: #fef3c7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 8px 0;
+}
+
+.numbers-to-order {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.order-answer {
+  display: flex;
+  gap: 12px;
+}
+
+.order-answer span {
+  border-bottom: 2px solid #9ca3af;
+  min-width: 36px;
+  text-align: center;
+  color: #d1d5db;
+}
+
+/* Shapes */
+.shapes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.shape-item {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.shape {
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.count-shapes {
+  display: flex;
+  gap: 16px;
+  margin: 10px 0;
+}
+
+.count-shape-item {
+  background: #f3f4f6;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  font-size: 0.85rem;
+}
+
+.draw-shapes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.draw-item {
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.draw-box {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  height: 80px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+}
+
+/* Separação de sílabas */
+.silaba-exercise {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.silaba-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.silaba-word {
+  font-weight: 800;
+  font-size: 1rem;
+  min-width: 110px;
+  color: #1f2937;
+}
+
+.silaba-arrow {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.silaba-answer {
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.silaba-answer-blank {
+  border-bottom: 2px solid #9ca3af;
+  flex: 1;
+  min-height: 24px;
+}
+
+.count-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.count-item {
+  background: #f3f4f6;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.count-box {
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  height: 28px;
+  margin-top: 6px;
+}
+
+/* Ligar colunas */
+.columns-exercise {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.column-left,
+.column-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.col-item {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.column-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dot-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #9ca3af;
+  flex-shrink: 0;
+}
+
+.dot-line {
+  flex: 1;
+  height: 1px;
+  background: #d1d5db;
+  min-width: 30px;
+}
+
+/* Caligrafia */
+.caligrafia-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.cali-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.cali-modelo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #1e40af;
+  min-width: 50px;
+}
+
+.cali-trace {
+  flex: 1;
+  border-bottom: 1px solid #9ca3af;
+  padding-bottom: 4px;
+}
+
+.cali-pontilhado {
+  color: #d1d5db;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.vocab-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.vocab-line {
+  border-bottom: 2px solid #9ca3af;
+  min-height: 28px;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  .print-area {
+    width: 100%;
+    padding: 0;
+  }
+
+  .worksheet-container {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 10mm 15mm !important;
+    margin: 0 !important;
+  }
+}
