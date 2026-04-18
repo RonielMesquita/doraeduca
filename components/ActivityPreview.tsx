@@ -61,7 +61,6 @@ export default function ActivityPreview({
   };
 
   const subject = SUBJECTS[config.subject];
-  const today = config.date || new Date().toLocaleDateString("pt-BR");
 
   return (
     <main className="flex-1 flex flex-col gap-3 min-w-0">
@@ -184,8 +183,8 @@ export default function ActivityPreview({
                   <span className="font-bold text-gray-600 w-16 shrink-0">
                     Data:
                   </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {today}
+                  <span className="border-b border-gray-400 flex-1">
+                    ____/____/____
                   </span>
                 </div>
                 <div className="flex gap-1 items-center">
@@ -228,11 +227,10 @@ export default function ActivityPreview({
             />
 
             {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-gray-200 flex items-center justify-between">
-              <p className="text-xs text-gray-400">
-                ⭐ Bom trabalho, {config.year}!
+            <div className="mt-8 pt-4 border-t border-gray-200">
+              <p className="text-xs text-gray-400 text-center">
+                Bom trabalho!
               </p>
-              <p className="text-xs text-gray-300">DoraEduca</p>
             </div>
           </div>
         )}

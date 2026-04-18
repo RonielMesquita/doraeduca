@@ -957,12 +957,18 @@
 
 /* Print styles */
 @media print {
+  @page {
+    margin: 10mm 15mm;
+  }
+
   .no-print {
     display: none !important;
   }
 
   body {
     background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .print-area {
@@ -973,7 +979,8 @@
   .worksheet-container {
     box-shadow: none !important;
     border: none !important;
-    padding: 10mm 15mm !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
     margin: 0 !important;
   }
 }
