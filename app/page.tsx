@@ -4,13 +4,14 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
-import { ActivityConfig, defaultConfig } from "@/lib/types";
+import { ActivityConfig, UploadedFile, defaultConfig } from "@/lib/types";
 
 export default function Home() {
   const [config, setConfig] = useState<ActivityConfig>(defaultConfig);
   const [activity, setActivity] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState<"ai" | "template" | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -19,7 +20,7 @@ export default function Home() {
       const res = await fetch("/api/gerar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ config }),
+        body: JSON.stringify({ config, uploadedFiles }),
       });
       const data = await res.json();
       setActivity(data.activity);
@@ -40,6 +41,8 @@ export default function Home() {
           onChange={setConfig}
           onGenerate={handleGenerate}
           loading={loading}
+          uploadedFiles={uploadedFiles}
+          onFilesChange={setUploadedFiles}
         />
         <ActivityPreview
           config={config}

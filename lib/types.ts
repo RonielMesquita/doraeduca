@@ -72,6 +72,14 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
   ],
 };
 
+export interface UploadedFile {
+  id: string;
+  name: string;
+  mediaType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" | "application/pdf";
+  base64: string;
+  preview: string;
+}
+
 export const defaultConfig: ActivityConfig = {
   schoolName: "",
   teacherName: "Professora Dora",

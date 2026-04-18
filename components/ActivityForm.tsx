@@ -2,16 +2,20 @@
 
 import {
   ActivityConfig,
+  UploadedFile,
   YEARS,
   SUBJECTS,
   ACTIVITY_TYPES,
 } from "@/lib/types";
+import UploadSection from "./UploadSection";
 
 interface Props {
   config: ActivityConfig;
   onChange: (config: ActivityConfig) => void;
   onGenerate: () => void;
   loading: boolean;
+  uploadedFiles: UploadedFile[];
+  onFilesChange: (files: UploadedFile[]) => void;
 }
 
 const inputClass =
@@ -27,6 +31,8 @@ export default function ActivityForm({
   onChange,
   onGenerate,
   loading,
+  uploadedFiles,
+  onFilesChange,
 }: Props) {
   const set = (field: keyof ActivityConfig, value: string) => {
     const updated = { ...config, [field]: value };
@@ -192,6 +198,9 @@ export default function ActivityForm({
           </div>
         </div>
       </div>
+
+      {/* Upload reference files */}
+      <UploadSection files={uploadedFiles} onChange={onFilesChange} />
 
       {/* Generate button */}
       <button
