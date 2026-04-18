@@ -3,6 +3,7 @@ export interface ActivityConfig {
   teacherName: string;
   grade: string;
   className: string;
+  shift: string;
   date: string;
   year: string;
   subject: string;
@@ -82,11 +83,14 @@ export interface UploadedFile {
   preview: string;
 }
 
+export const SHIFTS = ["Manhã", "Tarde", "Noite"];
+
 export const defaultConfig: ActivityConfig = {
   schoolName: "",
   teacherName: "Professora Dora",
   grade: "2º Ano",
-  className: "Turma A",
+  className: "A",
+  shift: "Manhã",
   date: new Date().toLocaleDateString("pt-BR"),
   year: "2º Ano",
   subject: "portugues",

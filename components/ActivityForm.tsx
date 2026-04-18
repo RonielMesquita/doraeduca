@@ -6,6 +6,7 @@ import {
   YEARS,
   SUBJECTS,
   ACTIVITY_TYPES,
+  SHIFTS,
 } from "@/lib/types";
 import UploadSection from "./UploadSection";
 
@@ -76,24 +77,47 @@ export default function ActivityForm({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className={labelClass}>Série</label>
+              <input
+                className={inputClass}
+                placeholder="Ex: II Período"
+                value={config.grade}
+                onChange={(e) => set("grade", e.target.value)}
+              />
+            </div>
             <div>
               <label className={labelClass}>Turma</label>
               <input
                 className={inputClass}
-                placeholder="Ex: Turma A"
+                placeholder="Ex: A"
                 value={config.className}
                 onChange={(e) => set("className", e.target.value)}
               />
             </div>
             <div>
-              <label className={labelClass}>Data</label>
-              <input
+              <label className={labelClass}>Turno</label>
+              <select
                 className={inputClass}
-                value={config.date}
-                onChange={(e) => set("date", e.target.value)}
-              />
+                value={config.shift}
+                onChange={(e) => set("shift", e.target.value)}
+              >
+                {SHIFTS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+          <div>
+            <label className={labelClass}>Data</label>
+            <input
+              className={inputClass}
+              value={config.date}
+              onChange={(e) => set("date", e.target.value)}
+            />
           </div>
         </div>
       </div>

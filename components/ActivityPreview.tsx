@@ -114,47 +114,75 @@ export default function ActivityPreview({
           </div>
         ) : (
           <div className="print-area">
-            {/* School header */}
-            <div className="border-2 border-gray-300 rounded-lg p-4 mb-6">
-              <div className="text-center mb-3">
-                <div className="text-xl font-black text-gray-800 uppercase tracking-wide">
-                  {config.schoolName || "________________________________"}
+            {/* School header - based on user model */}
+            <div className="border-2 border-gray-800 mb-6">
+              {/* Top row with school name and info boxes */}
+              <div className="flex">
+                {/* School name - left side */}
+                <div className="flex-1 border-r-2 border-gray-800 p-3 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-lg font-black text-gray-800 uppercase tracking-wide">
+                      {config.schoolName || "________________________________"}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-0.5">
-                  Ensino Fundamental — {config.year}
+                {/* Info boxes - right side */}
+                <div className="flex flex-col text-xs">
+                  <div className="flex border-b border-gray-800">
+                    <div className="border-r border-gray-800 px-2 py-1 font-bold bg-gray-50 w-16">
+                      PROFª
+                    </div>
+                    <div className="px-2 py-1 min-w-[100px]">
+                      {config.teacherName}
+                    </div>
+                  </div>
+                  <div className="flex border-b border-gray-800">
+                    <div className="border-r border-gray-800 px-2 py-1 font-bold bg-gray-50 w-16">
+                      DATA:
+                    </div>
+                    <div className="px-2 py-1 min-w-[100px]">
+                      {today}
+                    </div>
+                  </div>
+                  <div className="flex border-b border-gray-800">
+                    <div className="border-r border-gray-800 px-2 py-1 font-bold bg-gray-50 w-16">
+                      SÉRIE:
+                    </div>
+                    <div className="px-2 py-1 min-w-[100px]">
+                      {config.grade || config.year}
+                    </div>
+                  </div>
+                  <div className="flex border-b border-gray-800">
+                    <div className="border-r border-gray-800 px-2 py-1 font-bold bg-gray-50 w-16">
+                      TURMA:
+                    </div>
+                    <div className="px-2 py-1 min-w-[100px]">
+                      {config.className}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <div className="border-r border-gray-800 px-2 py-1 font-bold bg-gray-50 w-16">
+                      TURNO:
+                    </div>
+                    <div className="px-2 py-1 min-w-[100px]">
+                      {config.shift || "Manhã"}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-24 shrink-0">
-                    Professora:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {config.teacherName}
-                  </span>
+              {/* Student name row */}
+              <div className="border-t-2 border-gray-800 flex text-sm">
+                <div className="px-3 py-2 font-bold bg-gray-50 border-r border-gray-800">
+                  ALUNO(A):
                 </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-16 shrink-0">
-                    Data:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {today}
-                  </span>
+                <div className="flex-1 px-3 py-2 border-b border-gray-400">
                 </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-24 shrink-0">
-                    Aluno(a):
-                  </span>
-                  <span className="border-b border-gray-400 flex-1" />
-                </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-16 shrink-0">
-                    Turma:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {config.className}
-                  </span>
-                </div>
+              </div>
+              {/* Activity title row */}
+              <div className="border-t-2 border-gray-800 bg-gray-100 px-3 py-2 text-center">
+                <span className="font-black text-gray-800 uppercase tracking-wide text-sm">
+                  {config.activityType} — {subject?.label}
+                </span>
               </div>
             </div>
 
