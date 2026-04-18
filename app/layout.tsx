@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="bg-teacher-warm">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

@@ -1,7 +1,6 @@
 export interface ActivityConfig {
   schoolName: string;
   teacherName: string;
-  grade: string;
   className: string;
   date: string;
   year: string;
@@ -85,7 +84,6 @@ export interface UploadedFile {
 export const defaultConfig: ActivityConfig = {
   schoolName: "",
   teacherName: "Professora Dora",
-  grade: "2º Ano",
   className: "Turma A",
   date: new Date().toLocaleDateString("pt-BR"),
   year: "2º Ano",
