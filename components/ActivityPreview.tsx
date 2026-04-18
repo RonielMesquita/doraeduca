@@ -112,11 +112,21 @@ export default function ActivityPreview({
       {/* Sheet */}
       <div
         ref={printRef}
-        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 flex-1 transition-all p-4 sm:p-6 lg:p-8 ${
-          loading ? "opacity-50" : ""
-        }`}
-        style={{ minHeight: "500px" }}
+        className={`worksheet-container bg-white rounded-2xl shadow-md flex-1 transition-all ${loading ? "opacity-50" : ""}`}
+        style={{
+          minHeight: "500px",
+          padding: config.hasMargem ? "8px" : undefined,
+          border: config.hasMargem ? "1px solid #aaa" : "1px solid #f3f4f6",
+        }}
       >
+        {/* Caixa interna com margem quando ativada */}
+        <div
+          style={config.hasMargem ? {
+            border: "1px solid #888",
+            padding: "24px",
+            minHeight: "480px",
+          } : { padding: "16px" }}
+        >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4">
             <div className="text-5xl animate-bounce-slow">✏️</div>
@@ -165,7 +175,7 @@ export default function ActivityPreview({
             </div>
           </div>
         ) : (
-          <div className={`print-area ${config.hasMargem ? "margem-folha" : ""}`}>
+          <div className="print-area">
             {/* School header — fiel ao modelo da professora */}
             <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
               {/* Top row: logo + school name + photo box */}
@@ -247,6 +257,7 @@ export default function ActivityPreview({
               </p>
             </div>
           </div>
+        </div>
         )}
       </div>
 
