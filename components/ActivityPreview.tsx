@@ -112,9 +112,9 @@ export default function ActivityPreview({
       {/* Sheet */}
       <div
         ref={printRef}
-        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 flex-1 transition-all ${
+        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 flex-1 transition-all p-4 sm:p-6 lg:p-8 ${
           loading ? "opacity-50" : ""
-        } ${config.hasMargem ? "pl-14 sm:pl-20 pr-4 sm:pr-8 pt-4 sm:pt-6 pb-4 sm:pb-6 print-margem" : "p-4 sm:p-6 lg:p-8"}`}
+        }`}
         style={{ minHeight: "500px" }}
       >
         {loading ? (
@@ -165,7 +165,7 @@ export default function ActivityPreview({
             </div>
           </div>
         ) : (
-          <div className="print-area">
+          <div className={`print-area ${config.hasMargem ? "margem-folha" : ""}`}>
             {/* School header — fiel ao modelo da professora */}
             <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
               {/* Top row: logo + school name + photo box */}
