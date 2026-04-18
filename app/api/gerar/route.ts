@@ -45,6 +45,19 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
   }
 }
 
+function cleanHtmlResponse(text: string): string {
+  // Remove markdown code blocks (```html ... ``` ou ``` ... ```)
+  let cleaned = text.trim();
+  
+  // Remove ```html ou ```HTML no inicio
+  cleaned = cleaned.replace(/^```(?:html|HTML)?\s*\n?/i, "");
+  
+  // Remove ``` no final
+  cleaned = cleaned.replace(/\n?```\s*$/i, "");
+  
+  return cleaned.trim();
+}
+
 async function replacePollinationsWithGoogleImages(html: string): Promise<string> {
   // Extrai todas as URLs do Pollinations e suas descricoes
   const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"]+)[^"]*"/g;
@@ -178,7 +191,8 @@ ${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observ
 
       const result = message.content[0];
       if (result.type === "text") {
-        let activityHtml = result.text;
+        // Limpa a resposta removendo markdown code blocks
+        let activityHtml = cleanHtmlResponse(result.text);
         
         // Se a opcao de imagens do Google estiver ativa, substitui as imagens
         if (useGoogleImages) {
