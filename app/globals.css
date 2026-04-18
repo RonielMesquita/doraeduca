@@ -955,6 +955,18 @@
   margin-top: 4px;
 }
 
+/* Print margin for binding */
+.print-margem {
+  border-left: 4px solid #e5e7eb !important;
+}
+
+@media print {
+  .print-margem {
+    padding-left: 25mm !important;
+    border-left: 2px solid #ccc !important;
+  }
+}
+
 /* Print styles */
 @media print {
   @page {

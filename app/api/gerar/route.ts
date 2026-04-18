@@ -125,6 +125,8 @@ export async function POST(request: Request) {
       const subjectLabels: Record<string, string> = {
         portugues: "Língua Portuguesa",
         matematica: "Matemática",
+        natureza: "Natureza e Sociedade",
+        identidade: "Identidade e Autonomia",
         ciencias: "Ciências",
         historia: "História",
         geografia: "Geografia",
@@ -177,8 +179,10 @@ ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos e
 
 REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
-2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1) ate ${config.questionCount})
+2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1- ate ${config.questionCount}-)
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
+4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS (uppercase), inclusive instrucoes, enunciados e titulos
+5. Use o formato de numeracao com traco: "1- ENUNCIADO DA QUESTAO"
 
 IMAGENS - USE EMOJIS EM VEZ DE URLs:
 NAO use URLs de imagens. Use EMOJIS grandes dentro de spans com a classe figurinha-emoji.

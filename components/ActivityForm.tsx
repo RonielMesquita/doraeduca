@@ -1,9 +1,12 @@
 "use client";
 
+import { useRef } from "react";
 import {
   ActivityConfig,
   UploadedFile,
   YEARS,
+  TURNOS,
+  ACTIVITY_TITLES,
   SUBJECTS,
   ACTIVITY_TYPES,
 } from "@/lib/types";
@@ -23,8 +26,7 @@ const inputClass =
 
 const labelClass = "block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1";
 
-const sectionClass =
-  "bg-white rounded-2xl p-4 shadow-sm border border-amber-100";
+const sectionClass = "bg-white rounded-2xl p-4 shadow-sm border border-amber-100";
 
 export default function ActivityForm({
   config,
@@ -34,12 +36,24 @@ export default function ActivityForm({
   uploadedFiles,
   onFilesChange,
 }: Props) {
-  const set = (field: keyof ActivityConfig, value: string) => {
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const set = (field: keyof ActivityConfig, value: string | boolean) => {
     const updated = { ...config, [field]: value };
     if (field === "subject") {
-      updated.activityType = ACTIVITY_TYPES[value]?.[0] ?? "";
+      updated.activityType = ACTIVITY_TYPES[value as string]?.[0] ?? "";
     }
     onChange(updated);
+  };
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      onChange({ ...config, logoBase64: reader.result as string });
+    };
+    reader.readAsDataURL(file);
   };
 
   const activityTypes = ACTIVITY_TYPES[config.subject] ?? [];
@@ -57,11 +71,48 @@ export default function ActivityForm({
         </div>
 
         <div className="flex flex-col gap-3">
+          {/* Logo upload */}
+          <div>
+            <label className={labelClass}>Logo da Escola</label>
+            <div className="flex items-center gap-2">
+              {config.logoBase64 ? (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={config.logoBase64}
+                    alt="Logo"
+                    className="w-14 h-14 object-contain border-2 border-amber-200 rounded-xl bg-white"
+                  />
+                  <button
+                    onClick={() => onChange({ ...config, logoBase64: "" })}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => logoInputRef.current?.click()}
+                  className="flex-1 border-2 border-dashed border-amber-200 rounded-xl p-3 text-center cursor-pointer hover:border-amber-400 transition-colors"
+                >
+                  <p className="text-xs text-gray-400 font-semibold">📷 Carregar logo</p>
+                </div>
+              )}
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleLogoUpload}
+              />
+            </div>
+          </div>
+
           <div>
             <label className={labelClass}>Nome da Escola</label>
             <input
               className={inputClass}
-              placeholder="Ex: E.M. Monteiro Lobato"
+              placeholder="Ex: E.M.E.F Santa Joana"
               value={config.schoolName}
               onChange={(e) => set("schoolName", e.target.value)}
             />
@@ -81,19 +132,32 @@ export default function ActivityForm({
               <label className={labelClass}>Turma</label>
               <input
                 className={inputClass}
-                placeholder="Ex: Turma A"
+                placeholder="Ex: A"
                 value={config.className}
                 onChange={(e) => set("className", e.target.value)}
               />
             </div>
             <div>
-              <label className={labelClass}>Data</label>
-              <input
+              <label className={labelClass}>Turno</label>
+              <select
                 className={inputClass}
-                value={config.date}
-                onChange={(e) => set("date", e.target.value)}
-              />
+                value={config.turno}
+                onChange={(e) => set("turno", e.target.value)}
+              >
+                {TURNOS.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Data</label>
+            <input
+              className={inputClass}
+              value={config.date}
+              onChange={(e) => set("date", e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -109,17 +173,35 @@ export default function ActivityForm({
 
         <div className="flex flex-col gap-3">
           <div>
-            <label className={labelClass}>Ano Escolar</label>
+            <label className={labelClass}>Tipo de Documento</label>
+            <select
+              className={inputClass}
+              value={config.activityTitle}
+              onChange={(e) => set("activityTitle", e.target.value)}
+            >
+              {ACTIVITY_TITLES.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={labelClass}>Série / Ano Escolar</label>
             <select
               className={inputClass}
               value={config.year}
               onChange={(e) => set("year", e.target.value)}
             >
-              {YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
+              <optgroup label="Educação Infantil">
+                {YEARS.slice(0, 4).map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Ensino Fundamental">
+                {YEARS.slice(4).map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </optgroup>
             </select>
           </div>
 
@@ -151,9 +233,7 @@ export default function ActivityForm({
               onChange={(e) => set("activityType", e.target.value)}
             >
               {activityTypes.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
+                <option key={t} value={t}>{t}</option>
               ))}
             </select>
           </div>
@@ -164,9 +244,13 @@ export default function ActivityForm({
               className={inputClass}
               placeholder={
                 config.subject === "portugues"
-                  ? "Ex: Família da Letra B"
+                  ? "Ex: Família da Letra F"
                   : config.subject === "matematica"
-                  ? "Ex: Tabuada do 3"
+                  ? "Ex: Números até 10"
+                  : config.subject === "natureza"
+                  ? "Ex: Dia e Noite"
+                  : config.subject === "identidade"
+                  ? "Ex: Quem sou eu"
                   : "Ex: Animais da Fazenda"
               }
               value={config.topic}
@@ -198,7 +282,7 @@ export default function ActivityForm({
           </div>
 
           <div>
-            <label className={labelClass}>Quantidade de Questoes</label>
+            <label className={labelClass}>Quantidade de Questões</label>
             <div className="flex gap-2 flex-wrap">
               {[3, 5, 7, 10].map((n) => (
                 <button
@@ -214,9 +298,26 @@ export default function ActivityForm({
                 </button>
               ))}
             </div>
-            <p className="text-xs text-gray-400 mt-1 font-medium">
-              questoes na atividade (maximo 10)
-            </p>
+          </div>
+
+          {/* Margin toggle */}
+          <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 border-2 border-gray-100">
+            <div>
+              <p className="text-xs font-bold text-gray-600">Margem para encadernação</p>
+              <p className="text-xs text-gray-400">Adiciona margem esquerda extra</p>
+            </div>
+            <button
+              onClick={() => onChange({ ...config, hasMargem: !config.hasMargem })}
+              className={`w-10 h-6 rounded-full transition-all relative ${
+                config.hasMargem ? "bg-amber-400" : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
+                  config.hasMargem ? "left-5" : "left-1"
+                }`}
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -232,7 +333,7 @@ export default function ActivityForm({
         <textarea
           className={`${inputClass} resize-none`}
           rows={3}
-          placeholder="Ex: Incluir exercício de desenho no final. Evitar palavras difíceis. Colocar espaço para o aluno escrever o nome..."
+          placeholder="Ex: Incluir exercício de desenho. Evitar palavras difíceis..."
           value={config.observations}
           onChange={(e) => onChange({ ...config, observations: e.target.value })}
         />
@@ -265,12 +366,10 @@ export default function ActivityForm({
         )}
       </button>
 
-      {/* Tips */}
       <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl p-3">
         <p className="text-xs font-bold text-blue-700 mb-1">💡 Dica</p>
         <p className="text-xs text-blue-600">
-          Preencha o tema para uma atividade mais personalizada. Com a IA
-          conectada, as atividades ficam ainda mais ricas!
+          Carregue a logo da escola e preencha o tema para atividades mais personalizadas!
         </p>
       </div>
     </aside>

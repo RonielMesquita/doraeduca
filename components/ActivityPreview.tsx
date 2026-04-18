@@ -112,9 +112,9 @@ export default function ActivityPreview({
       {/* Sheet */}
       <div
         ref={printRef}
-        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 p-4 sm:p-6 lg:p-8 flex-1 transition-all ${
+        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 flex-1 transition-all ${
           loading ? "opacity-50" : ""
-        }`}
+        } ${config.hasMargem ? "pl-14 sm:pl-20 pr-4 sm:pr-8 pt-4 sm:pt-6 pb-4 sm:pb-6 print-margem" : "p-4 sm:p-6 lg:p-8"}`}
         style={{ minHeight: "500px" }}
       >
         {loading ? (
@@ -166,65 +166,73 @@ export default function ActivityPreview({
           </div>
         ) : (
           <div className="print-area">
-            {/* School header */}
-            <div className="border-2 border-gray-300 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
-              <div className="text-center mb-3">
-                <div className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-wide">
-                  {config.schoolName || "________________________________"}
+            {/* School header — fiel ao modelo da professora */}
+            <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
+              {/* Top row: logo + school name + photo box */}
+              <div className="flex items-stretch border-b border-gray-400">
+                {config.logoBase64 ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={config.logoBase64}
+                    alt="Logo"
+                    className="w-16 h-16 object-contain border-r border-gray-400 p-1"
+                  />
+                ) : (
+                  <div className="w-16 h-16 border-r border-gray-400 flex items-center justify-center text-gray-300 text-2xl">🏫</div>
+                )}
+                <div className="flex-1 flex items-center justify-center px-2 py-1">
+                  <span className="font-black text-sm sm:text-base uppercase tracking-wide text-center">
+                    {config.schoolName || "NOME DA ESCOLA"}
+                  </span>
                 </div>
-                <div className="text-xs text-gray-500 mt-0.5">
-                  Ensino Fundamental - {config.year}
+                <div className="w-20 h-16 border-l border-gray-400 flex items-center justify-center">
+                  <span className="text-xs text-gray-300 text-center leading-tight px-1">foto do aluno</span>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs sm:text-sm">
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-24 shrink-0">
-                    Professora:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {config.teacherName}
-                  </span>
+
+              {/* Second row: teacher + date */}
+              <div className="flex border-b border-gray-400 text-xs">
+                <div className="flex items-center gap-1 flex-1 px-2 py-1 border-r border-gray-400">
+                  <span className="font-bold uppercase shrink-0">PROFª</span>
+                  <span className="border-b border-gray-400 flex-1 font-semibold">{config.teacherName}</span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-16 shrink-0">
-                    Data:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1">
-                    ____/____/____
-                  </span>
+                <div className="flex items-center gap-1 flex-1 px-2 py-1">
+                  <span className="font-bold uppercase shrink-0">DATA:</span>
+                  <span className="font-semibold">{config.date}</span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-24 shrink-0">
-                    Aluno(a):
-                  </span>
-                  <span className="border-b border-gray-400 flex-1" />
+              </div>
+
+              {/* Third row: série + turma + turno */}
+              <div className="flex border-b border-gray-400 text-xs">
+                <div className="flex items-center gap-1 px-2 py-1 border-r border-gray-400">
+                  <span className="font-bold uppercase shrink-0">SÉRIE:</span>
+                  <span className="font-semibold">{config.year}</span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <span className="font-bold text-gray-600 w-16 shrink-0">
-                    Turma:
-                  </span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold text-gray-800">
-                    {config.className}
-                  </span>
+                <div className="flex items-center gap-1 px-2 py-1 border-r border-gray-400">
+                  <span className="font-bold uppercase shrink-0">TURMA:</span>
+                  <span className="font-semibold">{config.className}</span>
                 </div>
+                <div className="flex items-center gap-1 px-2 py-1">
+                  <span className="font-bold uppercase shrink-0">TURNO:</span>
+                  <span className="font-semibold">{config.turno}</span>
+                </div>
+              </div>
+
+              {/* Fourth row: student name */}
+              <div className="flex items-center gap-1 px-2 py-1 text-xs">
+                <span className="font-bold uppercase shrink-0">ALUNO(A):</span>
+                <span className="border-b border-gray-400 flex-1" />
               </div>
             </div>
 
             {/* Activity title */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
-              <span className="text-xl sm:text-2xl">{subject?.emoji}</span>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                  {subject?.label} — {config.activityType}
-                </p>
-                {config.topic && (
-                  <p className="text-sm font-bold text-gray-600">{config.topic}</p>
-                )}
-              </div>
-              <div className="ml-auto flex items-center gap-1">
-                <span className="text-xs text-gray-400">Nota:</span>
-                <div className="w-20 border-b-2 border-gray-300" />
-              </div>
+            <div className="text-center mb-4 sm:mb-6">
+              <h1 className="font-black text-base sm:text-lg uppercase tracking-wide">
+                {config.activityTitle} {subject?.label?.toUpperCase()}
+              </h1>
+              {config.topic && (
+                <p className="text-sm font-bold uppercase mt-1 text-gray-700">{config.topic.toUpperCase()}</p>
+              )}
             </div>
 
             {/* Activity content */}
