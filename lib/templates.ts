@@ -667,7 +667,7 @@ function cienciasGeral(type: string, topic: string, q: number): string {
       <h3 class="activity-subtitle">🔬 ${type}: ${topic}</h3>
       <div class="figurinhas-grid-3">
         <div class="figurinha-card blue">
-          ${imgTag(topic + " science", 40, "figurinha-img-lg")}
+          ${imgTag(topic + " science", 40)}
           <span class="figurinha-emoji">🔬</span>
           <span class="figurinha-name">${topic.toUpperCase()}</span>
         </div>
