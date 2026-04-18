@@ -21,13 +21,8 @@ export async function POST(request: Request) {
         geografia: "Geografia",
       };
 
-      // Build content array — include uploaded reference files first
-      type ContentBlock =
-        | { type: "text"; text: string }
-        | { type: "image"; source: { type: "base64"; media_type: string; data: string } }
-        | { type: "document"; source: { type: "base64"; media_type: string; data: string } };
-
-      const content: ContentBlock[] = [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const content: any[] = [];
 
       if (uploadedFiles.length > 0) {
         content.push({
