@@ -198,9 +198,9 @@ export default function ActivityForm({
           </div>
 
           <div>
-            <label className={labelClass}>Quantidade de Questões</label>
+            <label className={labelClass}>Quantidade de Questoes</label>
             <div className="flex gap-2 flex-wrap">
-              {[3, 5, 8, 10, 15].map((n) => (
+              {[3, 5, 7, 10].map((n) => (
                 <button
                   key={n}
                   onClick={() => onChange({ ...config, questionCount: n })}
@@ -215,7 +215,7 @@ export default function ActivityForm({
               ))}
             </div>
             <p className="text-xs text-gray-400 mt-1 font-medium">
-              questões na atividade
+              questoes na atividade (maximo 10)
             </p>
           </div>
         </div>

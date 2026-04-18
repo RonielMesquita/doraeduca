@@ -162,28 +162,31 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
-- Quantidade de questões: ${config.questionCount} questões
-${config.observations ? `- Observações da professora: ${config.observations}` : ""}
+- QUANTIDADE DE QUESTOES: ${config.questionCount} questoes (OBRIGATORIO GERAR TODAS)
+${config.observations ? `- Observacoes da professora: ${config.observations}` : ""}
 
-${uploadedFiles.length > 0 ? "IMPORTANTE: Replique fielmente o estilo visual, cabeçalho e estrutura dos modelos enviados acima." : ""}
+${uploadedFiles.length > 0 ? "IMPORTANTE: Replique fielmente o estilo visual, cabecalho e estrutura dos modelos enviados acima." : ""}
 
-REGRAS OBRIGATÓRIAS:
+REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML (sem <!DOCTYPE>, <html>, <head>, <body>)
-2. Gere EXATAMENTE ${config.questionCount} questões numeradas
-3. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
-4. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
+2. GERE EXATAMENTE ${config.questionCount} QUESTOES NUMERADAS (de 1 a ${config.questionCount}) - NAO GERE MENOS QUE ISSO
+3. Cada questao deve ser numerada claramente: "1)", "2)", "3)", etc ate chegar em "${config.questionCount})"
+4. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
+5. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
    - DESCRICAO_EM_INGLES: ex "cute cartoon dog kids white background"
-   - Troque N por números diferentes para cada imagem (1, 2, 3...)
-5. Use grids de figurinhas para tornar visual (classe figurinhas-grid ou figurinhas-grid-3)
-6. Classes CSS disponíveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer
-7. Use emojis em títulos e instruções para motivar as crianças
-8. Linguagem simples e acolhedora para ${config.year}
-${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observations}` : ""}`,
+   - Troque N por numeros diferentes para cada imagem (1, 2, 3...)
+6. Use grids de figurinhas para tornar visual (classe figurinhas-grid ou figurinhas-grid-3)
+7. Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer
+8. Use emojis em titulos e instrucoes para motivar as criancas
+9. Linguagem simples e acolhedora para ${config.year}
+${config.observations ? `10. SIGA AS OBSERVACOES DA PROFESSORA: ${config.observations}` : ""}
+
+LEMBRE-SE: A atividade DEVE conter EXATAMENTE ${config.questionCount} questoes. Verifique antes de finalizar.`,
       });
 
       const message = await client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 2048,
+        max_tokens: 4096,
         system:
           "Você é um assistente especializado em criar atividades educacionais para o Ensino Fundamental brasileiro (1º ao 5º ano). Crie atividades ricas, didáticas e alinhadas à BNCC, com linguagem adequada para cada faixa etária. Use uma abordagem lúdica e motivadora. Quando modelos de referência forem fornecidos, replique fielmente o estilo, formato e estrutura desses modelos.",
         messages: [{ role: "user", content }],
