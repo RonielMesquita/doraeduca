@@ -1,6 +1,6 @@
 export default function Header() {
   return (
-    <header className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 shadow-lg">
+    <header className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 shadow-lg no-print">
       {/* Decorative floating elements */}
       <div className="absolute inset-0 pointer-events-none select-none">
         <span className="absolute text-white/20 text-6xl top-1 left-6 rotate-[-15deg]">✏️</span>
