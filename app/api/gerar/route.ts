@@ -8,10 +8,9 @@ interface GoogleImageResult {
 }
 
 async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
-  // Temporariamente desativado - API Custom Search precisa ser habilitada no Google Cloud Console
-  // Para habilitar: https://console.cloud.google.com/apis/library/customsearch.googleapis.com
-  const apiKey = process.env.GOOGLE_API_KEY;
-  const cseId = process.env.GOOGLE_CSE_ID;
+  // Remove crases das chaves caso existam (problema comum ao copiar/colar)
+  const apiKey = process.env.GOOGLE_API_KEY?.replace(/`/g, "").trim();
+  const cseId = process.env.GOOGLE_CSE_ID?.replace(/`/g, "").trim();
 
   if (!apiKey || !cseId) {
     return [];
@@ -181,25 +180,29 @@ REGRAS OBRIGATORIAS:
 2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1) ate ${config.questionCount})
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 
-FORMATO DAS IMAGENS - SIGA EXATAMENTE:
-Para cada imagem, use este formato com descricao UNICA e ESPECIFICA:
+IMAGENS - REGRA CRITICA:
+Cada imagem DEVE ter uma descricao DIFERENTE baseada no objeto real que representa.
 
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/[OBJETO]%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=[NUMERO]" alt="[OBJETO]" />
+Formato OBRIGATORIO:
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/OBJETO%20clipart?width=150&height=150&nologo=true&seed=N" alt="nome" />
 
-Substitua [OBJETO] pelo nome do objeto em ingles (apple, dog, cat, sun, tree, etc)
-Substitua [NUMERO] por um numero diferente para cada imagem (1, 2, 3, 4...)
+OBJETO = nome em ingles do que a imagem mostra (apple, dog, cat, sun, tree, ball, house, car, etc)
+N = numero unico (1, 2, 3, 4, 5...)
 
-EXEMPLOS CORRETOS DE IMAGENS:
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/apple%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=1" alt="maca" />
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/dog%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=2" alt="cachorro" />
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/cat%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=3" alt="gato" />
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/house%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=4" alt="casa" />
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/ball%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=5" alt="bola" />
+EXEMPLOS CORRETOS:
+Para maca: src="https://image.pollinations.ai/prompt/apple%20clipart?width=150&height=150&nologo=true&seed=1"
+Para cachorro: src="https://image.pollinations.ai/prompt/dog%20clipart?width=150&height=150&nologo=true&seed=2"
+Para gato: src="https://image.pollinations.ai/prompt/cat%20clipart?width=150&height=150&nologo=true&seed=3"
+Para sol: src="https://image.pollinations.ai/prompt/sun%20clipart?width=150&height=150&nologo=true&seed=4"
+Para arvore: src="https://image.pollinations.ai/prompt/tree%20clipart?width=150&height=150&nologo=true&seed=5"
+Para bola: src="https://image.pollinations.ai/prompt/ball%20clipart?width=150&height=150&nologo=true&seed=6"
+Para casa: src="https://image.pollinations.ai/prompt/house%20clipart?width=150&height=150&nologo=true&seed=7"
+Para carro: src="https://image.pollinations.ai/prompt/car%20clipart?width=150&height=150&nologo=true&seed=8"
 
-ERRADO (NAO FACA ISSO):
-- src="https://image.pollinations.ai/prompt/cute?..." (muito generico)
-- Usar a mesma descricao para todas as imagens
-- Usar descricoes longas demais
+PROIBIDO - NAO USE:
+- "cute" sozinho
+- descricoes genericas
+- a mesma descricao para imagens diferentes
 
 Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
 
