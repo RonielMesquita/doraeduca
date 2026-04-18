@@ -955,17 +955,47 @@
   margin-top: 4px;
 }
 
-/* Margem completa ao redor da folha — prévia na tela */
-.com-margem .print-area {
-  border: 1.5px solid #777;
-  padding: 24px;
-  margin: 8px;
+/* A4 preview: mostra divisões de página na tela */
+.a4-preview-wrapper {
+  background: #e5e7eb;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.worksheet-container {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 0 !important;
+}
+
+/* Linha de corte de página A4 na prévia (a cada ~1122px = 297mm a 96dpi) */
+.print-area {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent calc(1122px - 1px),
+    #f87171 calc(1122px - 1px),
+    #f87171 1122px
+  );
+}
+
+/* Evitar corte de imagens e cards nas quebras de página */
+.figurinha-card,
+.figurinhas-grid,
+.figurinhas-grid-3,
+.counting-card,
+.drawing-box,
+.problem-box,
+img {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
 /* Print styles */
 @media print {
   @page {
-    margin: 20mm;
+    margin: 18mm;
     size: A4;
   }
 
@@ -977,6 +1007,11 @@
   html, body {
     background: white !important;
     margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .a4-preview-wrapper {
+    background: none !important;
     padding: 0 !important;
   }
 
@@ -1005,21 +1040,25 @@
     left: 0 !important;
   }
 
+  /* Remove linha vermelha de divisão na impressão */
   .print-area {
+    background-image: none !important;
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
-  /* Borda da margem na impressão — vem DEPOIS para sobrescrever */
-  .com-margem .print-area {
-    border: 1px solid #555 !important;
-    padding: 12mm !important;
-    margin: 0 !important;
-    display: block !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+  /* Borda da margem — inline style garante que aparece */
+  .figurinha-card,
+  .figurinhas-grid,
+  .figurinhas-grid-3,
+  .counting-card,
+  .drawing-box,
+  .problem-box,
+  img {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   main > div {

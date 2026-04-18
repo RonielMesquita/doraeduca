@@ -109,13 +109,20 @@ export default function ActivityPreview({
         )}
       </div>
 
-      {/* Sheet */}
+      {/* Sheet — A4 page preview wrapper */}
+      <div className="a4-preview-wrapper">
       <div
         ref={printRef}
-        className={`worksheet-container bg-white rounded-2xl shadow-md flex-1 transition-all p-4 sm:p-6 lg:p-8 ${loading ? "opacity-50" : ""} ${config.hasMargem ? "com-margem" : ""}`}
+        className={`worksheet-container bg-white flex-1 transition-all ${loading ? "opacity-50" : ""}`}
         style={{ minHeight: "500px" }}
       >
-        <div>
+        <div
+          style={config.hasMargem ? {
+            border: "1.5px solid #666",
+            padding: "20px",
+            margin: "12px",
+          } : { padding: "16px 24px" }}
+        >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4">
             <div className="text-5xl animate-bounce-slow">✏️</div>
@@ -249,6 +256,7 @@ export default function ActivityPreview({
         </div>
         )}
       </div>
+      </div>{/* end a4-preview-wrapper */}
 
       {/* Feedback Section */}
       {activity && !loading && onRegenerate && (
