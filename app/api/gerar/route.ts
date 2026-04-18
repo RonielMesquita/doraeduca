@@ -181,42 +181,32 @@ REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
 2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1- ate ${config.questionCount}-)
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
-4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS (uppercase), inclusive instrucoes, enunciados e titulos
+4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS, inclusive instrucoes, enunciados, titulos e nomes
 5. Use o formato de numeracao com traco: "1- ENUNCIADO DA QUESTAO"
+6. IDIOMA: 100% PORTUGUES BRASILEIRO. PROIBIDO qualquer palavra em ingles, espanhol ou outro idioma. Nomes de animais, objetos, acoes — TUDO em portugues brasileiro.
+7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
 
 IMAGENS - USE EMOJIS EM VEZ DE URLs:
-NAO use URLs de imagens. Use EMOJIS grandes dentro de spans com a classe figurinha-emoji.
+NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
 
 Formato OBRIGATORIO para imagens:
 <div class="figurinha-card green">
   <span class="figurinha-emoji">EMOJI</span>
-  <span class="figurinha-name">NOME</span>
+  <span class="figurinha-name">NOME EM PORTUGUES</span>
 </div>
 
-EXEMPLOS de emojis por tema:
-- Corpo humano: cabeca, braco, perna, mao, pe, olho, nariz, boca, coracao, cerebro
-- Animais: cachorro, gato, passaro, peixe, leao, elefante, borboleta
-- Frutas: maca, banana, laranja, uva, morango, melancia, abacaxi
-- Escola: livro, lapis, caderno, mochila, quadro, professor
-- Natureza: arvore, flor, sol, lua, estrela, nuvem, chuva, arco-iris
+EXEMPLOS de nomes em PORTUGUES:
+- Animais: CACHORRO, GATO, PASSARO, PEIXE, LEAO, ELEFANTE, BORBOLETA, SAPO, COELHO
+- Frutas: MACA, BANANA, LARANJA, UVA, MORANGO, MELANCIA, ABACAXI, MANGA, PERA
+- Escola: LIVRO, LAPIS, CADERNO, MOCHILA, QUADRO, BORRACHA, REGUA, TESOURA
+- Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
+- Corpo: CABECA, BRACO, PERNA, MAO, PE, OLHO, NARIZ, BOCA, CORACAO
 
-Use cores variadas: green, blue, yellow, pink
+Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
 
-EXEMPLO COMPLETO para corpo humano:
-<div class="figurinhas-grid">
-  <div class="figurinha-card green"><span class="figurinha-emoji">EMOJI_CABECA</span><span class="figurinha-name">cabeca</span></div>
-  <div class="figurinha-card blue"><span class="figurinha-emoji">EMOJI_MAO</span><span class="figurinha-name">mao</span></div>
-  <div class="figurinha-card yellow"><span class="figurinha-emoji">EMOJI_PE</span><span class="figurinha-name">pe</span></div>
-</div>
+${config.observations ? `SIGA OBRIGATORIAMENTE: ${config.observations}` : ""}
 
-Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
-
-Use linguagem simples e acolhedora para ${config.year}.
-${config.observations ? `SIGA: ${config.observations}` : ""}
-
-VERIFICACAO FINAL ANTES DE RESPONDER:
-1. Tenho EXATAMENTE ${config.questionCount} questoes numeradas de 1) a ${config.questionCount})?
-2. Cada imagem tem um OBJETO DIFERENTE na URL (apple, dog, cat, etc)?
+VERIFICACAO FINAL: Tenho EXATAMENTE ${config.questionCount} questoes? Todo texto esta em PORTUGUES e MAIUSCULO?
 3. Cada imagem tem um SEED DIFERENTE (1, 2, 3, etc)?`,
       });
 
@@ -224,7 +214,7 @@ VERIFICACAO FINAL ANTES DE RESPONDER:
         model: "claude-sonnet-4-6",
         max_tokens: 4096,
         system:
-          "Você é um assistente especializado em criar atividades educacionais para o Ensino Fundamental brasileiro (1º ao 5º ano). Crie atividades ricas, didáticas e alinhadas à BNCC, com linguagem adequada para cada faixa etária. Use uma abordagem lúdica e motivadora. Quando modelos de referência forem fornecidos, replique fielmente o estilo, formato e estrutura desses modelos.",
+          "Você é um assistente especializado em criar atividades educacionais para a Educação Infantil e Ensino Fundamental brasileiro (Maternal ao 5º ano). REGRAS ABSOLUTAS: (1) Escreva TUDO em PORTUGUÊS BRASILEIRO — nenhuma palavra em inglês ou outro idioma é permitida, nem mesmo em nomes de imagens, exemplos ou classes; (2) Use LETRAS MAIÚSCULAS em todo o texto; (3) Use linguagem simples e vocabulário adequado para crianças pequenas; (4) Siga fielmente a BNCC; (5) Seja lúdico e motivador. Quando modelos de referência forem fornecidos, replique fielmente o estilo e estrutura.",
         messages: [{ role: "user", content }],
       });
 

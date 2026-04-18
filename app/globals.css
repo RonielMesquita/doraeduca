@@ -956,19 +956,18 @@
 }
 
 /* Margem completa ao redor da folha */
-.margem-folha {
-  border: 1.5px solid #999;
-  padding: 16px;
+.com-margem .print-area {
+  border: 1.5px solid #777;
+  padding: 20px;
 }
 
 @media print {
-  .margem-folha {
-    border: 1px solid #666 !important;
-    padding: 12mm !important;
-    margin: 0 !important;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
+  .com-margem .print-area {
+    border: 1px solid #555 !important;
+    padding: 15mm !important;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
 
