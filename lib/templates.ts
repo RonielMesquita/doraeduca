@@ -29,7 +29,7 @@ export function generateMockActivity(config: ActivityConfig): string {
     case "geografia":
       return generateGeografia(activityType, topicLabel, year, qCount);
     default:
-      return generatePortugues(activityType, topicLabel, year);
+      return generatePortugues(activityType, topicLabel, year, qCount);
   }
 }
 
