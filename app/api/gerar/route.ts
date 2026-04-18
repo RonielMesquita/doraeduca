@@ -6,6 +6,9 @@ export async function POST(request: Request) {
   const config: ActivityConfig = body.config;
   const uploadedFiles: UploadedFile[] = body.uploadedFiles ?? [];
 
+  console.log("[v0] Quantidade de questões solicitadas:", config.questionCount);
+  console.log("[v0] Config recebida:", JSON.stringify(config, null, 2));
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (apiKey) {
@@ -54,21 +57,23 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 
       content.push({
         type: "text",
-        text: `Crie uma atividade educacional rica em imagens e figurinhas para:
+        text: `ATENÇÃO: Você DEVE criar EXATAMENTE ${config.questionCount} QUESTÕES NUMERADAS (de 1 a ${config.questionCount}). Esta é uma regra OBRIGATÓRIA.
+
+Crie uma atividade educacional rica em imagens e figurinhas para:
 
 - Ano escolar: ${config.year}
 - Disciplina: ${subjectLabels[config.subject] || config.subject}
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
-- Quantidade de questões: ${config.questionCount} questões
+- QUANTIDADE DE QUESTÕES: ${config.questionCount} questões (OBRIGATÓRIO: gere todas as ${config.questionCount} questões)
 ${config.observations ? `- Observações da professora: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique fielmente o estilo visual, cabeçalho e estrutura dos modelos enviados acima." : ""}
 
 REGRAS OBRIGATÓRIAS:
 1. Retorne APENAS HTML (sem <!DOCTYPE>, <html>, <head>, <body>)
-2. Gere EXATAMENTE ${config.questionCount} questões numeradas
+2. **CRÍTICO**: Gere EXATAMENTE ${config.questionCount} questões numeradas de 1 a ${config.questionCount}. NÃO PARE antes de completar todas as ${config.questionCount} questões!
 3. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
 4. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
    - DESCRICAO_EM_INGLES: ex "cute cartoon dog kids white background"
@@ -77,14 +82,16 @@ REGRAS OBRIGATÓRIAS:
 6. Classes CSS disponíveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer
 7. Use emojis em títulos e instruções para motivar as crianças
 8. Linguagem simples e acolhedora para ${config.year}
-${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observations}` : ""}`,
+${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observations}` : ""}
+
+LEMBRETE FINAL: A atividade DEVE conter ${config.questionCount} questões numeradas. Verifique se você gerou todas antes de finalizar.`,
       });
 
       const message = await client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 2048,
+        max_tokens: 8192,
         system:
-          "Você é um assistente especializado em criar atividades educacionais para o Ensino Fundamental brasileiro (1º ao 5º ano). Crie atividades ricas, didáticas e alinhadas à BNCC, com linguagem adequada para cada faixa etária. Use uma abordagem lúdica e motivadora. Quando modelos de referência forem fornecidos, replique fielmente o estilo, formato e estrutura desses modelos.",
+          `Você é um assistente especializado em criar atividades educacionais para o Ensino Fundamental brasileiro (1º ao 5º ano). Crie atividades ricas, didáticas e alinhadas à BNCC, com linguagem adequada para cada faixa etária. Use uma abordagem lúdica e motivadora. Quando modelos de referência forem fornecidos, replique fielmente o estilo, formato e estrutura desses modelos. REGRA CRÍTICA: Você DEVE gerar EXATAMENTE a quantidade de questões solicitada. Não encurte ou resuma. Gere todas as ${config.questionCount} questões pedidas.`,
         messages: [{ role: "user", content }],
       });
 
