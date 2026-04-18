@@ -11,36 +11,63 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
   const apiKey = process.env.GOOGLE_API_KEY;
   const cseId = process.env.GOOGLE_CSE_ID;
 
+  console.log("[v0] Google Image Search - API Key exists:", !!apiKey, "CSE ID exists:", !!cseId);
+  console.log("[v0] Google Image Search - API Key (first 10 chars):", apiKey?.substring(0, 10) || "N/A");
+  console.log("[v0] Google Image Search - CSE ID:", cseId || "N/A");
+
   if (!apiKey || !cseId) {
+    console.log("[v0] Google Image Search - Missing credentials, skipping search");
     return [];
   }
 
   try {
-    const safeQuery = `${query} clipart cartoon kids educational`;
+    // Simplifica a query para termos mais genericos
+    const simplifiedQuery = query
+      .replace(/cute|cartoon|kids|white background|educational/gi, "")
+      .trim()
+      .split(" ")
+      .slice(0, 3)
+      .join(" ");
+    
+    const safeQuery = `${simplifiedQuery} clipart png`;
+    console.log("[v0] Google Image Search - Original query:", query);
+    console.log("[v0] Google Image Search - Simplified query:", safeQuery);
     
     const url = new URL("https://www.googleapis.com/customsearch/v1");
     url.searchParams.set("key", apiKey);
     url.searchParams.set("cx", cseId);
     url.searchParams.set("q", safeQuery);
     url.searchParams.set("searchType", "image");
-    url.searchParams.set("num", "3");
+    url.searchParams.set("num", "5");
     url.searchParams.set("safe", "active");
-    url.searchParams.set("imgType", "clipart");
-    url.searchParams.set("imgSize", "medium");
+
+    console.log("[v0] Google Image Search - Full URL:", url.toString().replace(apiKey, "API_KEY_HIDDEN"));
 
     const response = await fetch(url.toString());
+    console.log("[v0] Google Image Search - Response status:", response.status);
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.log("[v0] Google Image Search - Error response:", errorText.substring(0, 500));
       return [];
     }
 
     const data = await response.json();
+    console.log("[v0] Google Image Search - Response keys:", Object.keys(data));
+    console.log("[v0] Google Image Search - Found items:", data.items?.length || 0);
+    
+    if (data.error) {
+      console.log("[v0] Google Image Search - API Error:", JSON.stringify(data.error));
+      return [];
+    }
+    
     return (data.items || []).map((item: { link: string; image?: { thumbnailLink: string }; title: string }) => ({
       url: item.link,
       thumbnail: item.image?.thumbnailLink || item.link,
       title: item.title,
     }));
-  } catch {
+  } catch (error) {
+    console.log("[v0] Google Image Search - Exception:", error);
     return [];
   }
 }
@@ -59,44 +86,59 @@ function cleanHtmlResponse(text: string): string {
 }
 
 async function replacePollinationsWithGoogleImages(html: string): Promise<string> {
+  console.log("[v0] replacePollinationsWithGoogleImages - Starting");
+  
   // Extrai todas as URLs do Pollinations e suas descricoes
-  const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"]+)[^"]*"/g;
-  const matches: { fullMatch: string; description: string }[] = [];
+  // Regex mais flexivel para capturar diferentes formatos de URL
+  const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"'\s]+)[^"'\s]*/g;
+  const matches: { fullUrl: string; description: string }[] = [];
   
   let match;
   while ((match = pollinationsRegex.exec(html)) !== null) {
-    matches.push({
-      fullMatch: match[0],
-      description: decodeURIComponent(match[1]).replace(/[+_]/g, " "),
-    });
+    const fullUrl = match[0];
+    const rawDesc = match[1];
+    const description = decodeURIComponent(rawDesc).replace(/[+_]/g, " ").replace(/%20/g, " ");
+    
+    matches.push({ fullUrl, description });
+    console.log("[v0] Found Pollinations URL:", fullUrl.substring(0, 80) + "...");
   }
 
+  console.log("[v0] Total Pollinations URLs found:", matches.length);
+
   if (matches.length === 0) {
+    console.log("[v0] No Pollinations URLs found, returning original HTML");
     return html;
   }
 
   // Busca imagens do Google para cada descricao unica
   const uniqueDescriptions = [...new Set(matches.map((m) => m.description))];
+  console.log("[v0] Unique descriptions to search:", uniqueDescriptions.length);
+  
   const imageCache: Record<string, string> = {};
 
   for (const desc of uniqueDescriptions.slice(0, 5)) {
+    console.log("[v0] Searching Google for:", desc.substring(0, 50));
     const images = await searchGoogleImages(desc);
     if (images.length > 0) {
-      // Usa thumbnail para melhor performance
       imageCache[desc] = images[0].thumbnail;
+      console.log("[v0] Found image for:", desc.substring(0, 30), "->", images[0].thumbnail.substring(0, 50));
+    } else {
+      console.log("[v0] No images found for:", desc.substring(0, 50));
     }
   }
 
   // Substitui as URLs no HTML
   let result = html;
+  let replacedCount = 0;
+  
   for (const m of matches) {
     if (imageCache[m.description]) {
-      result = result.replace(
-        m.fullMatch,
-        `${imageCache[m.description]}"`
-      );
+      result = result.replace(m.fullUrl, imageCache[m.description]);
+      replacedCount++;
     }
   }
+  
+  console.log("[v0] Replaced", replacedCount, "images out of", matches.length);
 
   return result;
 }
