@@ -196,7 +196,51 @@ export default function ActivityForm({
               ))}
             </div>
           </div>
+
+          <div>
+            <label className={labelClass}>Quantidade de Questões</label>
+            <div className="flex gap-2 flex-wrap">
+              {[3, 5, 8, 10, 15].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => onChange({ ...config, questionCount: n })}
+                  className={`flex-1 py-2 rounded-xl text-sm font-black border-2 transition-all ${
+                    config.questionCount === n
+                      ? "bg-amber-100 border-amber-400 text-amber-800 shadow-sm"
+                      : "bg-gray-50 border-gray-200 text-gray-500 hover:border-amber-200"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-1 font-medium">
+              questões na atividade
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Observations */}
+      <div className={sectionClass}>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">💬</span>
+          <h2 className="font-black text-gray-700 text-sm uppercase tracking-wide">
+            Observações
+          </h2>
+        </div>
+        <textarea
+          className={`${inputClass} resize-none`}
+          rows={3}
+          placeholder="Ex: Incluir exercício de desenho no final. Evitar palavras difíceis. Colocar espaço para o aluno escrever o nome..."
+          value={config.observations}
+          onChange={(e) => onChange({ ...config, observations: e.target.value })}
+        />
+        {config.observations && (
+          <p className="text-xs text-green-600 font-semibold mt-1">
+            ✅ A IA vai considerar suas observações
+          </p>
+        )}
       </div>
 
       {/* Upload reference files */}

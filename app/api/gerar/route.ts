@@ -61,20 +61,23 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
+- Quantidade de questões: ${config.questionCount} questões
+${config.observations ? `- Observações da professora: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique fielmente o estilo visual, cabeçalho e estrutura dos modelos enviados acima." : ""}
 
 REGRAS OBRIGATÓRIAS:
 1. Retorne APENAS HTML (sem <!DOCTYPE>, <html>, <head>, <body>)
-2. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
-3. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
+2. Gere EXATAMENTE ${config.questionCount} questões numeradas
+3. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
+4. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
    - DESCRICAO_EM_INGLES: ex "cute cartoon dog kids white background"
    - Troque N por números diferentes para cada imagem (1, 2, 3...)
-4. Use grids de figurinhas para tornar visual (classe figurinhas-grid ou figurinhas-grid-3)
-5. Classes CSS disponíveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer, coloring-grid, coloring-card, coloring-label, coloring-box
-6. A atividade deve ter no mínimo 3 exercícios distintos
+5. Use grids de figurinhas para tornar visual (classe figurinhas-grid ou figurinhas-grid-3)
+6. Classes CSS disponíveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer
 7. Use emojis em títulos e instruções para motivar as crianças
-8. Linguagem simples e acolhedora para ${config.year}`,
+8. Linguagem simples e acolhedora para ${config.year}
+${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observations}` : ""}`,
       });
 
       const message = await client.messages.create({

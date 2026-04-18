@@ -9,6 +9,8 @@ export interface ActivityConfig {
   activityType: string;
   topic: string;
   difficulty: string;
+  questionCount: number;
+  observations: string;
 }
 
 export const YEARS = [
@@ -91,4 +93,6 @@ export const defaultConfig: ActivityConfig = {
   activityType: "Família Silábica",
   topic: "",
   difficulty: "Médio",
+  questionCount: 5,
+  observations: "",
 };
