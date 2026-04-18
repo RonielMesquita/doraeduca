@@ -10,6 +10,7 @@ export interface ActivityConfig {
   difficulty: string;
   questionCount: number;
   observations: string;
+  useGoogleImages: boolean;
 }
 
 export const YEARS = [
@@ -93,4 +94,5 @@ export const defaultConfig: ActivityConfig = {
   difficulty: "Médio",
   questionCount: 5,
   observations: "",
+  useGoogleImages: true,
 };

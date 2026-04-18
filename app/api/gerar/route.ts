@@ -1,10 +1,98 @@
 import { generateMockActivity } from "@/lib/templates";
 import { ActivityConfig, UploadedFile } from "@/lib/types";
 
+interface GoogleImageResult {
+  url: string;
+  thumbnail: string;
+  title: string;
+}
+
+async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  const cseId = process.env.GOOGLE_CSE_ID;
+
+  if (!apiKey || !cseId) {
+    return [];
+  }
+
+  try {
+    const safeQuery = `${query} clipart cartoon kids educational`;
+    
+    const url = new URL("https://www.googleapis.com/customsearch/v1");
+    url.searchParams.set("key", apiKey);
+    url.searchParams.set("cx", cseId);
+    url.searchParams.set("q", safeQuery);
+    url.searchParams.set("searchType", "image");
+    url.searchParams.set("num", "3");
+    url.searchParams.set("safe", "active");
+    url.searchParams.set("imgType", "clipart");
+    url.searchParams.set("imgSize", "medium");
+
+    const response = await fetch(url.toString());
+    
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return (data.items || []).map((item: { link: string; image?: { thumbnailLink: string }; title: string }) => ({
+      url: item.link,
+      thumbnail: item.image?.thumbnailLink || item.link,
+      title: item.title,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+async function replacePollinationsWithGoogleImages(html: string): Promise<string> {
+  // Extrai todas as URLs do Pollinations e suas descricoes
+  const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"]+)[^"]*"/g;
+  const matches: { fullMatch: string; description: string }[] = [];
+  
+  let match;
+  while ((match = pollinationsRegex.exec(html)) !== null) {
+    matches.push({
+      fullMatch: match[0],
+      description: decodeURIComponent(match[1]).replace(/[+_]/g, " "),
+    });
+  }
+
+  if (matches.length === 0) {
+    return html;
+  }
+
+  // Busca imagens do Google para cada descricao unica
+  const uniqueDescriptions = [...new Set(matches.map((m) => m.description))];
+  const imageCache: Record<string, string> = {};
+
+  for (const desc of uniqueDescriptions.slice(0, 5)) {
+    const images = await searchGoogleImages(desc);
+    if (images.length > 0) {
+      // Usa thumbnail para melhor performance
+      imageCache[desc] = images[0].thumbnail;
+    }
+  }
+
+  // Substitui as URLs no HTML
+  let result = html;
+  for (const m of matches) {
+    if (imageCache[m.description]) {
+      result = result.replace(
+        m.fullMatch,
+        `${imageCache[m.description]}"`
+      );
+    }
+  }
+
+  return result;
+}
+
 export async function POST(request: Request) {
   const body = await request.json();
   const config: ActivityConfig = body.config;
   const uploadedFiles: UploadedFile[] = body.uploadedFiles ?? [];
+  const useGoogleImages = config.useGoogleImages ?? false;
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
@@ -90,7 +178,14 @@ ${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observ
 
       const result = message.content[0];
       if (result.type === "text") {
-        return Response.json({ activity: result.text, source: "ai" });
+        let activityHtml = result.text;
+        
+        // Se a opcao de imagens do Google estiver ativa, substitui as imagens
+        if (useGoogleImages) {
+          activityHtml = await replacePollinationsWithGoogleImages(activityHtml);
+        }
+        
+        return Response.json({ activity: activityHtml, source: "ai", imagesSource: useGoogleImages ? "google" : "pollinations" });
       }
     } catch (err) {
       console.error("Claude API error, falling back to template:", err);
@@ -98,5 +193,5 @@ ${config.observations ? `9. SIGA AS OBSERVAÇÕES DA PROFESSORA: ${config.observ
   }
 
   const activity = generateMockActivity(config);
-  return Response.json({ activity, source: "template" });
+  return Response.json({ activity, source: "template", imagesSource: "template" });
 }
