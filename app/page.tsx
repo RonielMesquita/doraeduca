@@ -4,6 +4,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
+import ChatSidebar from "@/components/ChatSidebar";
 import { ActivityConfig, UploadedFile, defaultConfig } from "@/lib/types";
 
 export default function Home() {
@@ -51,6 +52,7 @@ export default function Home() {
           source={source}
         />
       </div>
+      <ChatSidebar />
     </div>
   );
 }
