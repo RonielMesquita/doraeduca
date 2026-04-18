@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     headers.set("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     headers.set("Content-Disposition", `attachment; filename="${filename || "atividade"}.docx"`);
 
-    return new Response(docxBuffer as Buffer, {
+    return new Response(docxBuffer as unknown as BodyInit, {
       status: 200,
       headers,
     });
