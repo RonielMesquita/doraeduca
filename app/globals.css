@@ -1049,7 +1049,19 @@ img {
     margin: 0 !important;
   }
 
-  /* Borda da margem — inline style garante que aparece */
+  /* Borda em CADA folha impressa via position:fixed */
+  .com-margem-print::before {
+    content: '';
+    position: fixed;
+    top: 8mm;
+    left: 8mm;
+    right: 8mm;
+    bottom: 8mm;
+    border: 1px solid #555;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
   .figurinha-card,
   .figurinhas-grid,
   .figurinhas-grid-3,

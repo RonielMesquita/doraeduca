@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ActivityConfig, SUBJECTS } from "@/lib/types";
+
+const A4_HEIGHT_PX = 1056; // altura A4 impressa a ~96dpi com margin 18mm
 
 interface Props {
   config: ActivityConfig;
@@ -23,10 +25,27 @@ export default function ActivityPreview({
   onRegenerate,
 }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [pageBreaks, setPageBreaks] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!contentRef.current || !activity) return;
+    const height = contentRef.current.scrollHeight;
+    const pages = Math.max(1, Math.ceil(height / A4_HEIGHT_PX));
+    setPageCount(pages);
+    const breaks: number[] = [];
+    for (let i = 1; i < pages; i++) breaks.push(i * A4_HEIGHT_PX);
+    setPageBreaks(breaks);
+  }, [activity, loading]);
 
   const handlePrint = () => {
+    if (config.hasMargem) {
+      document.body.classList.add("com-margem-print");
+    }
     window.print();
+    document.body.classList.remove("com-margem-print");
   };
 
   const handleDownloadWord = async () => {
@@ -91,7 +110,10 @@ export default function ActivityPreview({
         </div>
 
         {activity && (
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto items-center">
+            <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl border border-gray-200">
+              📄 {pageCount} {pageCount === 1 ? "folha" : "folhas"}
+            </span>
             <button
               onClick={handlePrint}
               className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
@@ -171,7 +193,7 @@ export default function ActivityPreview({
             </div>
           </div>
         ) : (
-          <div className="print-area">
+          <div className="print-area" ref={contentRef} style={{ position: "relative" }}>
             {/* School header — fiel ao modelo da professora */}
             <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
               {/* Top row: logo + school name + photo box */}
@@ -242,9 +264,37 @@ export default function ActivityPreview({
             </div>
 
             {/* Activity content */}
-            <div
-              dangerouslySetInnerHTML={{ __html: activity }}
-            />
+            <div dangerouslySetInnerHTML={{ __html: activity }} />
+
+            {/* Linhas de divisão de página no preview (some na impressão) */}
+            {pageBreaks.map((top) => (
+              <div
+                key={top}
+                className="no-print"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: `${top}px`,
+                  borderTop: "2px dashed #ef4444",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none",
+                }}
+              >
+                <span style={{
+                  background: "#ef4444",
+                  color: "white",
+                  fontSize: "10px",
+                  fontWeight: "bold",
+                  padding: "1px 6px",
+                  borderRadius: "0 0 4px 4px",
+                }}>
+                  QUEBRA DE PÁGINA
+                </span>
+              </div>
+            ))}
 
             {/* Footer */}
             <div className="mt-8 pt-4 border-t border-gray-200 print-footer">
