@@ -16,13 +16,16 @@ importers:
         version: 3.0.170(react@18.3.1)(zod@4.3.6)
       '@anthropic-ai/sdk':
         specifier: ^0.27.0
-        version: 0.27.3
+        version: 0.27.3(encoding@0.1.13)
       ai:
         specifier: ^6.0.168
         version: 6.0.168(zod@4.3.6)
+      encoding:
+        specifier: ^0.1.13
+        version: 0.1.13
       html-to-docx:
         specifier: ^1.8.0
-        version: 1.8.0
+        version: 1.8.0(encoding@0.1.13)
       next:
         specifier: 15.5.15
         version: 15.5.15(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -547,6 +550,9 @@ packages:
   electron-to-chromium@1.5.340:
     resolution: {integrity: sha512-908qahOGocRMinT2nM3ajCEM99H4iPdv84eagPP3FfZy/1ZGeOy2CZYzjhms81ckOPCXPlW7LkY4XpxD8r1DrA==}
 
+  encoding@0.1.13:
+    resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
+
   ent@2.2.2:
     resolution: {integrity: sha512-kKvD1tO6BM+oK9HzCPpUdRb4vKFQY/FPTFmurMvh6LlN68VMrdj77w8yp51/kDbpkFOS9J8w5W6zIzgM2H8/hw==}
     engines: {node: '>= 0.4'}
@@ -682,6 +688,10 @@ packages:
 
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
+
+  iconv-lite@0.6.3:
+    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
+    engines: {node: '>=0.10.0'}
 
   image-size@1.2.1:
     resolution: {integrity: sha512-rH+46sQJ2dlwfjfhCyNx5thzrv+dtmBIhPHk0zgRUukHzZ/kRueTJXoYYsclBaKcSMBWuGbOFXtioLpzTb5euw==}
@@ -984,6 +994,9 @@ packages:
     resolution: {integrity: sha512-x/+Cz4YrimQxQccJf5mKEbIa1NzeCRNI5Ecl/ekmlYaampdNLPalVyIcCZNNH3MvmqBugV5TMYZXv0ljslUlaw==}
     engines: {node: '>= 0.4'}
 
+  safer-buffer@2.1.2:
+    resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
+
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
@@ -1165,7 +1178,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@anthropic-ai/sdk@0.27.3':
+  '@anthropic-ai/sdk@0.27.3(encoding@0.1.13)':
     dependencies:
       '@types/node': 18.19.130
       '@types/node-fetch': 2.6.13
@@ -1173,7 +1186,7 @@ snapshots:
       agentkeepalive: 4.6.0
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
-      node-fetch: 2.7.0
+      node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
@@ -1537,6 +1550,10 @@ snapshots:
 
   electron-to-chromium@1.5.340: {}
 
+  encoding@0.1.13:
+    dependencies:
+      iconv-lite: 0.6.3
+
   ent@2.2.2:
     dependencies:
       call-bound: 1.0.4
@@ -1666,7 +1683,7 @@ snapshots:
 
   html-entities@2.6.0: {}
 
-  html-to-docx@1.8.0:
+  html-to-docx@1.8.0(encoding@0.1.13):
     dependencies:
       '@oozcitak/dom': 1.15.6
       '@oozcitak/util': 8.3.4
@@ -1674,7 +1691,7 @@ snapshots:
       html-entities: 2.6.0
       html-to-vdom: 0.7.0
       image-size: 1.2.1
-      image-to-base64: 2.2.0
+      image-to-base64: 2.2.0(encoding@0.1.13)
       jszip: 3.10.1
       lodash: 4.18.1
       mime-types: 2.1.35
@@ -1702,13 +1719,17 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
+  iconv-lite@0.6.3:
+    dependencies:
+      safer-buffer: 2.1.2
+
   image-size@1.2.1:
     dependencies:
       queue: 6.0.2
 
-  image-to-base64@2.2.0:
+  image-to-base64@2.2.0(encoding@0.1.13):
     dependencies:
-      node-fetch: 2.7.0
+      node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
@@ -1829,9 +1850,11 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
-  node-fetch@2.7.0:
+  node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
 
   node-releases@2.0.37: {}
 
@@ -1966,6 +1989,8 @@ snapshots:
       call-bound: 1.0.4
       es-errors: 1.3.0
       is-regex: 1.2.1
+
+  safer-buffer@2.1.2: {}
 
   scheduler@0.23.2:
     dependencies:
