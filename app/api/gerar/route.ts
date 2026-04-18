@@ -8,6 +8,8 @@ interface GoogleImageResult {
 }
 
 async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
+  // Temporariamente desativado - API Custom Search precisa ser habilitada no Google Cloud Console
+  // Para habilitar: https://console.cloud.google.com/apis/library/customsearch.googleapis.com
   const apiKey = process.env.GOOGLE_API_KEY;
   const cseId = process.env.GOOGLE_CSE_ID;
 
@@ -17,13 +19,17 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
 
   try {
     const simplifiedQuery = query
-      .replace(/cute|cartoon|kids|white background|educational|simple/gi, "")
+      .replace(/cartoon|clipart|simple|white background/gi, "")
       .trim()
       .split(" ")
-      .slice(0, 3)
+      .slice(0, 2)
       .join(" ");
     
-    const safeQuery = `${simplifiedQuery} clipart png`;
+    if (!simplifiedQuery || simplifiedQuery.length < 2) {
+      return [];
+    }
+    
+    const safeQuery = `${simplifiedQuery} clipart png infantil`;
     
     const url = new URL("https://www.googleapis.com/customsearch/v1");
     url.searchParams.set("key", apiKey);
@@ -170,33 +176,40 @@ ${config.observations ? `- Observacoes: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos enviados." : ""}
 
-REGRAS:
-1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body)
+REGRAS OBRIGATORIAS:
+1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
 2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1) ate ${config.questionCount})
-3. Cada questao DEVE ter conteudo diferente e relevante ao tema
+3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 
-IMAGENS - MUITO IMPORTANTE:
-- Use imagens do Pollinations com descricoes ESPECIFICAS e DIFERENTES para cada imagem
-- Formato: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO?width=120&height=120&nologo=true&seed=NUMERO" />
-- DESCRICAO deve ser especifica do objeto, ex: "cartoon apple fruit red" para maca, "cartoon banana yellow fruit" para banana
-- Use seed DIFERENTE para cada imagem (seed=1, seed=2, seed=3...)
-- NAO use descricoes genericas como "cute cartoon" sozinho
-- Cada imagem deve representar um objeto/animal/conceito DIFERENTE
+FORMATO DAS IMAGENS - SIGA EXATAMENTE:
+Para cada imagem, use este formato com descricao UNICA e ESPECIFICA:
 
-EXEMPLO DE IMAGENS CORRETAS:
-- Maca: src="https://image.pollinations.ai/prompt/cartoon%20red%20apple%20fruit%20simple?width=120&height=120&nologo=true&seed=1"
-- Cachorro: src="https://image.pollinations.ai/prompt/cartoon%20dog%20puppy%20cute%20simple?width=120&height=120&nologo=true&seed=2"
-- Gato: src="https://image.pollinations.ai/prompt/cartoon%20cat%20kitten%20simple?width=120&height=120&nologo=true&seed=3"
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/[OBJETO]%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=[NUMERO]" alt="[OBJETO]" />
 
-Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
+Substitua [OBJETO] pelo nome do objeto em ingles (apple, dog, cat, sun, tree, etc)
+Substitua [NUMERO] por um numero diferente para cada imagem (1, 2, 3, 4...)
+
+EXEMPLOS CORRETOS DE IMAGENS:
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/apple%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=1" alt="maca" />
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/dog%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=2" alt="cachorro" />
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/cat%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=3" alt="gato" />
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/house%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=4" alt="casa" />
+<img class="figurinha-img" src="https://image.pollinations.ai/prompt/ball%20cartoon%20clipart%20simple%20white%20background?width=150&height=150&nologo=true&seed=5" alt="bola" />
+
+ERRADO (NAO FACA ISSO):
+- src="https://image.pollinations.ai/prompt/cute?..." (muito generico)
+- Usar a mesma descricao para todas as imagens
+- Usar descricoes longas demais
+
+Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
 
 Use linguagem simples e acolhedora para ${config.year}.
 ${config.observations ? `SIGA: ${config.observations}` : ""}
 
-CHECKLIST FINAL:
-- [ ] Tenho ${config.questionCount} questoes numeradas? (1, 2, 3... ate ${config.questionCount})
-- [ ] Cada imagem tem descricao especifica e seed diferente?
-- [ ] O conteudo e adequado para ${config.year}?`,
+VERIFICACAO FINAL ANTES DE RESPONDER:
+1. Tenho EXATAMENTE ${config.questionCount} questoes numeradas de 1) a ${config.questionCount})?
+2. Cada imagem tem um OBJETO DIFERENTE na URL (apple, dog, cat, etc)?
+3. Cada imagem tem um SEED DIFERENTE (1, 2, 3, etc)?`,
       });
 
       const message = await client.messages.create({
