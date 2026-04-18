@@ -376,11 +376,11 @@ function familiasSilabicas(topic: string): string {
 function completeLacunas(topic: string): string {
   const animals = [
     { emoji: "🐄", imgPrompt: "cow dairy animal farm", name: "vaca", frase: "A ___________ dá leite para as crianças.", sound: "muuu" },
-    { emoji: "🐕", imgPrompt: "dog puppy animal", name: "cachorro", frase: "O ___________ faz "au au".", sound: "au au" },
+    { emoji: "🐕", imgPrompt: "dog puppy animal", name: "cachorro", frase: 'O ___________ faz "au au".', sound: "au au" },
     { emoji: "🐔", imgPrompt: "hen chicken bird farm", name: "galinha", frase: "A ___________ bota ovos.", sound: "cocoricó" },
     { emoji: "🦆", imgPrompt: "duck bird water animal", name: "pato", frase: "O ___________ nada na lagoa.", sound: "quá quá" },
     { emoji: "🐴", imgPrompt: "horse animal running", name: "cavalo", frase: "O ___________ corre muito rápido.", sound: "iiihh" },
-    { emoji: "🐱", imgPrompt: "cat kitten animal", name: "gato", frase: "O ___________ faz "miau".", sound: "miau" },
+    { emoji: "🐱", imgPrompt: "cat kitten animal", name: "gato", frase: 'O ___________ faz "miau".', sound: "miau" },
   ];
 
   return `
