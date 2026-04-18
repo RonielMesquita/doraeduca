@@ -13,19 +13,30 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState<"ai" | "template" | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [feedback, setFeedback] = useState<string>("");
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (additionalFeedback?: string) => {
     setLoading(true);
     setActivity(null);
     try {
+      const configWithFeedback = additionalFeedback
+        ? {
+            ...config,
+            observations: config.observations
+              ? `${config.observations}\n\nAJUSTES SOLICITADOS: ${additionalFeedback}`
+              : `AJUSTES SOLICITADOS: ${additionalFeedback}`,
+          }
+        : config;
+
       const res = await fetch("/api/gerar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ config, uploadedFiles }),
+        body: JSON.stringify({ config: configWithFeedback, uploadedFiles }),
       });
       const data = await res.json();
       setActivity(data.activity);
       setSource(data.source);
+      setFeedback("");
     } catch (err) {
       console.error(err);
     } finally {
@@ -50,6 +61,9 @@ export default function Home() {
           activity={activity}
           loading={loading}
           source={source}
+          feedback={feedback}
+          onFeedbackChange={setFeedback}
+          onRegenerate={handleGenerate}
         />
       </div>
       <ChatSidebar />

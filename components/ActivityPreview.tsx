@@ -8,6 +8,9 @@ interface Props {
   activity: string | null;
   loading: boolean;
   source?: "ai" | "template" | null;
+  feedback?: string;
+  onFeedbackChange?: (feedback: string) => void;
+  onRegenerate?: (feedback?: string) => void;
 }
 
 export default function ActivityPreview({
@@ -15,6 +18,9 @@ export default function ActivityPreview({
   activity,
   loading,
   source,
+  feedback = "",
+  onFeedbackChange,
+  onRegenerate,
 }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -227,7 +233,7 @@ export default function ActivityPreview({
             />
 
             {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-gray-200">
+            <div className="mt-8 pt-4 border-t border-gray-200 print-footer">
               <p className="text-xs text-gray-400 text-center">
                 Bom trabalho!
               </p>
@@ -235,6 +241,37 @@ export default function ActivityPreview({
           </div>
         )}
       </div>
+
+      {/* Feedback Section */}
+      {activity && !loading && onRegenerate && (
+        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 no-print">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🔄</span>
+            <h3 className="font-bold text-gray-700 text-sm">
+              Precisa de ajustes?
+            </h3>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <textarea
+              value={feedback}
+              onChange={(e) => onFeedbackChange?.(e.target.value)}
+              placeholder="Ex: Adicione mais 3 questoes, troque as imagens por outras, simplifique o texto..."
+              className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:border-amber-400 transition-colors"
+              rows={2}
+            />
+            <button
+              onClick={() => onRegenerate(feedback)}
+              disabled={!feedback.trim()}
+              className="bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-amber-500 hover:to-orange-500 active:scale-95 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              Refazer com ajustes
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            Descreva o que precisa ser corrigido e clique para gerar novamente
+          </p>
+        </div>
+      )}
     </main>
   );
 }
