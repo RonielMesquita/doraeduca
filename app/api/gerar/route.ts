@@ -180,29 +180,30 @@ REGRAS OBRIGATORIAS:
 2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1) ate ${config.questionCount})
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 
-IMAGENS - REGRA CRITICA:
-Cada imagem DEVE ter uma descricao DIFERENTE baseada no objeto real que representa.
+IMAGENS - USE EMOJIS EM VEZ DE URLs:
+NAO use URLs de imagens. Use EMOJIS grandes dentro de spans com a classe figurinha-emoji.
 
-Formato OBRIGATORIO:
-<img class="figurinha-img" src="https://image.pollinations.ai/prompt/OBJETO%20clipart?width=150&height=150&nologo=true&seed=N" alt="nome" />
+Formato OBRIGATORIO para imagens:
+<div class="figurinha-card green">
+  <span class="figurinha-emoji">EMOJI</span>
+  <span class="figurinha-name">NOME</span>
+</div>
 
-OBJETO = nome em ingles do que a imagem mostra (apple, dog, cat, sun, tree, ball, house, car, etc)
-N = numero unico (1, 2, 3, 4, 5...)
+EXEMPLOS de emojis por tema:
+- Corpo humano: cabeca, braco, perna, mao, pe, olho, nariz, boca, coracao, cerebro
+- Animais: cachorro, gato, passaro, peixe, leao, elefante, borboleta
+- Frutas: maca, banana, laranja, uva, morango, melancia, abacaxi
+- Escola: livro, lapis, caderno, mochila, quadro, professor
+- Natureza: arvore, flor, sol, lua, estrela, nuvem, chuva, arco-iris
 
-EXEMPLOS CORRETOS:
-Para maca: src="https://image.pollinations.ai/prompt/apple%20clipart?width=150&height=150&nologo=true&seed=1"
-Para cachorro: src="https://image.pollinations.ai/prompt/dog%20clipart?width=150&height=150&nologo=true&seed=2"
-Para gato: src="https://image.pollinations.ai/prompt/cat%20clipart?width=150&height=150&nologo=true&seed=3"
-Para sol: src="https://image.pollinations.ai/prompt/sun%20clipart?width=150&height=150&nologo=true&seed=4"
-Para arvore: src="https://image.pollinations.ai/prompt/tree%20clipart?width=150&height=150&nologo=true&seed=5"
-Para bola: src="https://image.pollinations.ai/prompt/ball%20clipart?width=150&height=150&nologo=true&seed=6"
-Para casa: src="https://image.pollinations.ai/prompt/house%20clipart?width=150&height=150&nologo=true&seed=7"
-Para carro: src="https://image.pollinations.ai/prompt/car%20clipart?width=150&height=150&nologo=true&seed=8"
+Use cores variadas: green, blue, yellow, pink
 
-PROIBIDO - NAO USE:
-- "cute" sozinho
-- descricoes genericas
-- a mesma descricao para imagens diferentes
+EXEMPLO COMPLETO para corpo humano:
+<div class="figurinhas-grid">
+  <div class="figurinha-card green"><span class="figurinha-emoji">EMOJI_CABECA</span><span class="figurinha-name">cabeca</span></div>
+  <div class="figurinha-card blue"><span class="figurinha-emoji">EMOJI_MAO</span><span class="figurinha-name">mao</span></div>
+  <div class="figurinha-card yellow"><span class="figurinha-emoji">EMOJI_PE</span><span class="figurinha-name">pe</span></div>
+</div>
 
 Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
 
@@ -228,10 +229,10 @@ VERIFICACAO FINAL ANTES DE RESPONDER:
         // Limpa a resposta removendo markdown code blocks
         let activityHtml = cleanHtmlResponse(result.text);
         
-        // Se a opcao de imagens do Google estiver ativa, substitui as imagens
-        if (useGoogleImages) {
-          activityHtml = await replacePollinationsWithGoogleImages(activityHtml);
-        }
+        // Busca de imagens do Google desativada temporariamente
+        // A API do Google Custom Search precisa de configuracao adicional
+        // Por enquanto, usamos emojis que sao mais confiaveis
+        void useGoogleImages; // Evita warning de variavel nao usada
         
         return Response.json({ activity: activityHtml, source: "ai", imagesSource: useGoogleImages ? "google" : "pollinations" });
       }

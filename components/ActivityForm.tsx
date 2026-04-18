@@ -243,48 +243,6 @@ export default function ActivityForm({
         )}
       </div>
 
-      {/* Image Search Option */}
-      <div className={sectionClass}>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">🖼️</span>
-          <h2 className="font-black text-gray-700 text-sm uppercase tracking-wide">
-            Imagens
-          </h2>
-        </div>
-        <button
-          type="button"
-          onClick={() => onChange({ ...config, useGoogleImages: !config.useGoogleImages })}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 transition-all ${
-            config.useGoogleImages
-              ? "bg-green-50 border-green-400 text-green-800"
-              : "bg-gray-50 border-gray-200 text-gray-500"
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            <span className="text-xl">{config.useGoogleImages ? "🌐" : "🎨"}</span>
-            <span className="font-bold text-sm">
-              {config.useGoogleImages ? "Buscar imagens reais" : "Usar imagens geradas"}
-            </span>
-          </span>
-          <span
-            className={`w-12 h-6 rounded-full relative transition-colors ${
-              config.useGoogleImages ? "bg-green-500" : "bg-gray-300"
-            }`}
-          >
-            <span
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
-                config.useGoogleImages ? "translate-x-7" : "translate-x-1"
-              }`}
-            />
-          </span>
-        </button>
-        <p className="text-xs text-gray-500 mt-2">
-          {config.useGoogleImages
-            ? "🌐 Busca cliparts e ilustrações educacionais na internet (Google)"
-            : "🎨 Gera imagens com IA (Pollinations.ai)"}
-        </p>
-      </div>
-
       {/* Upload reference files */}
       <UploadSection files={uploadedFiles} onChange={onFilesChange} />
 
