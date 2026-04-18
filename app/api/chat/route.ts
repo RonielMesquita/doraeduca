@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
 
   const result = streamText({
-    model: anthropic("claude-sonnet-4-20250514"),
+    model: anthropic("claude-sonnet-4-6"),
     system: `Voce e a Dora, uma assistente educacional amigavel e prestativa para professores do ensino fundamental.
 
 Voce ajuda professores a:
