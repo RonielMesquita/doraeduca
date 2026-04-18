@@ -253,10 +253,10 @@ export default function ActivityPreview({
               </p>
             </div>
           </div>
-        </div>
         )}
-      </div>
-      </div>{/* end a4-preview-wrapper */}
+        </div>{/* fecha inner wrapper */}
+      </div>{/* fecha worksheet-container */}
+      </div>{/* fecha a4-preview-wrapper */}
 
       {/* Feedback Section */}
       {activity && !loading && onRegenerate && (
