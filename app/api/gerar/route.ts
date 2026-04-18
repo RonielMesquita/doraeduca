@@ -11,53 +11,37 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
   const apiKey = process.env.GOOGLE_API_KEY;
   const cseId = process.env.GOOGLE_CSE_ID;
 
-  console.log("[v0] Google Image Search - API Key exists:", !!apiKey, "CSE ID exists:", !!cseId);
-  console.log("[v0] Google Image Search - API Key (first 10 chars):", apiKey?.substring(0, 10) || "N/A");
-  console.log("[v0] Google Image Search - CSE ID:", cseId || "N/A");
-
   if (!apiKey || !cseId) {
-    console.log("[v0] Google Image Search - Missing credentials, skipping search");
     return [];
   }
 
   try {
-    // Simplifica a query para termos mais genericos
     const simplifiedQuery = query
-      .replace(/cute|cartoon|kids|white background|educational/gi, "")
+      .replace(/cute|cartoon|kids|white background|educational|simple/gi, "")
       .trim()
       .split(" ")
       .slice(0, 3)
       .join(" ");
     
     const safeQuery = `${simplifiedQuery} clipart png`;
-    console.log("[v0] Google Image Search - Original query:", query);
-    console.log("[v0] Google Image Search - Simplified query:", safeQuery);
     
     const url = new URL("https://www.googleapis.com/customsearch/v1");
     url.searchParams.set("key", apiKey);
     url.searchParams.set("cx", cseId);
     url.searchParams.set("q", safeQuery);
     url.searchParams.set("searchType", "image");
-    url.searchParams.set("num", "5");
+    url.searchParams.set("num", "3");
     url.searchParams.set("safe", "active");
 
-    console.log("[v0] Google Image Search - Full URL:", url.toString().replace(apiKey, "API_KEY_HIDDEN"));
-
     const response = await fetch(url.toString());
-    console.log("[v0] Google Image Search - Response status:", response.status);
     
     if (!response.ok) {
-      const errorText = await response.text();
-      console.log("[v0] Google Image Search - Error response:", errorText.substring(0, 500));
       return [];
     }
 
     const data = await response.json();
-    console.log("[v0] Google Image Search - Response keys:", Object.keys(data));
-    console.log("[v0] Google Image Search - Found items:", data.items?.length || 0);
     
     if (data.error) {
-      console.log("[v0] Google Image Search - API Error:", JSON.stringify(data.error));
       return [];
     }
     
@@ -66,8 +50,7 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
       thumbnail: item.image?.thumbnailLink || item.link,
       title: item.title,
     }));
-  } catch (error) {
-    console.log("[v0] Google Image Search - Exception:", error);
+  } catch {
     return [];
   }
 }
@@ -86,10 +69,6 @@ function cleanHtmlResponse(text: string): string {
 }
 
 async function replacePollinationsWithGoogleImages(html: string): Promise<string> {
-  console.log("[v0] replacePollinationsWithGoogleImages - Starting");
-  
-  // Extrai todas as URLs do Pollinations e suas descricoes
-  // Regex mais flexivel para capturar diferentes formatos de URL
   const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"'\s]+)[^"'\s]*/g;
   const matches: { fullUrl: string; description: string }[] = [];
   
@@ -98,47 +77,29 @@ async function replacePollinationsWithGoogleImages(html: string): Promise<string
     const fullUrl = match[0];
     const rawDesc = match[1];
     const description = decodeURIComponent(rawDesc).replace(/[+_]/g, " ").replace(/%20/g, " ");
-    
     matches.push({ fullUrl, description });
-    console.log("[v0] Found Pollinations URL:", fullUrl.substring(0, 80) + "...");
   }
 
-  console.log("[v0] Total Pollinations URLs found:", matches.length);
-
   if (matches.length === 0) {
-    console.log("[v0] No Pollinations URLs found, returning original HTML");
     return html;
   }
 
-  // Busca imagens do Google para cada descricao unica
   const uniqueDescriptions = [...new Set(matches.map((m) => m.description))];
-  console.log("[v0] Unique descriptions to search:", uniqueDescriptions.length);
-  
   const imageCache: Record<string, string> = {};
 
-  for (const desc of uniqueDescriptions.slice(0, 5)) {
-    console.log("[v0] Searching Google for:", desc.substring(0, 50));
+  for (const desc of uniqueDescriptions.slice(0, 8)) {
     const images = await searchGoogleImages(desc);
     if (images.length > 0) {
       imageCache[desc] = images[0].thumbnail;
-      console.log("[v0] Found image for:", desc.substring(0, 30), "->", images[0].thumbnail.substring(0, 50));
-    } else {
-      console.log("[v0] No images found for:", desc.substring(0, 50));
     }
   }
 
-  // Substitui as URLs no HTML
   let result = html;
-  let replacedCount = 0;
-  
   for (const m of matches) {
     if (imageCache[m.description]) {
       result = result.replace(m.fullUrl, imageCache[m.description]);
-      replacedCount++;
     }
   }
-  
-  console.log("[v0] Replaced", replacedCount, "images out of", matches.length);
 
   return result;
 }
@@ -197,33 +158,45 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 
       content.push({
         type: "text",
-        text: `Crie uma atividade educacional rica em imagens e figurinhas para:
+        text: `Crie uma atividade educacional para:
 
 - Ano escolar: ${config.year}
 - Disciplina: ${subjectLabels[config.subject] || config.subject}
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
-- QUANTIDADE DE QUESTOES: ${config.questionCount} questoes (OBRIGATORIO GERAR TODAS)
-${config.observations ? `- Observacoes da professora: ${config.observations}` : ""}
+- TOTAL DE QUESTOES: ${config.questionCount}
+${config.observations ? `- Observacoes: ${config.observations}` : ""}
 
-${uploadedFiles.length > 0 ? "IMPORTANTE: Replique fielmente o estilo visual, cabecalho e estrutura dos modelos enviados acima." : ""}
+${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos enviados." : ""}
 
-REGRAS OBRIGATORIAS:
-1. Retorne APENAS HTML (sem <!DOCTYPE>, <html>, <head>, <body>)
-2. GERE EXATAMENTE ${config.questionCount} QUESTOES NUMERADAS (de 1 a ${config.questionCount}) - NAO GERE MENOS QUE ISSO
-3. Cada questao deve ser numerada claramente: "1)", "2)", "3)", etc ate chegar em "${config.questionCount})"
-4. Use MUITAS figurinhas com emojis grandes (classe figurinha-card + figurinha-emoji)
-5. Para imagens ilustradas use: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO_EM_INGLES?width=110&height=110&nologo=true&seed=N" loading="lazy"/>
-   - DESCRICAO_EM_INGLES: ex "cute cartoon dog kids white background"
-   - Troque N por numeros diferentes para cada imagem (1, 2, 3...)
-6. Use grids de figurinhas para tornar visual (classe figurinhas-grid ou figurinhas-grid-3)
-7. Classes CSS disponiveis: activity-section, activity-subtitle, activity-instruction, activity-list, answer-line, drawing-box, drawing-box small, math-grid, math-op, math-num, math-line, problem-box, word-box, word-tag, text-box, two-columns, figurinhas-grid, figurinhas-grid-3, figurinha-card (variantes: .green .blue .yellow .pink), figurinha-img, figurinha-img-lg, figurinha-emoji, figurinha-emoji-sm, figurinha-name, figurinha-write, figurinha-hint, counting-grid, counting-card, counting-emojis, counting-answer
-8. Use emojis em titulos e instrucoes para motivar as criancas
-9. Linguagem simples e acolhedora para ${config.year}
-${config.observations ? `10. SIGA AS OBSERVACOES DA PROFESSORA: ${config.observations}` : ""}
+REGRAS:
+1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body)
+2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1) ate ${config.questionCount})
+3. Cada questao DEVE ter conteudo diferente e relevante ao tema
 
-LEMBRE-SE: A atividade DEVE conter EXATAMENTE ${config.questionCount} questoes. Verifique antes de finalizar.`,
+IMAGENS - MUITO IMPORTANTE:
+- Use imagens do Pollinations com descricoes ESPECIFICAS e DIFERENTES para cada imagem
+- Formato: <img class="figurinha-img" src="https://image.pollinations.ai/prompt/DESCRICAO?width=120&height=120&nologo=true&seed=NUMERO" />
+- DESCRICAO deve ser especifica do objeto, ex: "cartoon apple fruit red" para maca, "cartoon banana yellow fruit" para banana
+- Use seed DIFERENTE para cada imagem (seed=1, seed=2, seed=3...)
+- NAO use descricoes genericas como "cute cartoon" sozinho
+- Cada imagem deve representar um objeto/animal/conceito DIFERENTE
+
+EXEMPLO DE IMAGENS CORRETAS:
+- Maca: src="https://image.pollinations.ai/prompt/cartoon%20red%20apple%20fruit%20simple?width=120&height=120&nologo=true&seed=1"
+- Cachorro: src="https://image.pollinations.ai/prompt/cartoon%20dog%20puppy%20cute%20simple?width=120&height=120&nologo=true&seed=2"
+- Gato: src="https://image.pollinations.ai/prompt/cartoon%20cat%20kitten%20simple?width=120&height=120&nologo=true&seed=3"
+
+Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-img, figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
+
+Use linguagem simples e acolhedora para ${config.year}.
+${config.observations ? `SIGA: ${config.observations}` : ""}
+
+CHECKLIST FINAL:
+- [ ] Tenho ${config.questionCount} questoes numeradas? (1, 2, 3... ate ${config.questionCount})
+- [ ] Cada imagem tem descricao especifica e seed diferente?
+- [ ] O conteudo e adequado para ${config.year}?`,
       });
 
       const message = await client.messages.create({
