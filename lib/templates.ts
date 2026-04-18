@@ -7,21 +7,27 @@ function img(prompt: string, seed: number = 1): string {
   return `https://image.pollinations.ai/prompt/${encoded}?width=110&height=110&nologo=true&seed=${seed}`;
 }
 
+// img tag with onerror fallback so broken images disappear gracefully
+function imgTag(prompt: string, seed: number, cssClass = "figurinha-img"): string {
+  return `<img class="${cssClass}" src="${img(prompt, seed)}" alt="" loading="lazy" onerror="this.style.display='none'"/>`;
+}
+
 export function generateMockActivity(config: ActivityConfig): string {
   const { year, subject, activityType, topic } = config;
+  const qCount = config.questionCount ?? 5;
   const topicLabel = topic || getDefaultTopic(subject, activityType, year);
 
   switch (subject) {
     case "portugues":
-      return generatePortugues(activityType, topicLabel, year);
+      return generatePortugues(activityType, topicLabel, year, qCount);
     case "matematica":
-      return generateMatematica(activityType, topicLabel, year);
+      return generateMatematica(activityType, topicLabel, year, qCount);
     case "ciencias":
-      return generateCiencias(activityType, topicLabel, year);
+      return generateCiencias(activityType, topicLabel, year, qCount);
     case "historia":
-      return generateHistoria(activityType, topicLabel, year);
+      return generateHistoria(activityType, topicLabel, year, qCount);
     case "geografia":
-      return generateGeografia(activityType, topicLabel, year);
+      return generateGeografia(activityType, topicLabel, year, qCount);
     default:
       return generatePortugues(activityType, topicLabel, year);
   }
@@ -53,51 +59,51 @@ function getDefaultTopic(subject: string, activityType: string, year: string): s
   return topics[subject]?.[activityType] || "Revisão Geral";
 }
 
-function generatePortugues(type: string, topic: string, year: string): string {
+function generatePortugues(type: string, topic: string, year: string, qCount: number): string {
   switch (type) {
     case "Família Silábica":
-      return familiasSilabicas(topic);
+      return familiasSilabicas(topic, qCount);
     case "Complete as Lacunas":
-      return completeLacunas(topic);
+      return completeLacunas(topic, qCount);
     case "Caça-Palavras":
       return cacaPalavras(topic);
     case "Cruzadinha":
       return cruzadinha(topic);
     case "Interpretação de Texto":
-      return interpretacaoTexto(topic, year);
+      return interpretacaoTexto(topic, year, qCount);
     case "Separação de Sílabas":
-      return separacaoSilabas(topic);
+      return separacaoSilabas(topic, qCount);
     case "Ligar as Colunas":
       return ligarColunas(topic);
     case "Caligrafia":
       return caligrafia(topic);
     default:
-      return familiasSilabicas(topic);
+      return familiasSilabicas(topic, qCount);
   }
 }
 
-function generateMatematica(type: string, topic: string, year: string): string {
+function generateMatematica(type: string, topic: string, year: string, qCount: number): string {
   switch (type) {
     case "Adição":
-      return adicao(topic, year);
+      return adicao(topic, year, qCount);
     case "Subtração":
-      return subtracao(topic, year);
+      return subtracao(topic, year, qCount);
     case "Multiplicação":
       return multiplicacao(topic, year);
     case "Divisão":
-      return divisao(topic, year);
+      return divisao(topic, year, qCount);
     case "Problemas":
-      return problemas(topic, year);
+      return problemas(topic, year, qCount);
     case "Sequência Numérica":
       return sequenciaNumerica(topic, year);
     case "Geometria":
       return geometria(topic);
     default:
-      return adicao(topic, year);
+      return adicao(topic, year, qCount);
   }
 }
 
-function generateCiencias(type: string, topic: string, year: string): string {
+function generateCiencias(type: string, topic: string, year: string, qCount: number): string {
   const isAnimais = type === "Animais" || topic.toLowerCase().includes("animal");
   const isPlants = type === "Plantas e Natureza" || topic.toLowerCase().includes("plant");
   const isCorpo = type === "Corpo Humano";
@@ -111,20 +117,33 @@ function generateCiencias(type: string, topic: string, year: string): string {
       { emoji: "🐟", imgPrompt: "fish tropical sea colorful", name: "PEIXE", tipo: "Peixe", habitat: "Mar" },
       { emoji: "🐸", imgPrompt: "frog amphibian pond green", name: "SAPO", tipo: "Anfíbio", habitat: "Lagoa" },
     ];
+    const extraQs = Array.from({ length: Math.max(0, qCount - 3) }, (_, i) => {
+      const qs = [
+        `O ${animals[i % animals.length].emoji} ${animals[i % animals.length].name} é um animal ___________. (doméstico / selvagem)`,
+        `O que o ${animals[(i+1) % animals.length].name.toLowerCase()} come? ___________`,
+        `O ${animals[(i+2) % animals.length].name.toLowerCase()} tem ___________ patas.`,
+        `Qual animal vive na água? ___________`,
+        `Qual animal tem penas? ___________`,
+        `Escreva 2 características do ${animals[i % animals.length].name.toLowerCase()}:<div class="answer-line"></div>`,
+        `O ${animals[(i+1) % animals.length].name.toLowerCase()} é útil para o ser humano porque ___________`,
+      ];
+      return `<li>${qs[i % qs.length]}</li>`;
+    });
+
     return `
       <div class="activity-section">
         <h3 class="activity-subtitle">🔬 Ciências: ${topic || "Animais"}</h3>
-        <p class="activity-instruction">1) Observe os animais e complete a tabela:</p>
+        <p class="activity-instruction">1) Observe os animais:</p>
         <div class="figurinhas-grid">
           ${animals.map((a, i) => `
             <div class="figurinha-card ${["yellow","blue","green","pink","blue","green"][i]}">
-              <img class="figurinha-img" src="${img(a.imgPrompt, i + 20)}" alt="${a.name}" loading="lazy"/>
+              ${imgTag(a.imgPrompt, i + 20)}
               <span class="figurinha-emoji-sm">${a.emoji}</span>
               <span class="figurinha-name">${a.name}</span>
             </div>`).join("")}
         </div>
 
-        <p class="activity-instruction">2) Complete a tabela com as informações dos animais:</p>
+        <p class="activity-instruction">2) Complete a tabela:</p>
         <div class="text-box" style="padding:0; overflow:hidden;">
           <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
             <thead>
@@ -147,7 +166,11 @@ function generateCiencias(type: string, topic: string, year: string): string {
           </table>
         </div>
 
-        <p class="activity-instruction">3) Desenhe seu animal favorito:</p>
+        ${extraQs.length > 0 ? `
+        <p class="activity-instruction">3) Responda sobre os animais:</p>
+        <ol class="activity-list" start="1">${extraQs.join("")}</ol>` : ""}
+
+        <p class="activity-instruction">${extraQs.length > 0 ? qCount + 1 : 3}) Desenhe seu animal favorito:</p>
         <div class="drawing-box small"></div>
       </div>
     `;
@@ -162,6 +185,18 @@ function generateCiencias(type: string, topic: string, year: string): string {
       { emoji: "🍄", imgPrompt: "mushroom nature forest", name: "COGUMELO" },
       { emoji: "🌱", imgPrompt: "seedling sprout plant growing", name: "MUDA" },
     ];
+    const plantQs = [
+      "As plantas precisam de ___________, ___________ e ___________ para viver.",
+      "A parte que absorve água do solo é: ___________",
+      "A parte que faz fotossíntese é: ___________",
+      "Cite 2 plantas que você conhece: ___________ e ___________",
+      "Uma planta que dá frutos é: ___________",
+      "Uma planta medicinal que você conhece: ___________",
+      "As folhas servem para: ___________",
+      "As flores servem para: ___________",
+      "O caule serve para: ___________",
+      "As raízes servem para: ___________",
+    ];
     return `
       <div class="activity-section">
         <h3 class="activity-subtitle">🌿 Ciências: Plantas e Natureza</h3>
@@ -169,95 +204,113 @@ function generateCiencias(type: string, topic: string, year: string): string {
         <div class="figurinhas-grid">
           ${plants.map((p, i) => `
             <div class="figurinha-card green">
-              <img class="figurinha-img" src="${img(p.imgPrompt, i + 30)}" alt="${p.name}" loading="lazy"/>
+              ${imgTag(p.imgPrompt, i + 30)}
               <span class="figurinha-emoji-sm">${p.emoji}</span>
               <span class="figurinha-name">${p.name}</span>
             </div>`).join("")}
         </div>
-        <p class="activity-instruction">2) Quais partes uma planta tem? Escreva:</p>
+        <p class="activity-instruction">2) Responda sobre as plantas:</p>
         <ol class="activity-list">
-          <li>As plantas precisam de ___________, ___________ e ___________ para viver.</li>
-          <li>A parte que absorve água do solo é: ___________</li>
-          <li>A parte que faz fotossíntese é: ___________</li>
-          <li>Cite 2 plantas que você conhece: ___________ e ___________</li>
+          ${plantQs.slice(0, qCount).map(q => `<li>${q}<div class="answer-line"></div></li>`).join("")}
         </ol>
-        <p class="activity-instruction">3) Desenhe uma planta e identifique suas partes:</p>
+        <p class="activity-instruction">${qCount + 1}) Desenhe uma planta e identifique suas partes:</p>
         <div class="drawing-box"></div>
       </div>
     `;
   }
 
+  const genericQs = [
+    `O que é ${topic}?`,
+    `Onde encontramos ${topic} na natureza?`,
+    `Qual a importância de ${topic} para o meio ambiente?`,
+    `Como ${topic} se relaciona com outros seres vivos?`,
+    `Cite 2 exemplos de ${topic} que você conhece.`,
+    `Qual cor predomina em ${topic}?`,
+    `${topic} é benéfico ou prejudicial ao ser humano? Por quê?`,
+    `Desenhe e explique ${topic}.`,
+  ];
+
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">🔬 ${type}: ${topic}</h3>
-      <p class="activity-instruction">Observe as imagens e responda:</p>
-
       <div class="figurinhas-grid-3">
         <div class="figurinha-card blue">
-          <img class="figurinha-img-lg" src="${img(topic + " science educational", 40)}" alt="${topic}" loading="lazy"/>
+          ${imgTag(topic + " science educational", 40, "figurinha-img-lg")}
+          <span class="figurinha-emoji">🔬</span>
           <span class="figurinha-name">${topic.toUpperCase()}</span>
         </div>
-        <div class="figurinha-card green" style="grid-column: span 2; padding: 14px;">
-          <ol class="activity-list" style="text-align:left; width:100%;">
-            <li>O que você vê na imagem?<div class="answer-line"></div></li>
-            <li>Onde encontramos isso na natureza?<div class="answer-line"></div></li>
-            <li>Qual sua importância?<div class="answer-line"></div><div class="answer-line"></div></li>
+        <div style="grid-column: span 2; padding: 8px;">
+          <p class="activity-instruction">Responda:</p>
+          <ol class="activity-list">
+            ${genericQs.slice(0, Math.min(qCount, 5)).map(q => `<li>${q}<div class="answer-line"></div></li>`).join("")}
           </ol>
         </div>
       </div>
-
+      ${qCount > 5 ? `
+      <ol class="activity-list" start="6">
+        ${genericQs.slice(5, qCount).map(q => `<li>${q}<div class="answer-line"></div></li>`).join("")}
+      </ol>` : ""}
       <p class="activity-instruction">Desenhe o que você aprendeu:</p>
       <div class="drawing-box"></div>
     </div>
   `;
 }
 
-function generateHistoria(type: string, topic: string, year: string): string {
+function generateHistoria(type: string, topic: string, year: string, qCount: number): string {
+  const qs = [
+    { q: "Qual é o nome dos seus avós?", lines: 1 },
+    { q: "Onde seus pais nasceram?", lines: 1 },
+    { q: "Qual é a tradição mais importante da sua família?", lines: 2 },
+    { q: "Quais festas sua família costuma celebrar?", lines: 1 },
+    { q: "Qual profissão seus familiares exercem?", lines: 1 },
+    { q: "Qual alimento típico a sua família prepara?", lines: 1 },
+    { q: "Como era a vida dos seus avós quando eram crianças?", lines: 2 },
+    { q: "Qual objeto antigo existe na sua casa?", lines: 1 },
+    { q: "Escreva uma memória especial da sua família.", lines: 2 },
+    { q: "O que você quer preservar das tradições da sua família?", lines: 2 },
+  ];
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">🏛️ ${type}: ${topic}</h3>
-      <p class="activity-instruction">Leia com atenção e responda:</p>
       <div class="text-box">
         <p>Cada família tem sua própria história, seus costumes e tradições.
         Conhecer a história da nossa família e comunidade nos ajuda a entender
         quem somos e de onde viemos.</p>
       </div>
       <ol class="activity-list">
-        <li>Qual é o nome dos seus avós?<br/>
-          <div class="answer-line"></div>
-        </li>
-        <li>Onde seus pais nasceram?<br/>
-          <div class="answer-line"></div>
-        </li>
-        <li>Qual é a tradição mais importante da sua família?<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
+        ${qs.slice(0, qCount).map(({ q, lines }) => `
+          <li>${q}
+            ${Array.from({ length: lines }, () => '<div class="answer-line"></div>').join("")}
+          </li>`).join("")}
         <li>Desenhe um momento especial da sua família:</li>
       </ol>
-      <div class="drawing-box"></div>
+      <div class="drawing-box small"></div>
     </div>
   `;
 }
 
-function generateGeografia(type: string, topic: string, year: string): string {
+function generateGeografia(type: string, topic: string, year: string, qCount: number): string {
+  const qs = [
+    { q: "Observe a paisagem da sua cidade. O que você vê?", lines: 2 },
+    { q: "Descreva o caminho da sua casa até a escola:", lines: 3 },
+    { q: "Quais recursos naturais existem perto da sua casa?", lines: 1 },
+    { q: "Sua cidade fica em qual estado?", lines: 1 },
+    { q: "Cite 2 pontos de referência da sua cidade:", lines: 1 },
+    { q: "Sua cidade é grande ou pequena? Como você sabe?", lines: 2 },
+    { q: "Qual é o rio ou lago mais próximo da sua cidade?", lines: 1 },
+    { q: "Como as pessoas se locomovem na sua cidade?", lines: 2 },
+    { q: "Qual é o clima da sua região?", lines: 1 },
+    { q: "Cite um problema ambiental da sua cidade e como resolvê-lo:", lines: 2 },
+  ];
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">🌍 ${type}: ${topic}</h3>
       <p class="activity-instruction">Vamos explorar o mundo ao nosso redor!</p>
       <ol class="activity-list">
-        <li>Observe a paisagem da sua cidade. O que você vê?<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
-        <li>Descreva o caminho da sua casa até a escola:<br/>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-          <div class="answer-line"></div>
-        </li>
-        <li>Quais recursos naturais existem perto da sua casa?<br/>
-          <div class="answer-line"></div>
-        </li>
+        ${qs.slice(0, qCount).map(({ q, lines }) => `
+          <li>${q}
+            ${Array.from({ length: lines }, () => '<div class="answer-line"></div>').join("")}
+          </li>`).join("")}
         <li>Faça um mapa simples do seu bairro:</li>
       </ol>
       <div class="drawing-box" style="height: 150px;"></div>
@@ -265,7 +318,7 @@ function generateGeografia(type: string, topic: string, year: string): string {
   `;
 }
 
-function familiasSilabicas(topic: string): string {
+function familiasSilabicas(topic: string, qCount: number = 5): string {
   const letra = topic.includes("Letra") ? topic.split("Letra")[1].trim() : "B";
   const L = letra.charAt(0).toUpperCase();
 
@@ -350,7 +403,7 @@ function familiasSilabicas(topic: string): string {
       <div class="figurinhas-grid">
         ${data.figurinhas.slice(0, 6).map((f, i) => `
           <div class="figurinha-card ${["yellow","blue","green","pink","yellow","blue"][i]}">
-            <img class="figurinha-img" src="${img(f.imgPrompt, i + 1)}" alt="${f.word}" loading="lazy"/>
+            ${imgTag(f.imgPrompt, i + 1)}
             <span class="figurinha-emoji-sm">${f.emoji}</span>
             <div class="figurinha-write ${["yellow","blue","green","pink","yellow","blue"][i]}"></div>
             <span class="figurinha-hint">dica: ${f.blank}</span>
@@ -373,25 +426,30 @@ function familiasSilabicas(topic: string): string {
   `;
 }
 
-function completeLacunas(topic: string): string {
-  const animals = [
+function completeLacunas(topic: string, qCount: number = 6): string {
+  const allAnimals = [
     { emoji: "🐄", imgPrompt: "cow dairy animal farm", name: "vaca", frase: "A ___________ dá leite para as crianças.", sound: "muuu" },
     { emoji: "🐕", imgPrompt: "dog puppy animal", name: "cachorro", frase: 'O ___________ faz "au au".', sound: "au au" },
     { emoji: "🐔", imgPrompt: "hen chicken bird farm", name: "galinha", frase: "A ___________ bota ovos.", sound: "cocoricó" },
     { emoji: "🦆", imgPrompt: "duck bird water animal", name: "pato", frase: "O ___________ nada na lagoa.", sound: "quá quá" },
     { emoji: "🐴", imgPrompt: "horse animal running", name: "cavalo", frase: "O ___________ corre muito rápido.", sound: "iiihh" },
     { emoji: "🐱", imgPrompt: "cat kitten animal", name: "gato", frase: 'O ___________ faz "miau".', sound: "miau" },
+    { emoji: "🐑", imgPrompt: "sheep wool animal", name: "ovelha", frase: "A ___________ dá lã para fazer roupas.", sound: "béée" },
+    { emoji: "🐖", imgPrompt: "pig farm animal", name: "porco", frase: "O ___________ vive na chiqueiro.", sound: "oinc" },
+    { emoji: "🐓", imgPrompt: "rooster bird farm", name: "galo", frase: "O ___________ canta de manhã cedo.", sound: "cocoricó" },
+    { emoji: "🐇", imgPrompt: "rabbit animal cute", name: "coelho", frase: "O ___________ tem orelhas compridas.", sound: "..." },
   ];
+  const animals = allAnimals.slice(0, Math.min(qCount, allAnimals.length));
 
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">✏️ Complete as Lacunas: ${topic}</h3>
 
-      <p class="activity-instruction">1) Conheça os animais da fazenda:</p>
+      <p class="activity-instruction">1) Conheça os animais:</p>
       <div class="figurinhas-grid">
         ${animals.map((a, i) => `
-          <div class="figurinha-card ${["yellow","blue","green","pink","yellow","blue"][i]}">
-            <img class="figurinha-img" src="${img(a.imgPrompt, i + 10)}" alt="${a.name}" loading="lazy"/>
+          <div class="figurinha-card ${["yellow","blue","green","pink","yellow","blue","green","yellow","blue","pink"][i]}">
+            ${imgTag(a.imgPrompt, i + 10)}
             <span class="figurinha-emoji-sm">${a.emoji}</span>
             <span class="figurinha-name">${a.name.toUpperCase()}</span>
             <span class="figurinha-hint">${a.sound}</span>
@@ -407,7 +465,7 @@ function completeLacunas(topic: string): string {
         ${animals.map(a => `<li>${a.frase}</li>`).join("")}
       </ol>
 
-      <p class="activity-instruction">3) Escreva uma frase sobre seu animal favorito:</p>
+      <p class="activity-instruction">${animals.length + 1}) Escreva uma frase sobre seu animal favorito:</p>
       <div class="answer-line"></div>
       <div class="answer-line"></div>
     </div>
@@ -502,7 +560,7 @@ function cruzadinha(topic: string): string {
   `;
 }
 
-function interpretacaoTexto(topic: string, year: string): string {
+function interpretacaoTexto(topic: string, year: string, qCount: number = 4): string {
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">📚 Leitura e Interpretação: ${topic}</h3>
@@ -539,7 +597,7 @@ function interpretacaoTexto(topic: string, year: string): string {
   `;
 }
 
-function separacaoSilabas(topic: string): string {
+function separacaoSilabas(topic: string, qCount: number = 6): string {
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">✂️ Separação de Sílabas: ${topic}</h3>
@@ -673,7 +731,7 @@ function caligrafia(topic: string): string {
   `;
 }
 
-function adicao(topic: string, year: string): string {
+function adicao(topic: string, year: string, qCount: number = 5): string {
   const isAdvanced = ["3º Ano", "4º Ano", "5º Ano"].includes(year);
   const ops = isAdvanced
     ? [["  247", "  138"], ["  563", "  224"], ["  891", "   76"]]
@@ -713,7 +771,7 @@ function adicao(topic: string, year: string): string {
   `;
 }
 
-function subtracao(topic: string, year: string): string {
+function subtracao(topic: string, year: string, qCount: number = 5): string {
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">➖ Subtração: ${topic}</h3>
@@ -799,7 +857,7 @@ function multiplicacao(topic: string, year: string): string {
   `;
 }
 
-function divisao(topic: string, year: string): string {
+function divisao(topic: string, year: string, qCount: number = 4): string {
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">➗ Divisão: ${topic}</h3>
@@ -835,42 +893,36 @@ function divisao(topic: string, year: string): string {
   `;
 }
 
-function problemas(topic: string, year: string): string {
+function problemas(topic: string, year: string, qCount: number = 3): string {
+  const allProblemas = [
+    { emoji: "🚌", text: `Um ônibus saiu com <strong>24 passageiros</strong>. Na próxima parada, subiram mais <strong>8 pessoas</strong>. Quantas pessoas estão no ônibus agora?`, op: "___ + ___ = ___" },
+    { emoji: "🌸", text: `Mariana colheu <strong>30 flores</strong> no jardim. Ela deu <strong>12 flores</strong> para sua avó. Quantas flores Mariana ficou?`, op: "___ - ___ = ___" },
+    { emoji: "📦", text: `Em uma caixa tem <strong>4 fileiras</strong> de laranja com <strong>5 laranjas</strong> em cada. Quantas laranjas ao todo?`, op: "___ × ___ = ___" },
+    { emoji: "🍭", text: `João tinha <strong>50 balas</strong>. Ele distribuiu <strong>5 balas</strong> para cada amigo. Quantos amigos receberam balas?`, op: "___ ÷ ___ = ___" },
+    { emoji: "🎒", text: `Ana comprou <strong>3 cadernos</strong> por R$<strong>7,00</strong> cada. Quanto ela gastou no total?`, op: "___ × ___ = ___" },
+    { emoji: "🍎", text: `Numa cesta havia <strong>45 maçãs</strong>. Foram vendidas <strong>18</strong>. Quantas sobraram?`, op: "___ - ___ = ___" },
+    { emoji: "🐟", text: `Um aquário tem <strong>6 fileiras</strong> com <strong>8 peixes</strong> cada. Quantos peixes ao todo?`, op: "___ × ___ = ___" },
+    { emoji: "⚽", text: `Um time marcou <strong>3 gols</strong> no primeiro tempo e <strong>2 gols</strong> no segundo. Quantos gols ao total?`, op: "___ + ___ = ___" },
+    { emoji: "🌽", text: `O fazendeiro colheu <strong>96 espigas</strong> e quer colocar em sacos com <strong>8 espigas</strong> cada. Quantos sacos precisará?`, op: "___ ÷ ___ = ___" },
+    { emoji: "🎨", text: `Uma caixa de lápis tem <strong>12 cores</strong>. Luiza tem <strong>4 caixas</strong>. Quantos lápis ela tem?`, op: "___ × ___ = ___" },
+  ];
+
+  const selected = allProblemas.slice(0, Math.min(qCount, allProblemas.length));
+
   return `
     <div class="activity-section">
       <h3 class="activity-subtitle">🧮 Problemas: ${topic}</h3>
       <p class="activity-instruction">Leia cada problema com atenção e resolva:</p>
-
       <div class="problem-list">
+        ${selected.map((p, i) => `
         <div class="problem-item">
-          <p><strong>Problema 1:</strong> 🚌 Um ônibus saiu com <strong>24 passageiros</strong>.
-          Na próxima parada, subiram mais <strong>8 pessoas</strong>. Quantas pessoas estão no ônibus agora?</p>
+          <p><strong>Problema ${i + 1}:</strong> ${p.emoji} ${p.text}</p>
           <div class="problem-solve">
             <p>Operação: ___________________________</p>
-            <p>Conta: ___ + ___ = ___</p>
+            <p>Conta: ${p.op}</p>
             <p>Resposta: ___________________________</p>
           </div>
-        </div>
-
-        <div class="problem-item">
-          <p><strong>Problema 2:</strong> 🌸 Mariana colheu <strong>30 flores</strong> no jardim.
-          Ela deu <strong>12 flores</strong> para sua avó. Quantas flores Mariana ficou?</p>
-          <div class="problem-solve">
-            <p>Operação: ___________________________</p>
-            <p>Conta: ___ - ___ = ___</p>
-            <p>Resposta: ___________________________</p>
-          </div>
-        </div>
-
-        <div class="problem-item">
-          <p><strong>Problema 3:</strong> 📦 Em uma caixa tem <strong>4 fileiras</strong> de laranja com
-          <strong>5 laranjas</strong> em cada fileira. Quantas laranjas tem ao todo?</p>
-          <div class="problem-solve">
-            <p>Operação: ___________________________</p>
-            <p>Conta: ___ × ___ = ___</p>
-            <p>Resposta: ___________________________</p>
-          </div>
-        </div>
+        </div>`).join("")}
       </div>
     </div>
   `;
