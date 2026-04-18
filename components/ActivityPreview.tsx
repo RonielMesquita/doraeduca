@@ -28,11 +28,11 @@ export default function ActivityPreview({
   return (
     <main className="flex-1 flex flex-col gap-3 min-w-0">
       {/* Toolbar */}
-      <div className="flex items-center justify-between no-print">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 no-print">
         <div className="flex items-center gap-2">
           <span className="text-lg">📄</span>
           <h2 className="font-black text-gray-700 text-sm uppercase tracking-wide">
-            Prévia da Atividade
+            Previa da Atividade
           </h2>
           {source && (
             <span
@@ -42,7 +42,7 @@ export default function ActivityPreview({
                   : "bg-green-100 text-green-700"
               }`}
             >
-              {source === "ai" ? "✨ IA" : "📝 Modelo"}
+              {source === "ai" ? "IA" : "Modelo"}
             </span>
           )}
         </div>
@@ -50,9 +50,9 @@ export default function ActivityPreview({
         {activity && (
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-sm"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
           >
-            🖨️ Imprimir / Salvar PDF
+            Imprimir / Salvar PDF
           </button>
         )}
       </div>
@@ -60,10 +60,10 @@ export default function ActivityPreview({
       {/* Sheet */}
       <div
         ref={printRef}
-        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 p-8 flex-1 transition-all ${
+        className={`worksheet-container bg-white rounded-2xl shadow-md border border-gray-100 p-4 sm:p-6 lg:p-8 flex-1 transition-all ${
           loading ? "opacity-50" : ""
         }`}
-        style={{ minHeight: "700px" }}
+        style={{ minHeight: "500px" }}
       >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4">
@@ -115,16 +115,16 @@ export default function ActivityPreview({
         ) : (
           <div className="print-area">
             {/* School header */}
-            <div className="border-2 border-gray-300 rounded-lg p-4 mb-6">
+            <div className="border-2 border-gray-300 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
               <div className="text-center mb-3">
-                <div className="text-xl font-black text-gray-800 uppercase tracking-wide">
+                <div className="text-base sm:text-xl font-black text-gray-800 uppercase tracking-wide">
                   {config.schoolName || "________________________________"}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Ensino Fundamental — {config.year}
+                  Ensino Fundamental - {config.year}
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs sm:text-sm">
                 <div className="flex gap-1 items-center">
                   <span className="font-bold text-gray-600 w-24 shrink-0">
                     Professora:
@@ -159,8 +159,8 @@ export default function ActivityPreview({
             </div>
 
             {/* Activity title */}
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl">{subject?.emoji}</span>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+              <span className="text-xl sm:text-2xl">{subject?.emoji}</span>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                   {subject?.label} — {config.activityType}

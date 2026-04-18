@@ -11,18 +11,18 @@ export default function Header() {
         <span className="absolute text-white/15 text-3xl top-2 right-40 rotate-[8deg]">🎨</span>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between">
         {/* Logo and brand */}
-        <div className="flex items-center gap-4">
-          <div className="bg-white/90 rounded-2xl p-3 shadow-md">
-            <span className="text-3xl">🍎</span>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="bg-white/90 rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-md">
+            <span className="text-2xl sm:text-3xl">🍎</span>
           </div>
           <div>
-            <h1 className="text-3xl font-black text-white tracking-wide drop-shadow-sm">
+            <h1 className="text-xl sm:text-3xl font-black text-white tracking-wide drop-shadow-sm">
               DoraEduca
             </h1>
-            <p className="text-amber-100 text-sm font-semibold">
-              ✨ Criando aulas mágicas para seus alunos
+            <p className="text-amber-100 text-xs sm:text-sm font-semibold hidden sm:block">
+              Criando aulas magicas para seus alunos
             </p>
           </div>
         </div>

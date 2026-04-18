@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-teacher-warm">
       <Header />
-      <div className="flex gap-5 p-5 max-w-7xl mx-auto w-full flex-1">
+      <div className="flex flex-col lg:flex-row gap-5 p-4 lg:p-5 max-w-7xl mx-auto w-full flex-1">
         <ActivityForm
           config={config}
           onChange={setConfig}
