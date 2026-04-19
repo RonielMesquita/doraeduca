@@ -1000,7 +1000,7 @@ img {
 /* Print styles */
 @media print {
   @page {
-    margin: 20mm;
+    margin: 18mm;
     size: A4;
   }
 
@@ -1040,9 +1040,20 @@ img {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    /* SEM position absolute — respeita o @page margin */
+  }
+
+  /* Garante que o conteúdo flui dentro da área de impressão */
+  main, .flex-1 {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Remove a borda inline do wrapper interno — na impressão só a borda fixa aparece */
+  .worksheet-container > div {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Remove linha vermelha de divisão na impressão */
