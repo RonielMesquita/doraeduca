@@ -1072,11 +1072,11 @@ img {
     gap: 0 !important;
   }
 
-  /* Pequeno padding para conteúdo não tocar a borda */
+  /* Padding interno para conteúdo ficar com folga dentro da borda */
   .activity-inner-wrapper {
     border: none !important;
     margin: 0 !important;
-    padding: 4px 8px !important;
+    padding: 8px 12px !important;
   }
 
   /* Remove linha vermelha de divisão na impressão */
@@ -1098,7 +1098,7 @@ img {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    border: 2px solid #000 !important;
+    border: 4px solid #000 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
