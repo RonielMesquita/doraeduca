@@ -955,9 +955,9 @@
   margin-top: 4px;
 }
 
-/* Borda por folha — invisível na tela, aparece na impressão */
+/* Borda por folha — sempre no DOM, invisível na tela */
 .margem-borda-por-folha {
-  display: none;
+  display: none !important;
 }
 
 /* A4 preview: mostra divisões de página na tela */
@@ -1088,9 +1088,9 @@ img {
   }
 
   /* Borda em CADA folha — position:fixed repete em todas as páginas
-     ABNT: superior/esq=3cm, inf/dir=2cm
-     A borda fica 0.5cm para dentro das margens ABNT, assim o conteúdo fica 100% dentro */
-  .margem-borda-por-folha {
+     Só aparece quando toggle "Margem" está ativo (classe .ativa)
+     ABNT: superior/esq=3cm, inf/dir=2cm → borda 0.5cm dentro das margens */
+  .margem-borda-por-folha.ativa {
     display: block !important;
     position: fixed !important;
     top: 2.5cm !important;

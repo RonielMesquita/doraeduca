@@ -336,10 +336,9 @@ export default function ActivityPreview({
         </div>
       )}
 
-      {/* Borda por folha: position:fixed em print repete em TODAS as páginas */}
-      {config.hasMargem && (
-        <div className="margem-borda-por-folha" aria-hidden="true" />
-      )}
+      {/* Borda por folha: position:fixed em print repete em TODAS as páginas.
+          Sempre no DOM — CSS controla visibilidade pela classe 'ativa' */}
+      <div className={`margem-borda-por-folha${config.hasMargem ? " ativa" : ""}`} aria-hidden="true" />
     </main>
   );
 }
