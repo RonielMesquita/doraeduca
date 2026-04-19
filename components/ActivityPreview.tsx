@@ -294,7 +294,7 @@ export default function ActivityPreview({
             ))}
 
             {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-gray-200 print-footer">
+            <div className="mt-4 pt-2 border-t border-gray-200 print-footer" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
               <p className="text-xs text-gray-400 text-center">
                 Bom trabalho!
               </p>
