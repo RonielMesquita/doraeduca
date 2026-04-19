@@ -332,6 +332,7 @@ export default function ActivityPreview({
         </div>
       )}
 
+      <div className="margem-borda-por-folha" aria-hidden="true" />
     </main>
   );
 }
