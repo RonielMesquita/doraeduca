@@ -955,7 +955,7 @@
   margin-top: 4px;
 }
 
-/* Borda por folha — sempre no DOM, invisível na tela */
+/* Borda por folha — desativada */
 .margem-borda-por-folha {
   display: none !important;
 }
@@ -1087,21 +1087,6 @@ img {
     margin: 0 !important;
   }
 
-  /* Borda em CADA folha — position:fixed repete em todas as páginas
-     Só aparece quando toggle "Margem" está ativo (classe .ativa)
-     ABNT: superior/esq=3cm, inf/dir=2cm → borda 0.5cm dentro das margens */
-  .margem-borda-por-folha.ativa {
-    display: block !important;
-    position: fixed !important;
-    top: 2.5cm !important;
-    left: 2.5cm !important;
-    right: 1.5cm !important;
-    bottom: 1.5cm !important;
-    border: 1px solid #555 !important;
-    pointer-events: none !important;
-    z-index: 9999 !important;
-    background: transparent !important;
-  }
 
   .figurinha-card,
   .figurinhas-grid,

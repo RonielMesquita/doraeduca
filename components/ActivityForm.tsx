@@ -300,25 +300,6 @@ export default function ActivityForm({
             </div>
           </div>
 
-          {/* Margin toggle */}
-          <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 border-2 border-gray-100">
-            <div>
-              <p className="text-xs font-bold text-gray-600">Margem para encadernação</p>
-              <p className="text-xs text-gray-400">Adiciona margem esquerda extra</p>
-            </div>
-            <button
-              onClick={() => onChange({ ...config, hasMargem: !config.hasMargem })}
-              className={`w-10 h-6 rounded-full transition-all relative ${
-                config.hasMargem ? "bg-amber-400" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
-                  config.hasMargem ? "left-5" : "left-1"
-                }`}
-              />
-            </button>
-          </div>
         </div>
       </div>
 

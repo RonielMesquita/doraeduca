@@ -136,11 +136,7 @@ export default function ActivityPreview({
       >
         <div
           className="activity-inner-wrapper"
-          style={config.hasMargem ? {
-            border: "1.5px solid #555",
-            padding: "20px",
-            margin: "12px",
-          } : { padding: "16px 24px" }}
+          style={{ padding: "16px 24px" }}
         >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4">
@@ -336,9 +332,6 @@ export default function ActivityPreview({
         </div>
       )}
 
-      {/* Borda por folha: position:fixed em print repete em TODAS as páginas.
-          Sempre no DOM — CSS controla visibilidade pela classe 'ativa' */}
-      <div className={`margem-borda-por-folha${config.hasMargem ? " ativa" : ""}`} aria-hidden="true" />
     </main>
   );
 }
