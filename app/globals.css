@@ -1094,7 +1094,7 @@ img {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    border: 0.5px solid #000 !important;
+    border: 1px solid #888 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
