@@ -1000,11 +1000,11 @@ img {
 /* Print styles */
 @media print {
   @page {
-    /* 5mm a mais que a borda → conteúdo fica dentro da linha ABNT */
-    margin-top: 3.5cm;
-    margin-left: 3.5cm;
-    margin-bottom: 2.5cm;
-    margin-right: 2.5cm;
+    /* Margens ABNT: 3cm sup/esq, 2cm inf/dir */
+    margin-top: 3cm;
+    margin-left: 3cm;
+    margin-bottom: 2cm;
+    margin-right: 2cm;
     size: A4;
   }
 
@@ -1072,11 +1072,11 @@ img {
     gap: 0 !important;
   }
 
-  /* Remove borda inline, mantém padding mínimo para conteúdo não tocar a borda */
+  /* Pequeno padding para conteúdo não tocar a borda */
   .activity-inner-wrapper {
     border: none !important;
     margin: 0 !important;
-    padding: 4px 0 !important;
+    padding: 4px 8px !important;
   }
 
   /* Remove linha vermelha de divisão na impressão */
@@ -1089,15 +1089,16 @@ img {
   }
 
 
-  /* Borda ABNT — linha preta a 3cm/2cm, conteúdo começa a 3.5cm/2.5cm (dentro da borda) */
+  /* Borda ABNT — inset:0 = exatamente na área de conteúdo definida pelo @page margin
+     position:fixed em print é relativo à área de conteúdo, não ao papel físico */
   .margem-borda-por-folha.ativa {
     display: block !important;
     position: fixed !important;
-    top: 3cm !important;
-    left: 3cm !important;
-    right: 2cm !important;
-    bottom: 2cm !important;
-    border: 1.5px solid #000 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border: 2px solid #000 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
