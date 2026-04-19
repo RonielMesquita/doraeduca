@@ -1000,10 +1000,8 @@ img {
 /* Print styles */
 @media print {
   @page {
-    margin-top: 3cm;
-    margin-left: 3cm;
-    margin-bottom: 2cm;
-    margin-right: 2cm;
+    /* Margem maior que a borda (15mm) para o conteúdo ficar dentro */
+    margin: 20mm;
     size: A4;
   }
 
@@ -1087,6 +1085,20 @@ img {
     margin: 0 !important;
   }
 
+
+  /* Borda externa — 15mm das bordas do papel (≈ 0.6"/0.58") — repete em cada página */
+  .margem-borda-por-folha {
+    display: block !important;
+    position: fixed !important;
+    top: 15mm !important;
+    left: 15mm !important;
+    right: 15mm !important;
+    bottom: 15mm !important;
+    border: 1px solid #444 !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    background: transparent !important;
+  }
 
   .figurinha-card,
   .figurinhas-grid,

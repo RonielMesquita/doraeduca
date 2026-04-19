@@ -136,7 +136,7 @@ export default function ActivityPreview({
       >
         <div
           className="activity-inner-wrapper"
-          style={{ padding: "16px 24px" }}
+          style={{ padding: "12px 16px" }}
         >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4">
@@ -332,6 +332,8 @@ export default function ActivityPreview({
         </div>
       )}
 
+      {/* Borda externa — sempre no DOM, aparece em cada folha impressa via position:fixed */}
+      <div className="margem-borda-por-folha" aria-hidden="true" />
     </main>
   );
 }
