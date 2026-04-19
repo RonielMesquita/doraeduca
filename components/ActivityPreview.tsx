@@ -135,8 +135,9 @@ export default function ActivityPreview({
         style={{ minHeight: "500px" }}
       >
         <div
+          className="activity-inner-wrapper"
           style={config.hasMargem ? {
-            border: "1.5px solid #666",
+            border: "1.5px solid #555",
             padding: "20px",
             margin: "12px",
           } : { padding: "16px 24px" }}

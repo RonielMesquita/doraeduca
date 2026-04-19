@@ -1000,7 +1000,10 @@ img {
 /* Print styles */
 @media print {
   @page {
-    margin: 18mm;
+    margin-top: 3cm;
+    margin-left: 3cm;
+    margin-bottom: 2cm;
+    margin-right: 2cm;
     size: A4;
   }
 
@@ -1050,7 +1053,7 @@ img {
   }
 
   /* Remove a borda inline do wrapper interno — na impressão só a borda fixa aparece */
-  .worksheet-container > div {
+  .activity-inner-wrapper {
     border: none !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1065,15 +1068,17 @@ img {
     margin: 0 !important;
   }
 
-  /* Borda em CADA folha — position:fixed repete em todas as páginas */
+  /* Borda em CADA folha — position:fixed repete em todas as páginas
+     ABNT: superior/esq=3cm, inf/dir=2cm
+     A borda fica 0.5cm para dentro das margens ABNT, assim o conteúdo fica 100% dentro */
   .margem-borda-por-folha {
     display: block !important;
     position: fixed !important;
-    top: 10mm !important;
-    left: 10mm !important;
-    right: 10mm !important;
-    bottom: 10mm !important;
-    border: 1px solid #666 !important;
+    top: 2.5cm !important;
+    left: 2.5cm !important;
+    right: 1.5cm !important;
+    bottom: 1.5cm !important;
+    border: 1px solid #555 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
