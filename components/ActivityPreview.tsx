@@ -332,8 +332,6 @@ export default function ActivityPreview({
         </div>
       )}
 
-      {/* Borda ABNT — sempre no DOM, classe .ativa ativa a borda na impressão */}
-      <div className={`margem-borda-por-folha${config.hasMargem ? " ativa" : ""}`} aria-hidden="true" />
     </main>
   );
 }
