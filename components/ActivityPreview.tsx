@@ -332,8 +332,8 @@ export default function ActivityPreview({
         </div>
       )}
 
-      {/* Borda externa — sempre no DOM, aparece em cada folha impressa via position:fixed */}
-      <div className="margem-borda-por-folha" aria-hidden="true" />
+      {/* Borda ABNT — sempre no DOM, classe .ativa ativa a borda na impressão */}
+      <div className={`margem-borda-por-folha${config.hasMargem ? " ativa" : ""}`} aria-hidden="true" />
     </main>
   );
 }

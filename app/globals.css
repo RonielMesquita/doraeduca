@@ -1000,8 +1000,11 @@ img {
 /* Print styles */
 @media print {
   @page {
-    /* Margem maior que a borda (15mm) para o conteúdo ficar dentro */
-    margin: 20mm;
+    /* Margens ABNT: 3cm sup/esq, 2cm inf/dir */
+    margin-top: 3cm;
+    margin-left: 3cm;
+    margin-bottom: 2cm;
+    margin-right: 2cm;
     size: A4;
   }
 
@@ -1086,15 +1089,15 @@ img {
   }
 
 
-  /* Borda externa — 15mm das bordas do papel (≈ 0.6"/0.58") — repete em cada página */
-  .margem-borda-por-folha {
+  /* Borda ABNT — posicionada exatamente nas margens ABNT, repete em cada página */
+  .margem-borda-por-folha.ativa {
     display: block !important;
     position: fixed !important;
-    top: 15mm !important;
-    left: 15mm !important;
-    right: 15mm !important;
-    bottom: 15mm !important;
-    border: 1px solid #444 !important;
+    top: 3cm !important;
+    left: 3cm !important;
+    right: 2cm !important;
+    bottom: 2cm !important;
+    border: 1.5px solid #000 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
