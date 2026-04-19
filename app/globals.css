@@ -955,6 +955,11 @@
   margin-top: 4px;
 }
 
+/* Borda por folha — invisível na tela, aparece na impressão */
+.margem-borda-por-folha {
+  display: none;
+}
+
 /* A4 preview: mostra divisões de página na tela */
 .a4-preview-wrapper {
   background: #e5e7eb;
@@ -995,7 +1000,7 @@ img {
 /* Print styles */
 @media print {
   @page {
-    margin: 18mm;
+    margin: 20mm;
     size: A4;
   }
 
@@ -1049,17 +1054,18 @@ img {
     margin: 0 !important;
   }
 
-  /* Borda em CADA folha impressa via position:fixed */
-  .com-margem-print::before {
-    content: '';
-    position: fixed;
-    top: 8mm;
-    left: 8mm;
-    right: 8mm;
-    bottom: 8mm;
-    border: 1px solid #555;
-    pointer-events: none;
-    z-index: 9999;
+  /* Borda em CADA folha — position:fixed repete em todas as páginas */
+  .margem-borda-por-folha {
+    display: block !important;
+    position: fixed !important;
+    top: 10mm !important;
+    left: 10mm !important;
+    right: 10mm !important;
+    bottom: 10mm !important;
+    border: 1px solid #666 !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    background: transparent !important;
   }
 
   .figurinha-card,

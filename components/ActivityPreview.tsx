@@ -41,11 +41,7 @@ export default function ActivityPreview({
   }, [activity, loading]);
 
   const handlePrint = () => {
-    if (config.hasMargem) {
-      document.body.classList.add("com-margem-print");
-    }
     window.print();
-    document.body.classList.remove("com-margem-print");
   };
 
   const handleDownloadWord = async () => {
@@ -337,6 +333,11 @@ export default function ActivityPreview({
             Descreva o que precisa ser corrigido e clique para gerar novamente
           </p>
         </div>
+      )}
+
+      {/* Borda por folha: position:fixed em print repete em TODAS as páginas */}
+      {config.hasMargem && (
+        <div className="margem-borda-por-folha" aria-hidden="true" />
       )}
     </main>
   );
