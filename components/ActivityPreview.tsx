@@ -45,17 +45,16 @@ export default function ActivityPreview({
   };
 
   const handleDownloadWord = async () => {
-    if (!printRef.current || !activity) return;
-    
+    if (!activity) return;
+
     setDownloading(true);
     try {
-      const htmlContent = printRef.current.innerHTML;
-      
       const response = await fetch("/api/export-word", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          html: htmlContent,
+          config,
+          activity,
           filename: `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}`,
         }),
       });
