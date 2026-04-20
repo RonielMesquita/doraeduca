@@ -1,4 +1,12 @@
-export default function Header() {
+"use client";
+
+interface Props {
+  userName?: string;
+  onHistoryOpen?: () => void;
+  onLogout?: () => void;
+}
+
+export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
   return (
     <header className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 shadow-lg no-print">
       {/* Decorative floating elements */}
@@ -11,7 +19,7 @@ export default function Header() {
         <span className="absolute text-white/15 text-3xl top-2 right-40 rotate-[8deg]">🎨</span>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-3">
         {/* Logo and brand */}
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="bg-white/90 rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-md">
@@ -22,18 +30,45 @@ export default function Header() {
               DoraEduca
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm font-semibold hidden sm:block">
-              Criando aulas magicas para seus alunos
+              Criando aulas mágicas para seus alunos
             </p>
           </div>
         </div>
 
-        {/* Welcome message */}
-        <div className="hidden md:flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl px-5 py-3 border border-white/30">
-          <div className="text-2xl">👩‍🏫</div>
-          <div>
-            <p className="text-white font-bold text-sm">Olá, Professora Dora!</p>
-            <p className="text-amber-100 text-xs">Pronta para criar atividades incríveis?</p>
-          </div>
+        {/* Right side actions */}
+        <div className="flex items-center gap-2">
+          {onHistoryOpen && (
+            <button
+              onClick={onHistoryOpen}
+              className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold px-3 py-2 rounded-xl border border-white/30 transition-all text-sm"
+            >
+              <span>📋</span>
+              <span className="hidden sm:inline">Histórico</span>
+            </button>
+          )}
+
+          {userName && (
+            <div className="hidden md:flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2.5 border border-white/30">
+              <span className="text-2xl">👩‍🏫</span>
+              <div>
+                <p className="text-white font-bold text-sm leading-tight">
+                  {userName}
+                </p>
+                <p className="text-amber-100 text-xs">Bem-vinda!</p>
+              </div>
+            </div>
+          )}
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/25 text-white font-bold px-3 py-2 rounded-xl border border-white/20 transition-all text-sm"
+              title="Sair"
+            >
+              <span>🚪</span>
+              <span className="hidden sm:inline">Sair</span>
+            </button>
+          )}
         </div>
       </div>
 
