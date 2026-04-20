@@ -1,6 +1,8 @@
 import { ActivityConfig, SUBJECTS } from "@/lib/types";
 
-const HTMLtoDOCX = require("html-to-docx") as (
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const htmlToDocx = require("html-to-docx");
+const HTMLtoDOCX = (htmlToDocx.default ?? htmlToDocx) as (
   html: string,
   header: null,
   options: object
