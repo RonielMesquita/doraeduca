@@ -1100,16 +1100,60 @@ img {
     background: transparent !important;
   }
 
+  /* Evitar quebra dentro de qualquer elemento da atividade */
   .figurinha-card,
   .figurinhas-grid,
   .figurinhas-grid-3,
   .counting-card,
   .drawing-box,
   .problem-box,
-  img,
-  .print-footer {
+  .activity-section,
+  .activity-subtitle,
+  .familia-box,
+  .word-box,
+  .text-box,
+  .math-op,
+  .math-grid,
+  .silaba-card,
+  .coloring-card,
+  .illustrated-item,
+  .problem-item,
+  .seq-item,
+  table,
+  tr,
+  img {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+
+  /* Reduzir tamanho de fonte na impressão */
+  .print-area {
+    font-size: 9.5pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .figurinha-emoji {
+    font-size: 20pt !important;
+  }
+
+  .activity-subtitle {
+    font-size: 10pt !important;
+    padding: 4px 8px !important;
+    margin: 6px 0 4px !important;
+  }
+
+  .activity-instruction {
+    font-size: 9pt !important;
+    margin: 6px 0 4px !important;
+  }
+
+  .silaba-card {
+    font-size: 11pt !important;
+    padding: 3px 10px !important;
+  }
+
+  .figurinha-card {
+    padding: 6px 4px !important;
   }
 
   /* Evita que o footer fique sozinho na última página */
