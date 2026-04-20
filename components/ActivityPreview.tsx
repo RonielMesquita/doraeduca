@@ -332,7 +332,7 @@ export default function ActivityPreview({
         </div>
       )}
 
-      <div className="margem-borda-por-folha" aria-hidden="true" />
+      <div className={`margem-borda-por-folha${config.hasMargem ? " ativa" : ""}`} aria-hidden="true" />
     </main>
   );
 }

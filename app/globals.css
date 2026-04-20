@@ -1086,15 +1086,15 @@ img {
 
 
 
-  /* Linha de margem fina — repete em cada folha impressa */
-  .margem-borda-por-folha {
+  /* Margem ABNT — só aparece quando toggle está ativo */
+  .margem-borda-por-folha.ativa {
     display: block !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    border: 1px solid #888 !important;
+    border: 1px solid #555 !important;
     pointer-events: none !important;
     z-index: 9999 !important;
     background: transparent !important;
