@@ -179,12 +179,13 @@ ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos e
 
 REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
-2. OBRIGATORIO: Gere EXATAMENTE ${config.questionCount} questoes, numeradas de 1- ate ${config.questionCount}-)
+2. CRITICO: Gere EXATAMENTE ${config.questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${config.questionCount}.
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS, inclusive instrucoes, enunciados, titulos e nomes
 5. Use o formato de numeracao com traco: "1- ENUNCIADO DA QUESTAO"
-6. IDIOMA: 100% PORTUGUES BRASILEIRO. PROIBIDO qualquer palavra em ingles, espanhol ou outro idioma. Nomes de animais, objetos, acoes — TUDO em portugues brasileiro.
+6. IDIOMA: 100% PORTUGUES BRASILEIRO. PROIBIDO qualquer palavra em ingles, espanhol ou outro idioma.
 7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
+8. NAO pare antes de completar todas as ${config.questionCount} questoes
 
 IMAGENS - USE EMOJIS EM VEZ DE URLs:
 NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
@@ -206,13 +207,12 @@ Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinh
 
 ${config.observations ? `SIGA OBRIGATORIAMENTE: ${config.observations}` : ""}
 
-VERIFICACAO FINAL: Tenho EXATAMENTE ${config.questionCount} questoes? Todo texto esta em PORTUGUES e MAIUSCULO?
-3. Cada imagem tem um SEED DIFERENTE (1, 2, 3, etc)?`,
+VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE ${config.questionCount}? Se nao, complete antes de responder.`,
       });
 
       const message = await client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 4096,
+        max_tokens: 8000,
         system:
           "Você é um assistente especializado em criar atividades educacionais para TODAS as etapas da Educação Básica brasileira: Educação Infantil (Maternal, I Período, II Período, III Período) e Ensino Fundamental (1º ao 5º ano). Para a Educação Infantil, crie atividades com foco em desenvolvimento motor, identidade, natureza e sociedade, linguagem oral e matemática inicial — sempre com muitos desenhos para colorir, ligar, pintar e completar, adequados à faixa etária. REGRAS ABSOLUTAS: (1) Escreva TUDO em PORTUGUÊS BRASILEIRO — nenhuma palavra em inglês ou outro idioma; (2) Use LETRAS MAIÚSCULAS em todo o texto; (3) Vocabulário simples e acolhedor para crianças pequenas; (4) Alinhado à BNCC; (5) Lúdico e motivador com emojis. Quando modelos de referência forem fornecidos, replique fielmente o estilo e estrutura.",
         messages: [{ role: "user", content }],
