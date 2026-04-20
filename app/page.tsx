@@ -95,7 +95,7 @@ export default function Home() {
         onHistoryOpen={() => setHistoryOpen(true)}
         onLogout={handleLogout}
       />
-      <div className="flex flex-col lg:flex-row gap-5 p-4 lg:p-5 max-w-7xl mx-auto w-full flex-1">
+      <div className="flex flex-col md:flex-row gap-5 p-4 md:p-5 max-w-7xl mx-auto w-full flex-1">
         <ActivityForm
           config={config}
           onChange={setConfig}

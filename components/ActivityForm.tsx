@@ -60,7 +60,7 @@ export default function ActivityForm({
   const subject = SUBJECTS[config.subject];
 
   return (
-    <aside className="w-full lg:w-80 flex-shrink-0 flex flex-col gap-4 no-print">
+    <aside className="w-full md:w-80 flex-shrink-0 flex flex-col gap-4 no-print">
       {/* School info */}
       <div className={sectionClass}>
         <div className="flex items-center gap-2 mb-3">
