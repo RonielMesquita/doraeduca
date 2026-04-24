@@ -956,29 +956,34 @@
 }
 
 
-/* A4 preview: mostra divisões de página na tela */
+/* A4 paper viewer — simula folha sobre mesa */
 .a4-preview-wrapper {
-  background: #e5e7eb;
-  padding: 0;
+  background: #b8bec7;
+  padding: 20px 16px 24px;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
 }
 
+/* Wrapper que aplica o scale (set via inline style no React) */
+.a4-scale-wrapper {
+  transform-origin: top center;
+}
+
+/* A folha branca A4 */
 .worksheet-container {
   background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  border-radius: 0 !important;
+  box-shadow:
+    0 6px 32px rgba(0,0,0,0.22),
+    0 2px 6px rgba(0,0,0,0.12),
+    0 0 0 1px rgba(0,0,0,0.04);
+  border-radius: 1px !important;
+  width: 794px;
+  margin: 0 auto;
 }
 
-/* Linha de corte de página A4 na prévia (a cada ~1122px = 297mm a 96dpi) */
+/* Remove a linha vermelha — separadores são gerenciados pelo React */
 .print-area {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent calc(1122px - 1px),
-    #f87171 calc(1122px - 1px),
-    #f87171 1122px
-  );
+  background-image: none;
 }
 
 /* Evitar corte de imagens e cards nas quebras de página */
@@ -1038,6 +1043,12 @@ img {
     border-radius: 0 !important;
   }
 
+  .a4-scale-wrapper {
+    transform: none !important;
+    margin-bottom: 0 !important;
+    transform-origin: initial !important;
+  }
+
   .no-print,
   header,
   aside,
@@ -1061,6 +1072,7 @@ img {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
+    transform: none !important;
   }
 
   /* Garante que o conteúdo flui dentro da área de impressão */

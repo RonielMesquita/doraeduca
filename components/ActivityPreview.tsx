@@ -3,7 +3,8 @@
 import { useRef, useState, useEffect } from "react";
 import { ActivityConfig, SUBJECTS } from "@/lib/types";
 
-const A4_HEIGHT_PX = 1056; // altura A4 impressa a ~96dpi com margin 18mm
+const A4_HEIGHT_PX = 1123; // 297mm a 96dpi
+const A4_PAPER_W = 794;   // 210mm a 96dpi
 
 const LOADING_MESSAGES = [
   "Gerando sua atividade com IA...",
@@ -104,6 +105,8 @@ export default function ActivityPreview({
   const [isEditing, setIsEditing] = useState(false);
   const [editedHtml, setEditedHtml] = useState<string | null>(null);
   const editableRef = useRef<HTMLDivElement>(null);
+  const paperWrapperRef = useRef<HTMLDivElement>(null);
+  const [paperScale, setPaperScale] = useState(1);
 
   const handleDownloadDocx = async () => {
     if (!activity) return;
@@ -186,6 +189,17 @@ export default function ActivityPreview({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
+
+  useEffect(() => {
+    const el = paperWrapperRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(([entry]) => {
+      const available = entry.contentRect.width - 32;
+      setPaperScale(Math.min(1, available / A4_PAPER_W));
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const handlePrint = () => {
     window.print();
@@ -441,41 +455,52 @@ export default function ActivityPreview({
           </div>
         </div>
       ) : (
-      <div className="a4-preview-wrapper">
+      <div className="a4-preview-wrapper" ref={paperWrapperRef}>
+
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-16 px-6 gap-6">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center">
+              <span className="text-3xl">✏️</span>
+            </div>
+            <div className="absolute inset-0 rounded-full border-2 border-amber-300 animate-ping opacity-40" />
+          </div>
+          <div className="text-center">
+            <p className="font-bold text-gray-700 text-base">
+              {LOADING_MESSAGES[loadingMsgIdx]}
+            </p>
+            <p className="text-gray-400 text-xs mt-1.5">Aguarde alguns segundos</p>
+          </div>
+          <div className="flex gap-1.5">
+            {[0, 1, 2, 3].map((i) => (
+              <span
+                key={i}
+                className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 120}ms` }}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+
+      <div
+        className="a4-scale-wrapper"
+        style={{
+          transform: `scale(${paperScale})`,
+          transformOrigin: "top center",
+          marginBottom: `-${pageCount * 1200 * (1 - paperScale)}px`,
+        }}
+      >
       <div
         ref={printRef}
-        className="worksheet-container bg-white flex-1 transition-all"
-        style={{ minHeight: "500px" }}
+        className="worksheet-container bg-white transition-all"
+        style={{ minHeight: `${A4_HEIGHT_PX}px` }}
       >
         <div
           className="activity-inner-wrapper"
-          style={{ padding: "12px 16px" }}
+          style={{ padding: "68px 64px" }}
         >
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-16 px-6 gap-6">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center">
-                <span className="text-3xl">✏️</span>
-              </div>
-              <div className="absolute inset-0 rounded-full border-2 border-amber-300 animate-ping opacity-40" />
-            </div>
-            <div className="text-center">
-              <p className="font-bold text-gray-700 text-base">
-                {LOADING_MESSAGES[loadingMsgIdx]}
-              </p>
-              <p className="text-gray-400 text-xs mt-1.5">Aguarde alguns segundos</p>
-            </div>
-            <div className="flex gap-1.5">
-              {[0, 1, 2, 3].map((i) => (
-                <span
-                  key={i}
-                  className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"
-                  style={{ animationDelay: `${i * 120}ms` }}
-                />
-              ))}
-            </div>
-          </div>
-        ) : !activity ? (
+        {!activity ? (
           <div className="py-6 px-2 sm:px-5">
             {/* Hint banner */}
             <div className="text-center mb-4">
@@ -707,32 +732,33 @@ export default function ActivityPreview({
               <div dangerouslySetInnerHTML={{ __html: editedHtml ?? activity ?? "" }} />
             )}
 
-            {/* Linhas de divisão de página no preview (some na impressão) */}
-            {pageBreaks.map((top) => (
+            {/* Separadores de página — cinza, mimetiza borda da folha */}
+            {pageBreaks.map((top: number, i: number) => (
               <div
                 key={top}
                 className="no-print"
                 style={{
                   position: "absolute",
-                  left: 0,
-                  right: 0,
+                  left: "-64px",
+                  right: "-64px",
                   top: `${top}px`,
-                  borderTop: "2px dashed #ef4444",
+                  height: "24px",
+                  background: "#b8bec7",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   pointerEvents: "none",
+                  zIndex: 10,
                 }}
               >
                 <span style={{
-                  background: "#ef4444",
-                  color: "white",
-                  fontSize: "10px",
+                  fontSize: "9px",
+                  color: "#6b7280",
                   fontWeight: "bold",
-                  padding: "1px 6px",
-                  borderRadius: "0 0 4px 4px",
+                  userSelect: "none",
+                  letterSpacing: "0.05em",
                 }}>
-                  QUEBRA DE PÁGINA
+                  — Página {i + 2} —
                 </span>
               </div>
             ))}
@@ -745,10 +771,12 @@ export default function ActivityPreview({
             </div>
           </div>
         )}
-        </div>{/* fecha inner wrapper */}
-      </div>{/* fecha worksheet-container */}
+        </div>
       </div>
-      )}{/* fecha a4-preview-wrapper / ternary limitReached */}
+      </div>
+      )}
+      </div>
+      )}
 
       {/* Feedback Section */}
       {activity && !loading && onRegenerate && (
