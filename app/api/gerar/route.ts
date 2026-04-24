@@ -112,8 +112,14 @@ async function replacePollinationsWithGoogleImages(html: string): Promise<string
   return result;
 }
 
+const PLAN_LIMITS: Record<string, number> = {
+  gratuito: 5,
+  basico: 50,
+  pro: 100,
+};
+
 export async function POST(request: Request) {
-  // Verificar limite do plano gratuito
+  // Verificar limite por plano
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -125,12 +131,33 @@ export async function POST(request: Request) {
       const isTester = user.email && testerEmails.includes(user.email.toLowerCase());
 
       if (!isTester) {
-        const { count } = await supabase
-          .from("activities")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        if ((count ?? 0) >= FREE_LIMIT) {
-          return Response.json({ error: "limit_reached", count }, { status: 402 });
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("plan")
+          .eq("id", user.id)
+          .single();
+        const plan: string = profile?.plan ?? "gratuito";
+
+        if (plan !== "ilimitado") {
+          const limit = PLAN_LIMITS[plan] ?? FREE_LIMIT;
+
+          let query = supabase
+            .from("activities")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
+
+          // Planos pagos: contar apenas o mês atual
+          if (plan !== "gratuito") {
+            const inicio = new Date();
+            inicio.setDate(1);
+            inicio.setHours(0, 0, 0, 0);
+            query = query.gte("created_at", inicio.toISOString());
+          }
+
+          const { count } = await query;
+          if ((count ?? 0) >= limit) {
+            return Response.json({ error: "limit_reached", count, plan }, { status: 402 });
+          }
         }
       }
     }

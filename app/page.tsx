@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
@@ -14,6 +14,9 @@ const FREE_LIMIT = 5;
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const didCleanUrl = useRef(false);
   const [config, setConfig] = useState<ActivityConfig>(defaultConfig);
   const [activity, setActivity] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,6 +28,16 @@ export default function Home() {
   const [limitReached, setLimitReached] = useState(false);
   const [usageCount, setUsageCount] = useState<number | null>(null);
   const [isTester, setIsTester] = useState(false);
+
+  useEffect(() => {
+    if (!didCleanUrl.current && searchParams.get("checkout") === "success") {
+      didCleanUrl.current = true;
+      setCheckoutSuccess(true);
+      setLimitReached(false);
+      router.replace("/");
+      setTimeout(() => setCheckoutSuccess(false), 6000);
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -125,6 +138,11 @@ export default function Home() {
         onHistoryOpen={() => setHistoryOpen(true)}
         onLogout={handleLogout}
       />
+      {checkoutSuccess && (
+        <div className="bg-green-500 text-white text-center py-3 px-4 font-bold text-sm animate-pulse">
+          🎉 Assinatura confirmada! Seu plano já está ativo. Boas criações!
+        </div>
+      )}
       <div className="flex flex-col md:flex-row gap-5 p-4 md:p-5 max-w-7xl mx-auto w-full flex-1">
         <ActivityForm
           config={config}

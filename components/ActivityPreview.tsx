@@ -13,8 +13,6 @@ const LOADING_MESSAGES = [
   "Finalizando os exercícios...",
 ];
 
-const WA_BASE = "https://wa.me/5511999999999?text=";
-
 const PREVIEW_PLANS = [
   {
     name: "Básico",
@@ -24,6 +22,7 @@ const PREVIEW_PLANS = [
     popular: false,
     color: "border-gray-200",
     btnClass: "bg-gray-700 hover:bg-gray-800",
+    priceId: "price_1TPkvLF9J6QUlf0QiAnmRA7W",
     benefits: [
       "50 atividades por mês",
       "Atividades, avaliações e tarefas",
@@ -31,7 +30,6 @@ const PREVIEW_PLANS = [
       "Histórico dos últimos 30 dias",
       "Todas as disciplinas",
     ],
-    waMsg: "Ol%C3%A1%21+Quero+assinar+o+Plano+B%C3%A1sico+do+DoraEduca+%28R%2429%2C90%2Fm%C3%AAs+-+50+atividades%29+%F0%9F%8D%8E",
   },
   {
     name: "Pro",
@@ -41,6 +39,7 @@ const PREVIEW_PLANS = [
     popular: true,
     color: "border-amber-400",
     btnClass: "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600",
+    priceId: "price_1TPkwXF9J6QUlf0QNSUr6t4T",
     benefits: [
       "100 atividades por mês",
       "Atividades, avaliações, planos de aula",
@@ -49,7 +48,6 @@ const PREVIEW_PLANS = [
       "Upload de modelos de referência",
       "Suporte prioritário via WhatsApp",
     ],
-    waMsg: "Ol%C3%A1%21+Quero+assinar+o+Plano+Pro+do+DoraEduca+%28R%2449%2C90%2Fm%C3%AAs+-+100+atividades%29+%F0%9F%8D%8E",
   },
   {
     name: "Ilimitado",
@@ -59,6 +57,7 @@ const PREVIEW_PLANS = [
     popular: false,
     color: "border-purple-300",
     btnClass: "bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600",
+    priceId: "price_1TPkxQF9J6QUlf0QJPUcfjbx",
     benefits: [
       "Atividades ilimitadas",
       "Todos os tipos de documento",
@@ -69,7 +68,6 @@ const PREVIEW_PLANS = [
       "Acesso antecipado a novidades",
       "Personalização avançada com IA",
     ],
-    waMsg: "Ol%C3%A1%21+Quero+assinar+o+Plano+Ilimitado+do+DoraEduca+%28R%2499%2C00%2Fm%C3%AAs%29+%F0%9F%8D%8E",
   },
 ];
 
@@ -101,6 +99,24 @@ export default function ActivityPreview({
   const [pageCount, setPageCount] = useState(1);
   const [pageBreaks, setPageBreaks] = useState<number[]>([]);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (priceId: string) => {
+    setCheckoutLoading(priceId);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch {
+      alert("Erro ao iniciar pagamento. Tente novamente.");
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     if (!loading) { setLoadingMsgIdx(0); return; }
@@ -272,11 +288,12 @@ export default function ActivityPreview({
                       ))}
                     </ul>
                     <button
-                      onClick={() => window.open(`${WA_BASE}${plan.waMsg}`, "_blank")}
-                      className={`w-full py-2.5 rounded-xl text-white font-black text-sm transition-all active:scale-95 shadow-md hover:shadow-lg ${plan.btnClass}`}
+                      onClick={() => handleCheckout(plan.priceId)}
+                      disabled={checkoutLoading === plan.priceId}
+                      className={`w-full py-2.5 rounded-xl text-white font-black text-sm transition-all active:scale-95 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed ${plan.btnClass}`}
                       style={plan.popular ? { boxShadow: "0 4px 16px rgba(245,158,11,0.4)" } : {}}
                     >
-                      Assinar {plan.name}
+                      {checkoutLoading === plan.priceId ? "Aguarde..." : `Assinar ${plan.name}`}
                     </button>
                   </div>
                 </div>
