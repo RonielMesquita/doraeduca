@@ -24,6 +24,7 @@ export default function Home() {
   const [userName, setUserName] = useState<string>("");
   const [limitReached, setLimitReached] = useState(false);
   const [usageCount, setUsageCount] = useState<number | null>(null);
+  const [isTester, setIsTester] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -34,6 +35,12 @@ export default function Home() {
           data.user.email?.split("@")[0] ||
           "Professora";
         setUserName(name);
+
+        // Verifica se é tester (sem limite)
+        fetch("/api/check-tester")
+          .then((r) => r.json())
+          .then(({ isTester }) => setIsTester(!!isTester))
+          .catch(() => {});
 
         // Busca contagem de uso
         supabase
@@ -109,7 +116,7 @@ export default function Home() {
     setLimitReached(false);
   };
 
-  const remaining = usageCount !== null ? Math.max(0, FREE_LIMIT - usageCount) : null;
+  const remaining = isTester ? null : (usageCount !== null ? Math.max(0, FREE_LIMIT - usageCount) : null);
 
   return (
     <div className="min-h-screen flex flex-col bg-teacher-warm">
