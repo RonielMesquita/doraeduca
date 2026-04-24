@@ -494,11 +494,15 @@ export default function ActivityPreview({
       <div
         ref={printRef}
         className="worksheet-container bg-white transition-all"
-        style={{ minHeight: `${A4_HEIGHT_PX}px` }}
+        style={{
+          minHeight: `${A4_HEIGHT_PX}px`,
+          // Simula margens ABNT: 3cm topo/esq, 2cm inf/dir (igual ao @page no print)
+          padding: "113px 76px 76px 113px",
+        }}
       >
         <div
           className="activity-inner-wrapper"
-          style={{ padding: "68px 64px" }}
+          style={{ padding: "8px 12px" }}
         >
         {!activity ? (
           <div className="py-6 px-2 sm:px-5">
@@ -739,8 +743,8 @@ export default function ActivityPreview({
                 className="no-print"
                 style={{
                   position: "absolute",
-                  left: "-64px",
-                  right: "-64px",
+                  left: "-125px",
+                  right: "-88px",
                   top: `${top}px`,
                   height: "24px",
                   background: "#b8bec7",
