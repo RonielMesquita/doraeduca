@@ -7,8 +7,11 @@ import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
 import ChatSidebar from "@/components/ChatSidebar";
 import HistoryPanel from "@/components/HistoryPanel";
+import UpgradeModal from "@/components/UpgradeModal";
 import { ActivityConfig, UploadedFile, defaultConfig } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
+
+const FREE_LIMIT = 5;
 
 export default function Home() {
   const router = useRouter();
@@ -20,6 +23,8 @@ export default function Home() {
   const [feedback, setFeedback] = useState<string>("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [userName, setUserName] = useState<string>("");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [usageCount, setUsageCount] = useState<number | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -30,6 +35,13 @@ export default function Home() {
           data.user.email?.split("@")[0] ||
           "Professora";
         setUserName(name);
+
+        // Busca contagem de uso
+        supabase
+          .from("activities")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", data.user.id)
+          .then(({ count }) => setUsageCount(count ?? 0));
       }
     });
   }, []);
@@ -58,6 +70,13 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ config: configWithFeedback, uploadedFiles }),
       });
+
+      // Limite do plano gratuito atingido
+      if (res.status === 402) {
+        setShowUpgradeModal(true);
+        return;
+      }
+
       const data = await res.json();
       setActivity(data.activity);
       setSource(data.source);
@@ -72,7 +91,9 @@ export default function Home() {
             config: configWithFeedback,
             activity: data.activity,
           }),
-        }).catch(() => {});
+        })
+          .then(() => setUsageCount((c) => (c !== null ? c + 1 : null)))
+          .catch(() => {});
       }
     } catch (err) {
       console.error(err);
@@ -87,6 +108,8 @@ export default function Home() {
     setSource("ai");
     setFeedback("");
   };
+
+  const remaining = usageCount !== null ? Math.max(0, FREE_LIMIT - usageCount) : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-teacher-warm">
@@ -103,6 +126,8 @@ export default function Home() {
           loading={loading}
           uploadedFiles={uploadedFiles}
           onFilesChange={setUploadedFiles}
+          remaining={remaining}
+          onUpgradeClick={() => setShowUpgradeModal(true)}
         />
         <ActivityPreview
           config={config}
@@ -119,6 +144,10 @@ export default function Home() {
         open={historyOpen}
         onClose={() => setHistoryOpen(false)}
         onLoad={handleHistoryLoad}
+      />
+      <UpgradeModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
       />
     </div>
   );

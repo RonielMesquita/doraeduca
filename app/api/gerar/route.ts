@@ -1,5 +1,8 @@
 import { generateMockActivity } from "@/lib/templates";
 import { ActivityConfig, UploadedFile } from "@/lib/types";
+import { createClient } from "@/lib/supabase/server";
+
+const FREE_LIMIT = 5;
 
 interface GoogleImageResult {
   url: string;
@@ -110,6 +113,23 @@ async function replacePollinationsWithGoogleImages(html: string): Promise<string
 }
 
 export async function POST(request: Request) {
+  // Verificar limite do plano gratuito
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { count } = await supabase
+        .from("activities")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      if ((count ?? 0) >= FREE_LIMIT) {
+        return Response.json({ error: "limit_reached", count }, { status: 402 });
+      }
+    }
+  } catch {
+    // Se falhar a checagem, permite gerar (não bloqueia por erro técnico)
+  }
+
   const body = await request.json();
   const config: ActivityConfig = body.config;
   const uploadedFiles: UploadedFile[] = body.uploadedFiles ?? [];

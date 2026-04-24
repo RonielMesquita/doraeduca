@@ -19,6 +19,8 @@ interface Props {
   loading: boolean;
   uploadedFiles: UploadedFile[];
   onFilesChange: (files: UploadedFile[]) => void;
+  remaining?: number | null;
+  onUpgradeClick?: () => void;
 }
 
 const inputClass =
@@ -35,6 +37,8 @@ export default function ActivityForm({
   loading,
   uploadedFiles,
   onFilesChange,
+  remaining,
+  onUpgradeClick,
 }: Props) {
   const logoInputRef = useRef<HTMLInputElement>(null);
 
@@ -348,28 +352,61 @@ export default function ActivityForm({
       {/* Upload reference files */}
       <UploadSection files={uploadedFiles} onChange={onFilesChange} />
 
+      {/* Contador de uso do plano gratuito */}
+      {remaining !== null && remaining !== undefined && (
+        <div className={`rounded-2xl px-4 py-3 border-2 ${
+          remaining === 0 ? "bg-red-50 border-red-200"
+          : remaining === 1 ? "bg-amber-50 border-amber-300"
+          : "bg-gray-50 border-gray-200"
+        }`}>
+          <p className={`text-xs font-bold mb-2 ${
+            remaining === 0 ? "text-red-700"
+            : remaining === 1 ? "text-amber-700"
+            : "text-gray-600"
+          }`}>
+            {remaining === 0
+              ? "🔒 Limite do plano gratuito atingido"
+              : remaining === 1
+              ? "⚠️ Última atividade gratuita"
+              : `📊 Plano gratuito: ${remaining} restante${remaining !== 1 ? "s" : ""}`}
+          </p>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className={`flex-1 h-1.5 rounded-full ${i <= (5 - remaining) ? "bg-amber-400" : "bg-gray-200"}`} />
+            ))}
+          </div>
+          {remaining === 0 && (
+            <button onClick={onUpgradeClick} className="mt-2 w-full text-xs font-bold text-amber-700 hover:text-amber-900 underline underline-offset-2 transition-colors">
+              Ver planos →
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Generate button */}
       <div className="flex flex-col gap-2">
         <button
-          onClick={onGenerate}
+          onClick={remaining === 0 ? onUpgradeClick : onGenerate}
           disabled={loading}
           className={`w-full py-5 rounded-2xl font-black text-lg text-white transition-all ${
             loading
               ? "bg-gray-300 cursor-not-allowed shadow-md"
+              : remaining === 0
+              ? "bg-gradient-to-r from-gray-400 to-gray-500 hover:from-amber-500 hover:to-orange-500 active:scale-95 shadow-xl"
               : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95"
           }`}
-          style={
-            loading
-              ? {}
-              : {
-                  boxShadow:
-                    "0 6px 24px rgba(245,158,11,0.45), 0 2px 8px rgba(234,88,12,0.25)",
-                }
-          }
+          style={loading || remaining === 0 ? {} : {
+            boxShadow: "0 6px 24px rgba(245,158,11,0.45), 0 2px 8px rgba(234,88,12,0.25)",
+          }}
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="animate-spin">⏳</span> Gerando...
+            </span>
+          ) : remaining === 0 ? (
+            <span className="flex items-center justify-center gap-2">
+              <span>🔒</span>
+              <span>Assinar para continuar</span>
             </span>
           ) : (
             <span className="flex items-center justify-center gap-2">
@@ -378,7 +415,7 @@ export default function ActivityForm({
             </span>
           )}
         </button>
-        {!loading && (
+        {!loading && remaining !== 0 && (
           <p className="text-center text-xs text-gray-400 font-medium tracking-wide">
             Pronto para imprimir em poucos segundos
           </p>
