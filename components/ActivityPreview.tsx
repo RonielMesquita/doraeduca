@@ -320,50 +320,54 @@ export default function ActivityPreview({
           <div className="print-area" ref={contentRef} style={{ position: "relative" }}>
             {/* School header — fiel ao modelo da professora */}
             <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
-              {/* Top row: logo + school name */}
+              {/* Linha 1: logo + nome da escola */}
               <div className="flex items-stretch border-b border-gray-400">
                 {config.logoBase64 ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={config.logoBase64}
                     alt="Logo"
-                    className="w-16 h-16 object-contain border-r border-gray-400 p-1 flex-shrink-0"
+                    className="w-14 h-14 object-contain border-r border-gray-400 p-1 flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-16 h-16 border-r border-gray-400 flex items-center justify-center text-gray-300 text-2xl flex-shrink-0">🏫</div>
+                  <div className="w-14 h-14 border-r border-gray-400 flex items-center justify-center text-gray-300 text-2xl flex-shrink-0">🏫</div>
                 )}
-                <div className="flex-1 flex items-center justify-center px-3 py-2">
-                  <span className="font-black text-sm sm:text-base uppercase tracking-wide text-center">
+                <div className="flex-1 flex items-center justify-center px-3 py-1">
+                  <span className="font-black text-sm sm:text-base uppercase tracking-wide text-center leading-tight">
                     {config.schoolName || "NOME DA ESCOLA"}
                   </span>
                 </div>
               </div>
 
-              {/* Second row: teacher + date */}
+              {/* Linha 2: professora + série + turma + turno */}
               <div className="flex border-b border-gray-400 text-xs">
-                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400" style={{ flex: "0 0 60%" }}>
+                <div className="flex items-center gap-1.5 px-2 py-1.5 border-r border-gray-400" style={{ flex: "0 0 38%" }}>
                   <span className="font-bold uppercase shrink-0">PROFª:</span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold pb-0.5">{config.teacherName}</span>
+                  <span className="font-semibold truncate">{config.teacherName}</span>
                 </div>
-                <div className="flex items-center gap-2 flex-1 px-3 py-1.5">
-                  <span className="font-bold uppercase shrink-0">DATA:</span>
-                  <span className="font-semibold">{config.date}</span>
-                </div>
-              </div>
-
-              {/* Third row: série + turma + turno */}
-              <div className="flex text-xs">
-                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400">
+                <div className="flex items-center gap-1 px-2 py-1.5 border-r border-gray-400 shrink-0">
                   <span className="font-bold uppercase shrink-0">SÉRIE:</span>
                   <span className="font-semibold">{config.year}</span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400">
+                <div className="flex items-center gap-1 px-2 py-1.5 border-r border-gray-400 shrink-0">
                   <span className="font-bold uppercase shrink-0">TURMA:</span>
                   <span className="font-semibold">{config.className}</span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5">
+                <div className="flex items-center gap-1 px-2 py-1.5 shrink-0">
                   <span className="font-bold uppercase shrink-0">TURNO:</span>
                   <span className="font-semibold">{config.turno}</span>
+                </div>
+              </div>
+
+              {/* Linha 3: aluno + data */}
+              <div className="flex text-xs">
+                <div className="flex items-center gap-1.5 flex-1 px-2 py-1.5 border-r border-gray-400">
+                  <span className="font-bold uppercase shrink-0">ALUNO(A):</span>
+                  <span className="border-b border-gray-500 flex-1" style={{ minHeight: "18px" }} />
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1.5 shrink-0">
+                  <span className="font-bold uppercase shrink-0">DATA:</span>
+                  <span className="font-semibold">{config.date}</span>
                 </div>
               </div>
             </div>
