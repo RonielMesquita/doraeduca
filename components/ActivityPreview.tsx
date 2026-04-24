@@ -107,6 +107,10 @@ export default function ActivityPreview({
   const editableRef = useRef<HTMLDivElement>(null);
   const paperWrapperRef = useRef<HTMLDivElement>(null);
   const [paperScale, setPaperScale] = useState(1);
+  const [isReordering, setIsReordering] = useState(false);
+  const [reorderBlocks, setReorderBlocks] = useState<{ before: string; sections: string[]; after: string } | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const dragIdxRef = useRef<number | null>(null);
 
   const handleDownloadDocx = async () => {
     if (!activity) return;
@@ -181,6 +185,8 @@ export default function ActivityPreview({
   useEffect(() => {
     setEditedHtml(null);
     setIsEditing(false);
+    setIsReordering(false);
+    setReorderBlocks(null);
   }, [activity]);
 
   useEffect(() => {
@@ -213,6 +219,62 @@ export default function ActivityPreview({
   };
 
   const handleCancelEdit = () => setIsEditing(false);
+
+  function parseBlocks(html: string): { before: string; sections: string[]; after: string } {
+    if (typeof window === "undefined") return { before: html, sections: [], after: "" };
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(`<div id="r">${html}</div>`, "text/html");
+    const root = doc.getElementById("r");
+    if (!root) return { before: html, sections: [], after: "" };
+    const children = Array.from(root.children) as HTMLElement[];
+    const hasSections = children.some((el) => el.classList.contains("activity-section"));
+    if (hasSections) {
+      const before: string[] = [];
+      const sections: string[] = [];
+      let started = false;
+      children.forEach((el) => {
+        if (el.classList.contains("activity-section")) { started = true; sections.push(el.outerHTML); }
+        else if (!started) before.push(el.outerHTML);
+      });
+      return { before: before.join(""), sections, after: "" };
+    }
+    const sections = children
+      .filter((el) => el.tagName === "DIV" && el.children.length > 0)
+      .map((el) => el.outerHTML);
+    return { before: "", sections: sections.length > 1 ? sections : [], after: "" };
+  }
+
+  const handleStartReorder = () => {
+    const html = editedHtml ?? activity ?? "";
+    const parsed = parseBlocks(html);
+    if (parsed.sections.length < 2) return;
+    setReorderBlocks(parsed);
+    setIsReordering(true);
+  };
+
+  const handleSaveReorder = () => {
+    if (!reorderBlocks) return;
+    const newHtml = [reorderBlocks.before, ...reorderBlocks.sections, reorderBlocks.after]
+      .filter(Boolean)
+      .join("\n");
+    setEditedHtml(newHtml);
+    setIsReordering(false);
+    setReorderBlocks(null);
+  };
+
+  const handleCancelReorder = () => {
+    setIsReordering(false);
+    setReorderBlocks(null);
+  };
+
+  const moveSection = (idx: number, dir: -1 | 1) => {
+    if (!reorderBlocks) return;
+    const n = idx + dir;
+    if (n < 0 || n >= reorderBlocks.sections.length) return;
+    const s = [...reorderBlocks.sections];
+    [s[idx], s[n]] = [s[n], s[idx]];
+    setReorderBlocks({ ...reorderBlocks, sections: s });
+  };
 
   const handleDownloadHtml = () => {
     if (!activity) return;
@@ -338,6 +400,24 @@ export default function ActivityPreview({
                   ✕ Cancelar
                 </button>
               </>
+            ) : isReordering ? (
+              <>
+                <span className="text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-300 px-3 py-1.5 rounded-xl">
+                  ↕ Reordenando blocos...
+                </span>
+                <button
+                  onClick={handleSaveReorder}
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ✓ Salvar ordem
+                </button>
+                <button
+                  onClick={handleCancelReorder}
+                  className="flex items-center gap-2 bg-gray-200 text-gray-700 font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:bg-gray-300 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ✕ Cancelar
+                </button>
+              </>
             ) : (
               <>
                 <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl border border-gray-200">
@@ -348,6 +428,12 @@ export default function ActivityPreview({
                   className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-amber-500 hover:to-orange-500 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
                 >
                   ✏️ Editar
+                </button>
+                <button
+                  onClick={handleStartReorder}
+                  className="flex items-center gap-2 bg-gradient-to-r from-indigo-400 to-violet-400 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-indigo-500 hover:to-violet-500 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ↕ Reordenar
                 </button>
                 <button
                   onClick={handlePrint}
@@ -711,16 +797,94 @@ export default function ActivityPreview({
               )}
             </div>
 
-            {/* Edit mode banner */}
+            {/* Edit / reorder mode banners */}
             {isEditing && (
               <div className="no-print mb-3 flex items-center gap-2 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-xs text-amber-800 font-semibold">
                 <span>✏️</span>
                 <span>Clique em qualquer texto para editar. Salve ao terminar.</span>
               </div>
             )}
+            {isReordering && (
+              <div className="no-print mb-3 flex items-center gap-2 bg-indigo-50 border border-indigo-300 rounded-lg px-3 py-2 text-xs text-indigo-800 font-semibold">
+                <span>↕</span>
+                <span>Arraste os blocos ou use ▲▼ para reordenar. Salve ao terminar.</span>
+              </div>
+            )}
 
             {/* Activity content */}
-            {isEditing ? (
+            {isReordering && reorderBlocks ? (
+              <div className="flex flex-col gap-2">
+                {reorderBlocks.before && (
+                  <div dangerouslySetInnerHTML={{ __html: reorderBlocks.before }} />
+                )}
+                {reorderBlocks.sections.map((section, idx) => (
+                  <div
+                    key={idx}
+                    draggable
+                    onDragStart={() => { dragIdxRef.current = idx; }}
+                    onDragOver={(e) => { e.preventDefault(); setDragOverIdx(idx); }}
+                    onDrop={() => {
+                      const from = dragIdxRef.current;
+                      if (from === null || from === idx) { setDragOverIdx(null); return; }
+                      setReorderBlocks((prev) => {
+                        if (!prev) return prev;
+                        const s = [...prev.sections];
+                        const [moved] = s.splice(from, 1);
+                        s.splice(idx, 0, moved);
+                        return { ...prev, sections: s };
+                      });
+                      setDragOverIdx(null);
+                      dragIdxRef.current = null;
+                    }}
+                    onDragEnd={() => { setDragOverIdx(null); dragIdxRef.current = null; }}
+                    style={{
+                      border: dragOverIdx === idx ? "2px dashed #6366f1" : "2px solid #e5e7eb",
+                      borderRadius: "8px",
+                      padding: "10px",
+                      cursor: "grab",
+                      background: dragOverIdx === idx ? "#eef2ff" : "white",
+                      transition: "border-color 0.15s, background 0.15s",
+                    }}
+                  >
+                    <div
+                      className="no-print flex items-center justify-between"
+                      style={{ borderBottom: "1px dashed #e5e7eb", paddingBottom: "6px", marginBottom: "8px" }}
+                    >
+                      <span style={{ fontSize: "11px", color: "#9ca3af", fontWeight: "bold", userSelect: "none" }}>
+                        ⠿ Bloco {idx + 1}
+                      </span>
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                          onClick={() => moveSection(idx, -1)}
+                          disabled={idx === 0}
+                          style={{
+                            padding: "2px 8px", borderRadius: "4px",
+                            border: "1px solid #d1d5db",
+                            background: idx === 0 ? "#f3f4f6" : "white",
+                            color: idx === 0 ? "#d1d5db" : "#374151",
+                            cursor: idx === 0 ? "not-allowed" : "pointer",
+                            fontSize: "12px", fontWeight: "bold",
+                          }}
+                        >▲</button>
+                        <button
+                          onClick={() => moveSection(idx, 1)}
+                          disabled={idx === reorderBlocks.sections.length - 1}
+                          style={{
+                            padding: "2px 8px", borderRadius: "4px",
+                            border: "1px solid #d1d5db",
+                            background: idx === reorderBlocks.sections.length - 1 ? "#f3f4f6" : "white",
+                            color: idx === reorderBlocks.sections.length - 1 ? "#d1d5db" : "#374151",
+                            cursor: idx === reorderBlocks.sections.length - 1 ? "not-allowed" : "pointer",
+                            fontSize: "12px", fontWeight: "bold",
+                          }}
+                        >▼</button>
+                      </div>
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: section }} />
+                  </div>
+                ))}
+              </div>
+            ) : isEditing ? (
               <div
                 ref={editableRef}
                 contentEditable
