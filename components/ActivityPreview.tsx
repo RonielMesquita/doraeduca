@@ -101,6 +101,9 @@ export default function ActivityPreview({
   const [pageBreaks, setPageBreaks] = useState<number[]>([]);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedHtml, setEditedHtml] = useState<string | null>(null);
+  const editableRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadDocx = async () => {
     if (!activity) return;
@@ -172,9 +175,30 @@ export default function ActivityPreview({
     setPageBreaks(breaks);
   }, [activity, loading]);
 
+  useEffect(() => {
+    setEditedHtml(null);
+    setIsEditing(false);
+  }, [activity]);
+
+  useEffect(() => {
+    if (isEditing && editableRef.current) {
+      editableRef.current.innerHTML = editedHtml ?? activity ?? "";
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditing]);
+
   const handlePrint = () => {
     window.print();
   };
+
+  const handleStartEdit = () => setIsEditing(true);
+
+  const handleSaveEdit = () => {
+    if (editableRef.current) setEditedHtml(editableRef.current.innerHTML);
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => setIsEditing(false);
 
   const handleDownloadHtml = () => {
     if (!activity) return;
@@ -282,29 +306,57 @@ export default function ActivityPreview({
 
         {activity && (
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto items-center">
-            <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl border border-gray-200">
-              📄 {pageCount} {pageCount === 1 ? "folha" : "folhas"}
-            </span>
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
-            >
-              Imprimir / PDF
-            </button>
-            <button
-              onClick={handleDownloadDocx}
-              disabled={downloadingDocx}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-green-600 hover:to-emerald-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {downloadingDocx ? "Gerando..." : "Baixar .docx"}
-            </button>
-            <button
-              onClick={handleDownloadHtml}
-              disabled={downloading}
-              className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-teal-600 hover:to-cyan-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {downloading ? "Gerando..." : "Baixar HTML"}
-            </button>
+            {isEditing ? (
+              <>
+                <span className="text-xs font-bold bg-amber-50 text-amber-700 border border-amber-300 px-3 py-1.5 rounded-xl">
+                  ✏️ Editando...
+                </span>
+                <button
+                  onClick={handleSaveEdit}
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ✓ Salvar edição
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className="flex items-center gap-2 bg-gray-200 text-gray-700 font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:bg-gray-300 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ✕ Cancelar
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl border border-gray-200">
+                  📄 {pageCount} {pageCount === 1 ? "folha" : "folhas"}
+                </span>
+                <button
+                  onClick={handleStartEdit}
+                  className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-amber-500 hover:to-orange-500 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  ✏️ Editar
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                >
+                  Imprimir / PDF
+                </button>
+                <button
+                  onClick={handleDownloadDocx}
+                  disabled={downloadingDocx}
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-green-600 hover:to-emerald-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {downloadingDocx ? "Gerando..." : "Baixar .docx"}
+                </button>
+                <button
+                  onClick={handleDownloadHtml}
+                  disabled={downloading}
+                  className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-teal-600 hover:to-cyan-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {downloading ? "Gerando..." : "Baixar HTML"}
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -630,8 +682,30 @@ export default function ActivityPreview({
               )}
             </div>
 
+            {/* Edit mode banner */}
+            {isEditing && (
+              <div className="no-print mb-3 flex items-center gap-2 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-xs text-amber-800 font-semibold">
+                <span>✏️</span>
+                <span>Clique em qualquer texto para editar. Salve ao terminar.</span>
+              </div>
+            )}
+
             {/* Activity content */}
-            <div dangerouslySetInnerHTML={{ __html: activity }} />
+            {isEditing ? (
+              <div
+                ref={editableRef}
+                contentEditable
+                suppressContentEditableWarning
+                style={{
+                  outline: "2px dashed #f59e0b",
+                  borderRadius: "6px",
+                  padding: "8px",
+                  minHeight: "100px",
+                }}
+              />
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: editedHtml ?? activity ?? "" }} />
+            )}
 
             {/* Linhas de divisão de página no preview (some na impressão) */}
             {pageBreaks.map((top) => (
