@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
@@ -14,7 +14,6 @@ const FREE_LIMIT = 5;
 
 export default function Home() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const didCleanUrl = useRef(false);
   const [config, setConfig] = useState<ActivityConfig>(defaultConfig);
@@ -30,14 +29,14 @@ export default function Home() {
   const [isTester, setIsTester] = useState(false);
 
   useEffect(() => {
-    if (!didCleanUrl.current && searchParams.get("checkout") === "success") {
+    if (!didCleanUrl.current && typeof window !== "undefined" && window.location.search.includes("checkout=success")) {
       didCleanUrl.current = true;
       setCheckoutSuccess(true);
       setLimitReached(false);
       router.replace("/");
       setTimeout(() => setCheckoutSuccess(false), 6000);
     }
-  }, [searchParams, router]);
+  }, [router]);
 
   useEffect(() => {
     const supabase = createClient();
