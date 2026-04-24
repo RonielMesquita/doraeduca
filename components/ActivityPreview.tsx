@@ -96,10 +96,41 @@ export default function ActivityPreview({
   const contentRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [downloadingDocx, setDownloadingDocx] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [pageBreaks, setPageBreaks] = useState<number[]>([]);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  const handleDownloadDocx = async () => {
+    if (!activity) return;
+    setDownloadingDocx(true);
+    try {
+      const response = await fetch("/api/export-word", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          config,
+          activity,
+          filename: `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}`,
+        }),
+      });
+      if (!response.ok) throw new Error("Falha");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `atividade-${config.subject}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch {
+      alert("Erro ao gerar .docx. Tente o botão 'Baixar editável'.");
+    } finally {
+      setDownloadingDocx(false);
+    }
+  };
 
   const handleCheckout = async (priceId: string) => {
     setCheckoutLoading(priceId);
@@ -261,11 +292,18 @@ export default function ActivityPreview({
               Imprimir / PDF
             </button>
             <button
-              onClick={handleDownloadHtml}
-              disabled={downloading}
+              onClick={handleDownloadDocx}
+              disabled={downloadingDocx}
               className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-green-600 hover:to-emerald-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {downloading ? "Gerando..." : "Baixar editável"}
+              {downloadingDocx ? "Gerando..." : "Baixar .docx"}
+            </button>
+            <button
+              onClick={handleDownloadHtml}
+              disabled={downloading}
+              className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-teal-600 hover:to-cyan-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {downloading ? "Gerando..." : "Baixar HTML"}
             </button>
           </div>
         )}
