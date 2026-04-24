@@ -320,60 +320,51 @@ export default function ActivityPreview({
           <div className="print-area" ref={contentRef} style={{ position: "relative" }}>
             {/* School header — fiel ao modelo da professora */}
             <div className="border-2 border-gray-400 mb-4 sm:mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
-              {/* Top row: logo + school name + photo box */}
+              {/* Top row: logo + school name */}
               <div className="flex items-stretch border-b border-gray-400">
                 {config.logoBase64 ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={config.logoBase64}
                     alt="Logo"
-                    className="w-16 h-16 object-contain border-r border-gray-400 p-1"
+                    className="w-16 h-16 object-contain border-r border-gray-400 p-1 flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-16 h-16 border-r border-gray-400 flex items-center justify-center text-gray-300 text-2xl">🏫</div>
+                  <div className="w-16 h-16 border-r border-gray-400 flex items-center justify-center text-gray-300 text-2xl flex-shrink-0">🏫</div>
                 )}
-                <div className="flex-1 flex items-center justify-center px-2 py-1">
+                <div className="flex-1 flex items-center justify-center px-3 py-2">
                   <span className="font-black text-sm sm:text-base uppercase tracking-wide text-center">
                     {config.schoolName || "NOME DA ESCOLA"}
                   </span>
-                </div>
-                <div className="w-20 h-16 border-l border-gray-400 flex items-center justify-center">
-                  <span className="text-xs text-gray-300 text-center leading-tight px-1">foto do aluno</span>
                 </div>
               </div>
 
               {/* Second row: teacher + date */}
               <div className="flex border-b border-gray-400 text-xs">
-                <div className="flex items-center gap-1 flex-1 px-2 py-1 border-r border-gray-400">
-                  <span className="font-bold uppercase shrink-0">PROFª</span>
-                  <span className="border-b border-gray-400 flex-1 font-semibold">{config.teacherName}</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400" style={{ flex: "0 0 60%" }}>
+                  <span className="font-bold uppercase shrink-0">PROFª:</span>
+                  <span className="border-b border-gray-400 flex-1 font-semibold pb-0.5">{config.teacherName}</span>
                 </div>
-                <div className="flex items-center gap-1 flex-1 px-2 py-1">
+                <div className="flex items-center gap-2 flex-1 px-3 py-1.5">
                   <span className="font-bold uppercase shrink-0">DATA:</span>
                   <span className="font-semibold">{config.date}</span>
                 </div>
               </div>
 
               {/* Third row: série + turma + turno */}
-              <div className="flex border-b border-gray-400 text-xs">
-                <div className="flex items-center gap-1 px-2 py-1 border-r border-gray-400">
+              <div className="flex text-xs">
+                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400">
                   <span className="font-bold uppercase shrink-0">SÉRIE:</span>
                   <span className="font-semibold">{config.year}</span>
                 </div>
-                <div className="flex items-center gap-1 px-2 py-1 border-r border-gray-400">
+                <div className="flex items-center gap-2 px-3 py-1.5 border-r border-gray-400">
                   <span className="font-bold uppercase shrink-0">TURMA:</span>
                   <span className="font-semibold">{config.className}</span>
                 </div>
-                <div className="flex items-center gap-1 px-2 py-1">
+                <div className="flex items-center gap-2 px-3 py-1.5">
                   <span className="font-bold uppercase shrink-0">TURNO:</span>
                   <span className="font-semibold">{config.turno}</span>
                 </div>
-              </div>
-
-              {/* Fourth row: student name */}
-              <div className="flex items-center gap-1 px-2 py-1 text-xs">
-                <span className="font-bold uppercase shrink-0">ALUNO(A):</span>
-                <span className="border-b border-gray-400 flex-1" />
               </div>
             </div>
 
