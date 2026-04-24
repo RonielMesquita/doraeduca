@@ -349,23 +349,41 @@ export default function ActivityForm({
       <UploadSection files={uploadedFiles} onChange={onFilesChange} />
 
       {/* Generate button */}
-      <button
-        onClick={onGenerate}
-        disabled={loading}
-        className={`w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg transition-all ${
-          loading
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 hover:shadow-xl active:scale-95"
-        }`}
-      >
-        {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="animate-spin">⏳</span> Gerando...
-          </span>
-        ) : (
-          <span>✨ Gerar Atividade</span>
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={onGenerate}
+          disabled={loading}
+          className={`w-full py-5 rounded-2xl font-black text-lg text-white transition-all ${
+            loading
+              ? "bg-gray-300 cursor-not-allowed shadow-md"
+              : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95"
+          }`}
+          style={
+            loading
+              ? {}
+              : {
+                  boxShadow:
+                    "0 6px 24px rgba(245,158,11,0.45), 0 2px 8px rgba(234,88,12,0.25)",
+                }
+          }
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="animate-spin">⏳</span> Gerando...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <span>✨</span>
+              <span>Gerar atividade pronta</span>
+            </span>
+          )}
+        </button>
+        {!loading && (
+          <p className="text-center text-xs text-gray-400 font-medium tracking-wide">
+            Pronto para imprimir em poucos segundos
+          </p>
         )}
-      </button>
+      </div>
 
       <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl p-3">
         <p className="text-xs font-bold text-blue-700 mb-1">💡 Dica</p>
