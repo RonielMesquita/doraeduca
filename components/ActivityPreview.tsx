@@ -34,6 +34,7 @@ export default function ActivityPreview({
 }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [pageBreaks, setPageBreaks] = useState<number[]>([]);
@@ -41,6 +42,7 @@ export default function ActivityPreview({
 
   useEffect(() => {
     if (!loading) { setLoadingMsgIdx(0); return; }
+    mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     const id = setInterval(() => setLoadingMsgIdx((i: number) => (i + 1) % LOADING_MESSAGES.length), 2200);
     return () => clearInterval(id);
   }, [loading]);
@@ -98,7 +100,7 @@ export default function ActivityPreview({
   const subject = SUBJECTS[config.subject];
 
   return (
-    <main className="flex-1 flex flex-col gap-3 min-w-0">
+    <main ref={mainRef} className="flex-1 flex flex-col gap-3 min-w-0">
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 no-print">
         <div className="flex items-center gap-2">
@@ -302,16 +304,17 @@ export default function ActivityPreview({
             </div>
 
             {/* Subject badges */}
-            <div className="flex flex-wrap gap-1.5 justify-center mt-5">
+            <div className="flex flex-wrap gap-2 justify-center mt-6">
               {[
-                { label: "Português", emoji: "📖", color: "bg-amber-50 border-amber-200 text-amber-700" },
-                { label: "Matemática", emoji: "🔢", color: "bg-blue-50 border-blue-200 text-blue-700" },
-                { label: "Ciências", emoji: "🔬", color: "bg-green-50 border-green-200 text-green-700" },
-                { label: "Avaliação", emoji: "📝", color: "bg-purple-50 border-purple-200 text-purple-700" },
-                { label: "Plano de Aula", emoji: "📋", color: "bg-orange-50 border-orange-200 text-orange-700" },
+                { label: "Português", emoji: "📖", color: "bg-amber-50 border-amber-300 text-amber-800" },
+                { label: "Matemática", emoji: "🔢", color: "bg-blue-50 border-blue-300 text-blue-800" },
+                { label: "Ciências", emoji: "🔬", color: "bg-green-50 border-green-300 text-green-800" },
+                { label: "Avaliação", emoji: "📝", color: "bg-purple-50 border-purple-300 text-purple-800" },
+                { label: "Plano de Aula", emoji: "📋", color: "bg-orange-50 border-orange-300 text-orange-800" },
               ].map((b) => (
-                <span key={b.label} className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full border ${b.color}`}>
-                  {b.emoji} {b.label}
+                <span key={b.label} className={`inline-flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-2xl border-2 shadow-sm ${b.color}`}>
+                  <span className="text-base">{b.emoji}</span>
+                  <span>{b.label}</span>
                 </span>
               ))}
             </div>

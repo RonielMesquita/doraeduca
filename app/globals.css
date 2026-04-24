@@ -1105,14 +1105,19 @@ img {
     background: transparent !important;
   }
 
-  /* Evitar quebra dentro de qualquer elemento da atividade */
+  /* activity-section pode quebrar entre páginas — só evitar quebra nos elementos menores */
+  .activity-section {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  /* Evitar quebra dentro dos elementos individuais */
   .figurinha-card,
   .figurinhas-grid,
   .figurinhas-grid-3,
   .counting-card,
   .drawing-box,
   .problem-box,
-  .activity-section,
   .activity-subtitle,
   .familia-box,
   .word-box,
