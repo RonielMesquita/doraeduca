@@ -118,12 +118,20 @@ export async function POST(request: Request) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { count } = await supabase
-        .from("activities")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id);
-      if ((count ?? 0) >= FREE_LIMIT) {
-        return Response.json({ error: "limit_reached", count }, { status: 402 });
+      const testerEmails = (process.env.TESTER_EMAILS ?? "")
+        .split(",")
+        .map((e) => e.trim().toLowerCase())
+        .filter(Boolean);
+      const isTester = user.email && testerEmails.includes(user.email.toLowerCase());
+
+      if (!isTester) {
+        const { count } = await supabase
+          .from("activities")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        if ((count ?? 0) >= FREE_LIMIT) {
+          return Response.json({ error: "limit_reached", count }, { status: 402 });
+        }
       }
     }
   } catch {

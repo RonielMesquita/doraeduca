@@ -7,7 +7,6 @@ import ActivityForm from "@/components/ActivityForm";
 import ActivityPreview from "@/components/ActivityPreview";
 import ChatSidebar from "@/components/ChatSidebar";
 import HistoryPanel from "@/components/HistoryPanel";
-import UpgradeModal from "@/components/UpgradeModal";
 import { ActivityConfig, UploadedFile, defaultConfig } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 
@@ -23,7 +22,7 @@ export default function Home() {
   const [feedback, setFeedback] = useState<string>("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [userName, setUserName] = useState<string>("");
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
   const [usageCount, setUsageCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -73,7 +72,7 @@ export default function Home() {
 
       // Limite do plano gratuito atingido
       if (res.status === 402) {
-        setShowUpgradeModal(true);
+        setLimitReached(true);
         return;
       }
 
@@ -107,6 +106,7 @@ export default function Home() {
     setActivity(loadedActivity);
     setSource("ai");
     setFeedback("");
+    setLimitReached(false);
   };
 
   const remaining = usageCount !== null ? Math.max(0, FREE_LIMIT - usageCount) : null;
@@ -127,7 +127,7 @@ export default function Home() {
           uploadedFiles={uploadedFiles}
           onFilesChange={setUploadedFiles}
           remaining={remaining}
-          onUpgradeClick={() => setShowUpgradeModal(true)}
+          onUpgradeClick={() => setLimitReached(true)}
         />
         <ActivityPreview
           config={config}
@@ -137,6 +137,7 @@ export default function Home() {
           feedback={feedback}
           onFeedbackChange={setFeedback}
           onRegenerate={handleGenerate}
+          limitReached={limitReached}
         />
       </div>
       <ChatSidebar />
@@ -144,10 +145,6 @@ export default function Home() {
         open={historyOpen}
         onClose={() => setHistoryOpen(false)}
         onLoad={handleHistoryLoad}
-      />
-      <UpgradeModal
-        open={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
       />
     </div>
   );
