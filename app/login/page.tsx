@@ -96,7 +96,7 @@ export default function LoginPage() {
               Acesse sua caixa de entrada e clique no link que enviamos para ativar sua conta. Caso não encontre, verifique também a pasta de spam.
             </p>
             <button
-              onClick={() => { setEmailSent(""); setMode("login"); }}
+              onClick={() => { setEmailSent(""); setMode("login"); setEmail(""); setPassword(""); setName(""); }}
               className="w-full py-3 rounded-2xl font-black text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 shadow-md"
             >
               Já confirmei, ir para o login
@@ -238,6 +238,9 @@ export default function LoginPage() {
                   setMode(mode === "login" ? "register" : "login");
                   setError("");
                   setEmailSent("");
+                  setEmail("");
+                  setPassword("");
+                  setName("");
                 }}
                 className="font-bold text-amber-600 hover:text-amber-700 underline"
               >
