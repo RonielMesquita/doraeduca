@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
 
   // Supabase sets cookies with "sb-" prefix when logged in
   const hasSession = request.cookies.getAll().some(
-    (cookie) => cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
+    (cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token")
   );
 
   if (!hasSession && pathname === "/") {
