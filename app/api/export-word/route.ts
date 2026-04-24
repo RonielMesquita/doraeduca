@@ -25,8 +25,8 @@ function buildWordHtml(config: ActivityConfig, activity: string): string {
   let html = activity
     // Converter figurinha-card em parágrafo simples
     .replace(/<div[^>]*figurinha-card[^>]*>([\s\S]*?)<\/div>/g, (_, inner) => {
-      const emoji = (inner.match(/<span[^>]*figurinha-emoji[^>]*>(.*?)<\/span>/s) || [])[1] || "";
-      const name = (inner.match(/<span[^>]*figurinha-name[^>]*>(.*?)<\/span>/s) || [])[1] || "";
+      const emoji = (inner.match(/<span[^>]*figurinha-emoji[^>]*>([\s\S]*?)<\/span>/) || [])[1] || "";
+      const name = (inner.match(/<span[^>]*figurinha-name[^>]*>([\s\S]*?)<\/span>/) || [])[1] || "";
       const clean = stripEmojis(emoji + " " + name).trim();
       return `<p style="border:1px solid #ccc;padding:6px;display:inline-block;margin:4px;">${clean || "[ ]"}</p>`;
     })
