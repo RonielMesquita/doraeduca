@@ -145,40 +145,84 @@ export default function ActivityPreview({
     window.print();
   };
 
-  const handleDownloadWord = async () => {
+  const handleDownloadHtml = () => {
     if (!activity) return;
-
     setDownloading(true);
-    try {
-      const response = await fetch("/api/export-word", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          config,
-          activity,
-          filename: `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}`,
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error("Falha ao gerar documento");
-      }
+    const subject = SUBJECTS[config.subject];
+    const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>${config.activityTitle} - ${subject?.label ?? config.subject}</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 780px; margin: 40px auto; padding: 0 24px; color: #111; }
+    .header { border: 2px solid #555; margin-bottom: 24px; }
+    .header-row { display: flex; border-bottom: 1px solid #555; }
+    .header-cell { padding: 6px 10px; border-right: 1px solid #555; }
+    .header-cell:last-child { border-right: none; }
+    .header-logo { width: 56px; text-align: center; font-size: 24px; }
+    .header-school { flex: 1; font-weight: 900; font-size: 14px; text-transform: uppercase; text-align: center; }
+    .header-label { font-weight: bold; text-transform: uppercase; font-size: 11px; }
+    .activity-title { text-align: center; margin: 20px 0; }
+    .activity-title h1 { font-size: 16px; text-transform: uppercase; font-weight: 900; }
+    .activity-title p { font-size: 13px; font-weight: bold; text-transform: uppercase; margin: 4px 0 0; }
+    .activity-section { margin-bottom: 20px; }
+    .activity-subtitle { font-weight: 900; font-size: 14px; text-transform: uppercase; margin-bottom: 8px; }
+    .activity-instruction { font-size: 13px; margin-bottom: 6px; }
+    .answer-line { border-bottom: 1px solid #333; min-height: 24px; margin: 6px 0; }
+    .figurinhas-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0; }
+    .figurinha-card { border: 2px solid #ccc; border-radius: 10px; padding: 10px; text-align: center; min-width: 80px; }
+    .figurinha-card.green { border-color: #4ade80; background: #f0fdf4; }
+    .figurinha-card.blue { border-color: #60a5fa; background: #eff6ff; }
+    .figurinha-card.yellow { border-color: #facc15; background: #fefce8; }
+    .figurinha-card.pink { border-color: #f472b6; background: #fdf2f8; }
+    .figurinha-emoji { font-size: 32px; display: block; }
+    .figurinha-name { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-top: 4px; }
+    .figurinha-write { border-bottom: 1px solid #333; min-height: 20px; margin-top: 6px; }
+    .word-box { display: inline-block; border: 2px solid #555; padding: 4px 12px; margin: 4px; font-weight: bold; border-radius: 6px; }
+    .math-grid { display: grid; gap: 12px; }
+    table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+    td, th { border: 1px solid #555; padding: 6px 10px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-row">
+      <div class="header-cell header-logo">${config.logoBase64 ? `<img src="${config.logoBase64}" style="width:48px;height:48px;object-fit:contain;" />` : "🏫"}</div>
+      <div class="header-cell header-school">${config.schoolName || "NOME DA ESCOLA"}</div>
+    </div>
+    <div class="header-row">
+      <div class="header-cell" style="flex:0 0 38%"><span class="header-label">PROFª:</span> ${config.teacherName}</div>
+      <div class="header-cell"><span class="header-label">SÉRIE:</span> ${config.year}</div>
+      <div class="header-cell"><span class="header-label">TURMA:</span> ${config.className}</div>
+      <div class="header-cell"><span class="header-label">TURNO:</span> ${config.turno}</div>
+    </div>
+    <div class="header-row">
+      <div class="header-cell" style="flex:1"><span class="header-label">ALUNO(A):</span> _______________________________________________</div>
+      <div class="header-cell"><span class="header-label">DATA:</span> ${config.date}</div>
+    </div>
+  </div>
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Erro ao baixar Word:", error);
-      alert("Erro ao gerar arquivo Word. Tente novamente.");
-    } finally {
-      setDownloading(false);
-    }
+  <div class="activity-title">
+    <h1>${config.activityTitle} — ${(subject?.label ?? config.subject).toUpperCase()}</h1>
+    ${config.topic ? `<p>${config.topic.toUpperCase()}</p>` : ""}
+  </div>
+
+  ${activity}
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `atividade-${config.subject}-${config.activityType.replace(/\s+/g, "-").toLowerCase()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setDownloading(false);
   };
 
   const subject = SUBJECTS[config.subject];
@@ -217,11 +261,11 @@ export default function ActivityPreview({
               Imprimir / PDF
             </button>
             <button
-              onClick={handleDownloadWord}
+              onClick={handleDownloadHtml}
               disabled={downloading}
               className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-green-600 hover:to-emerald-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {downloading ? "Gerando..." : "Baixar Word"}
+              {downloading ? "Gerando..." : "Baixar editável"}
             </button>
           </div>
         )}
