@@ -183,17 +183,21 @@ export default function ActivityPreview({
     const rawBreaks: number[] = [];
     for (let i = 1; i < pages; i++) rawBreaks.push(i * A4_CONTENT_H);
 
-    // Sobe a quebra para não cortar dentro de blocos que têm break-inside:avoid no print
+    // Sobe a quebra para não cortar dentro de blocos atômicos (break-inside:avoid no print)
     const snapped = rawBreaks.map((breakY) => {
       let pos = breakY;
       container.querySelectorAll<HTMLElement>(
-        ".activity-section, .figurinhas-grid, .figurinhas-grid-3, .figurinha-card, .math-grid, .problem-box, .drawing-box, .counting-card, table, img"
+        ".figurinhas-grid, .figurinhas-grid-3, .figurinha-card, .math-grid, .problem-box, .drawing-box, .counting-card, table, img"
       ).forEach((el) => {
         let top = 0;
         let cur: HTMLElement | null = el;
         while (cur && cur !== container) { top += cur.offsetTop; cur = cur.offsetParent as HTMLElement | null; }
+        if (cur !== container) return; // elemento fora da cadeia offsetParent, ignorar
         const bottom = top + el.offsetHeight;
-        if (top < breakY && bottom > breakY) pos = Math.min(pos, top);
+        // Só sobe se o elemento cruza a quebra e está a no máximo 300px antes dela
+        if (top < breakY && bottom > breakY && breakY - top <= 300) {
+          pos = Math.min(pos, top);
+        }
       });
       return pos;
     });
