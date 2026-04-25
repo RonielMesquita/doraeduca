@@ -101,7 +101,6 @@ export default function ActivityPreview({
   const [downloading, setDownloading] = useState(false);
   const [downloadingDocx, setDownloadingDocx] = useState(false);
   const [pageCount, setPageCount] = useState(1);
-  const [pageBreaks, setPageBreaks] = useState<number[]>([]);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -177,11 +176,7 @@ export default function ActivityPreview({
   useEffect(() => {
     if (!contentRef.current || !activity) return;
     const totalH = contentRef.current.scrollHeight;
-    const pages = Math.max(1, Math.ceil(totalH / A4_CONTENT_H));
-    const breaks: number[] = [];
-    for (let i = 1; i < pages; i++) breaks.push(i * A4_CONTENT_H);
-    setPageCount(pages);
-    setPageBreaks(breaks);
+    setPageCount(Math.max(1, Math.ceil(totalH / A4_CONTENT_H)));
   }, [activity, loading]);
 
   useEffect(() => {
@@ -921,38 +916,7 @@ export default function ActivityPreview({
               <div dangerouslySetInnerHTML={{ __html: editedHtml ?? activity ?? "" }} />
             )}
 
-            {/* Separadores de página — cinza, mimetiza borda da folha */}
-            {pageBreaks.map((top: number, i: number) => (
-              <div
-                key={top}
-                className="no-print"
-                style={{
-                  position: "absolute",
-                  left: "-125px",
-                  right: "-88px",
-                  top: `${top}px`,
-                  height: "24px",
-                  background: "#b8bec7",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  pointerEvents: "none",
-                  zIndex: 10,
-                }}
-              >
-                <span style={{
-                  fontSize: "9px",
-                  color: "#6b7280",
-                  fontWeight: "bold",
-                  userSelect: "none",
-                  letterSpacing: "0.05em",
-                }}>
-                  — Página {i + 2} —
-                </span>
-              </div>
-            ))}
-
-            {/* Footer */}
+{/* Footer */}
             <div className="mt-4 pt-2 border-t border-gray-200 print-footer" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
               <p className="text-xs text-gray-400 text-center">
                 Bom trabalho!
