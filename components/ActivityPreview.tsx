@@ -5,8 +5,8 @@ import { ActivityConfig, SUBJECTS } from "@/lib/types";
 
 const A4_HEIGHT_PX = 1123; // 297mm a 96dpi
 const A4_PAPER_W = 794;   // 210mm a 96dpi
-// Área de conteúdo por página: A4 - margem ABNT sup (3cm) - margem inf (2cm) - padding interno (8+8)
-const A4_CONTENT_H = A4_HEIGHT_PX - 113 - 76 - 8 - 8; // 918px
+// Caixa de conteúdo por página: A4 - margem ABNT sup (3cm) - margem inf (2cm)
+const A4_CONTENT_H = A4_HEIGHT_PX - 113 - 76; // 934px
 
 const LOADING_MESSAGES = [
   "Gerando sua atividade com IA...",
@@ -176,12 +176,30 @@ export default function ActivityPreview({
 
   useEffect(() => {
     if (!contentRef.current || !activity) return;
-    const height = contentRef.current.scrollHeight;
-    const pages = Math.max(1, Math.ceil(height / A4_CONTENT_H));
+    const container = contentRef.current;
+    const totalH = container.scrollHeight;
+    const pages = Math.max(1, Math.ceil(totalH / A4_CONTENT_H));
+
+    const rawBreaks: number[] = [];
+    for (let i = 1; i < pages; i++) rawBreaks.push(i * A4_CONTENT_H);
+
+    // Sobe a quebra para não cortar dentro de blocos que têm break-inside:avoid no print
+    const snapped = rawBreaks.map((breakY) => {
+      let pos = breakY;
+      container.querySelectorAll<HTMLElement>(
+        ".activity-section, .figurinhas-grid, .figurinhas-grid-3, .figurinha-card, .math-grid, .problem-box, .drawing-box, .counting-card, table, img"
+      ).forEach((el) => {
+        let top = 0;
+        let cur: HTMLElement | null = el;
+        while (cur && cur !== container) { top += cur.offsetTop; cur = cur.offsetParent as HTMLElement | null; }
+        const bottom = top + el.offsetHeight;
+        if (top < breakY && bottom > breakY) pos = Math.min(pos, top);
+      });
+      return pos;
+    });
+
     setPageCount(pages);
-    const breaks: number[] = [];
-    for (let i = 1; i < pages; i++) breaks.push(i * A4_CONTENT_H);
-    setPageBreaks(breaks);
+    setPageBreaks(snapped);
   }, [activity, loading]);
 
   useEffect(() => {
