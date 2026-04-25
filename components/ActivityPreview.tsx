@@ -5,6 +5,8 @@ import { ActivityConfig, SUBJECTS } from "@/lib/types";
 
 const A4_HEIGHT_PX = 1123; // 297mm a 96dpi
 const A4_PAPER_W = 794;   // 210mm a 96dpi
+// Área de conteúdo por página: A4 - margem ABNT sup (3cm) - margem inf (2cm) - padding interno (8+8)
+const A4_CONTENT_H = A4_HEIGHT_PX - 113 - 76 - 8 - 8; // 918px
 
 const LOADING_MESSAGES = [
   "Gerando sua atividade com IA...",
@@ -175,10 +177,10 @@ export default function ActivityPreview({
   useEffect(() => {
     if (!contentRef.current || !activity) return;
     const height = contentRef.current.scrollHeight;
-    const pages = Math.max(1, Math.ceil(height / A4_HEIGHT_PX));
+    const pages = Math.max(1, Math.ceil(height / A4_CONTENT_H));
     setPageCount(pages);
     const breaks: number[] = [];
-    for (let i = 1; i < pages; i++) breaks.push(i * A4_HEIGHT_PX);
+    for (let i = 1; i < pages; i++) breaks.push(i * A4_CONTENT_H);
     setPageBreaks(breaks);
   }, [activity, loading]);
 
