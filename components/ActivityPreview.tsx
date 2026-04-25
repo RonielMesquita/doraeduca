@@ -227,6 +227,8 @@ export default function ActivityPreview({
     const root = doc.getElementById("r");
     if (!root) return { before: html, sections: [], after: "" };
     const children = Array.from(root.children) as HTMLElement[];
+
+    // Estratégia 1: elementos com classe .activity-section
     const hasSections = children.some((el) => el.classList.contains("activity-section"));
     if (hasSections) {
       const before: string[] = [];
@@ -236,18 +238,42 @@ export default function ActivityPreview({
         if (el.classList.contains("activity-section")) { started = true; sections.push(el.outerHTML); }
         else if (!started) before.push(el.outerHTML);
       });
-      return { before: before.join(""), sections, after: "" };
+      if (sections.length >= 2) return { before: before.join(""), sections, after: "" };
     }
-    const sections = children
-      .filter((el) => el.tagName === "DIV" && el.children.length > 0)
-      .map((el) => el.outerHTML);
-    return { before: "", sections: sections.length > 1 ? sections : [], after: "" };
+
+    // Estratégia 2: agrupar por títulos H1/H2/H3 como delimitadores de seção
+    const HEADINGS = new Set(["H1", "H2", "H3"]);
+    if (children.some((el) => HEADINGS.has(el.tagName))) {
+      const sections: string[] = [];
+      let current: string[] = [];
+      children.forEach((el) => {
+        if (HEADINGS.has(el.tagName) && current.length > 0) {
+          sections.push(current.join(""));
+          current = [];
+        }
+        current.push(el.outerHTML);
+      });
+      if (current.length > 0) sections.push(current.join(""));
+      if (sections.length >= 2) return { before: "", sections, after: "" };
+    }
+
+    // Estratégia 3: qualquer elemento block de nível superior com conteúdo
+    const BLOCKS = new Set(["DIV", "SECTION", "ARTICLE", "P", "UL", "OL", "TABLE", "BLOCKQUOTE"]);
+    const blocks = children.filter((el) => BLOCKS.has(el.tagName) && el.textContent?.trim());
+    if (blocks.length >= 2) {
+      return { before: "", sections: blocks.map((el) => el.outerHTML), after: "" };
+    }
+
+    return { before: html, sections: [], after: "" };
   }
 
   const handleStartReorder = () => {
     const html = editedHtml ?? activity ?? "";
     const parsed = parseBlocks(html);
-    if (parsed.sections.length < 2) return;
+    if (parsed.sections.length < 2) {
+      alert("Não foi possível detectar blocos separados nesta atividade.\n\nO conteúdo parece estar em um único bloco contínuo, sem divisões que possam ser reordenadas.");
+      return;
+    }
     setReorderBlocks(parsed);
     setIsReordering(true);
   };
