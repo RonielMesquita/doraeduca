@@ -896,7 +896,7 @@ export default function ActivityPreview({
                         >▼</button>
                       </div>
                     </div>
-                    <div className="reorder-content" dangerouslySetInnerHTML={{ __html: section }} />
+                    <div dangerouslySetInnerHTML={{ __html: section }} />
                   </div>
                 ))}
               </div>

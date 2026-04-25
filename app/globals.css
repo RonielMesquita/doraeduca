@@ -986,14 +986,6 @@
   background-image: none;
 }
 
-/* Modo reordenação: bloqueia pointer events no conteúdo para o drag cair no card pai */
-.reorder-content,
-.reorder-content * {
-  pointer-events: none !important;
-  user-select: none !important;
-  -webkit-user-drag: none !important;
-}
-
 /* Evitar corte de imagens e cards nas quebras de página */
 .figurinha-card,
 .figurinhas-grid,
