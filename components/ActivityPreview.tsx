@@ -474,13 +474,6 @@ export default function ActivityPreview({
                 >
                   {downloadingDocx ? "Gerando..." : "Baixar .docx"}
                 </button>
-                <button
-                  onClick={handleDownloadHtml}
-                  disabled={downloading}
-                  className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-teal-600 hover:to-cyan-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {downloading ? "Gerando..." : "Baixar HTML"}
-                </button>
               </>
             )}
           </div>
