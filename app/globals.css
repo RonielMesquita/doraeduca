@@ -961,7 +961,8 @@
   background: #b8bec7;
   padding: 20px 16px 24px;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   display: flex;
   justify-content: center;
   align-items: flex-start;
