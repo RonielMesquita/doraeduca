@@ -961,12 +961,17 @@
   background: #b8bec7;
   padding: 20px 16px 24px;
   border-radius: 12px;
-  overflow: visible;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 /* Wrapper que aplica o scale (set via inline style no React) */
 .a4-scale-wrapper {
   transform-origin: top center;
+  flex-shrink: 0;
+  width: 794px;
 }
 
 /* A folha branca A4 */
