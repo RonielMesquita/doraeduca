@@ -313,7 +313,7 @@ export default function ActivityForm({
             <button
               onClick={() => onChange({ ...config, hasMargem: !config.hasMargem })}
               className={`w-10 h-6 rounded-full transition-all relative ${
-                config.hasMargem ? "bg-amber-400" : "bg-gray-300"
+                config.hasMargem ? "bg-purple-600" : "bg-gray-300"
               }`}
             >
               <span
@@ -393,10 +393,10 @@ export default function ActivityForm({
               ? "bg-gray-300 cursor-not-allowed shadow-md"
               : remaining === 0
               ? "bg-gradient-to-r from-gray-400 to-gray-500 hover:from-amber-500 hover:to-orange-500 active:scale-95 shadow-xl"
-              : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95"
+              : "bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] active:scale-95"
           }`}
           style={loading || remaining === 0 ? {} : {
-            boxShadow: "0 6px 24px rgba(245,158,11,0.45), 0 2px 8px rgba(234,88,12,0.25)",
+            boxShadow: "0 6px 24px rgba(109,40,217,0.45), 0 2px 8px rgba(76,29,149,0.30)",
           }}
         >
           {loading ? (
@@ -422,9 +422,9 @@ export default function ActivityForm({
         )}
       </div>
 
-      <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl p-3">
-        <p className="text-xs font-bold text-blue-700 mb-1">💡 Dica</p>
-        <p className="text-xs text-blue-600">
+      <div className="bg-purple-50 border-2 border-purple-100 rounded-2xl p-3">
+        <p className="text-xs font-bold text-purple-700 mb-1">💡 Dica</p>
+        <p className="text-xs text-purple-600">
           Carregue a logo da escola e preencha o tema para atividades mais personalizadas!
         </p>
       </div>

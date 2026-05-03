@@ -76,7 +76,7 @@ export default function LoginPage() {
         </div>
         <div className="relative w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl p-4 shadow-xl mb-4">
+            <div className="inline-flex items-center justify-center bg-gradient-to-r from-orange-400 to-purple-800 rounded-3xl p-4 shadow-xl mb-4">
               <span className="text-5xl">🍎</span>
             </div>
             <h1 className="text-4xl font-black text-gray-800 tracking-wide">DoraEduca</h1>
@@ -97,7 +97,7 @@ export default function LoginPage() {
             </p>
             <button
               onClick={() => { setEmailSent(""); setMode("login"); setEmail(""); setPassword(""); setName(""); }}
-              className="w-full py-3 rounded-2xl font-black text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 shadow-md"
+              className="w-full py-3 rounded-2xl font-black text-white bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] transition-all active:scale-95 shadow-md"
             >
               Já confirmei, ir para o login
             </button>
@@ -224,7 +224,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? "⏳ Aguarde..." : mode === "login" ? "✨ Entrar" : "🎉 Criar Conta"}
             </button>
@@ -242,7 +242,7 @@ export default function LoginPage() {
                   setPassword("");
                   setName("");
                 }}
-                className="font-bold text-amber-600 hover:text-amber-700 underline"
+                className="font-bold text-purple-700 hover:text-purple-900 underline"
               >
                 {mode === "login" ? "Criar conta grátis" : "Entrar"}
               </button>

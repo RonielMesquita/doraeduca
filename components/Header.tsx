@@ -23,7 +23,7 @@ export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
   const greeting = gender === "f" ? "Bem-vinda!" : "Bem-vindo!";
   const teacherEmoji = gender === "f" ? "👩‍🏫" : "👨‍🏫";
   return (
-    <header className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 shadow-lg no-print">
+    <header className="relative overflow-hidden bg-gradient-to-r from-orange-500 via-amber-400 to-purple-800 shadow-lg no-print">
       {/* Decorative floating elements */}
       <div className="absolute inset-0 pointer-events-none select-none">
         <span className="absolute text-white/20 text-6xl top-1 left-6 rotate-[-15deg]">✏️</span>
@@ -88,7 +88,7 @@ export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
       </div>
 
       {/* Bottom wave decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-amber-200 via-orange-200 to-yellow-200 opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-200 via-purple-300 to-purple-500 opacity-40" />
     </header>
   );
 }

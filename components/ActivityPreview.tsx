@@ -223,42 +223,56 @@ export default function ActivityPreview({
     const doc = parser.parseFromString(`<div id="r">${html}</div>`, "text/html");
     const root = doc.getElementById("r");
     if (!root) return { before: html, sections: [], after: "" };
-    const children = Array.from(root.children) as HTMLElement[];
 
-    // Estratégia 1: elementos com classe .activity-section
-    const hasSections = children.some((el) => el.classList.contains("activity-section"));
-    if (hasSections) {
-      const before: string[] = [];
-      const sections: string[] = [];
-      let started = false;
-      children.forEach((el) => {
-        if (el.classList.contains("activity-section")) { started = true; sections.push(el.outerHTML); }
-        else if (!started) before.push(el.outerHTML);
-      });
-      if (sections.length >= 2) return { before: before.join(""), sections, after: "" };
+    function extractSections(el: Element): string[] | null {
+      const kids = Array.from(el.children) as HTMLElement[];
+      if (kids.length < 2) return null;
+
+      // A: .activity-section filhos diretos
+      const secEls = kids.filter((c) => c.classList.contains("activity-section"));
+      if (secEls.length >= 2) return secEls.map((c) => c.outerHTML);
+
+      // B: agrupar por H1/H2/H3
+      const HEADINGS = new Set(["H1", "H2", "H3"]);
+      if (kids.some((c) => HEADINGS.has(c.tagName))) {
+        const secs: string[] = [];
+        let cur: string[] = [];
+        kids.forEach((c) => {
+          if (HEADINGS.has(c.tagName) && cur.length) { secs.push(cur.join("")); cur = []; }
+          cur.push(c.outerHTML);
+        });
+        if (cur.length) secs.push(cur.join(""));
+        if (secs.length >= 2) return secs;
+      }
+
+      // C: .activity-subtitle como delimitador de questão
+      if (kids.some((c) => c.classList.contains("activity-subtitle"))) {
+        const secs: string[] = [];
+        let cur: string[] = [];
+        kids.forEach((c) => {
+          if (c.classList.contains("activity-subtitle") && cur.length) { secs.push(cur.join("")); cur = []; }
+          cur.push(c.outerHTML);
+        });
+        if (cur.length) secs.push(cur.join(""));
+        if (secs.length >= 2) return secs;
+      }
+
+      // D: qualquer elemento block com conteúdo
+      const BLOCKS = new Set(["DIV", "SECTION", "ARTICLE", "P", "UL", "OL", "TABLE", "BLOCKQUOTE"]);
+      const blocks = kids.filter((c) => BLOCKS.has(c.tagName) && c.textContent?.trim());
+      if (blocks.length >= 2) return blocks.map((c) => c.outerHTML);
+
+      return null;
     }
 
-    // Estratégia 2: agrupar por títulos H1/H2/H3 como delimitadores de seção
-    const HEADINGS = new Set(["H1", "H2", "H3"]);
-    if (children.some((el) => HEADINGS.has(el.tagName))) {
-      const sections: string[] = [];
-      let current: string[] = [];
-      children.forEach((el) => {
-        if (HEADINGS.has(el.tagName) && current.length > 0) {
-          sections.push(current.join(""));
-          current = [];
-        }
-        current.push(el.outerHTML);
-      });
-      if (current.length > 0) sections.push(current.join(""));
-      if (sections.length >= 2) return { before: "", sections, after: "" };
-    }
+    // Tenta na raiz primeiro
+    const rootSections = extractSections(root);
+    if (rootSections && rootSections.length >= 2) return { before: "", sections: rootSections, after: "" };
 
-    // Estratégia 3: qualquer elemento block de nível superior com conteúdo
-    const BLOCKS = new Set(["DIV", "SECTION", "ARTICLE", "P", "UL", "OL", "TABLE", "BLOCKQUOTE"]);
-    const blocks = children.filter((el) => BLOCKS.has(el.tagName) && el.textContent?.trim());
-    if (blocks.length >= 2) {
-      return { before: "", sections: blocks.map((el) => el.outerHTML), after: "" };
+    // Se raiz tem só 1 filho, tenta dentro dele (padrão comum da IA)
+    if (root.children.length === 1) {
+      const inner = extractSections(root.children[0]);
+      if (inner && inner.length >= 2) return { before: "", sections: inner, after: "" };
     }
 
     return { before: html, sections: [], after: "" };
@@ -425,7 +439,7 @@ export default function ActivityPreview({
               </>
             ) : isReordering ? (
               <>
-                <span className="text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-300 px-3 py-1.5 rounded-xl">
+                <span className="text-xs font-bold bg-purple-50 text-purple-700 border border-purple-300 px-3 py-1.5 rounded-xl">
                   ↕ Reordenando blocos...
                 </span>
                 <button
@@ -454,13 +468,13 @@ export default function ActivityPreview({
                 </button>
                 <button
                   onClick={handleStartReorder}
-                  className="flex items-center gap-2 bg-gradient-to-r from-indigo-400 to-violet-400 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-indigo-500 hover:to-violet-500 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                  className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-purple-700 hover:to-purple-900 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
                 >
                   ↕ Reordenar
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                  className="flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-purple-800 hover:to-[#3b0764] active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
                 >
                   Imprimir / PDF
                 </button>
@@ -481,7 +495,7 @@ export default function ActivityPreview({
       {limitReached ? (
         <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-amber-100 no-print">
           {/* Header */}
-          <div className="bg-gradient-to-br from-amber-400 via-orange-400 to-yellow-400 px-6 pt-6 pb-5 text-center">
+          <div className="bg-gradient-to-br from-orange-400 via-amber-400 to-purple-800 px-6 pt-6 pb-5 text-center">
             <div className="flex justify-center gap-2 mb-3">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">

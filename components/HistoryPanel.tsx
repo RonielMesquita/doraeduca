@@ -87,7 +87,7 @@ export default function HistoryPanel({ open, onClose, onLoad }: Props) {
       {/* Panel */}
       <div className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col no-print">
         {/* Header */}
-        <div className="bg-gradient-to-r from-amber-400 to-orange-400 px-5 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-orange-400 to-purple-800 px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-2xl">📋</span>
             <div>
@@ -174,7 +174,7 @@ export default function HistoryPanel({ open, onClose, onLoad }: Props) {
                       <button
                         onClick={() => handleLoad(item)}
                         disabled={loadingId === item.id}
-                        className="flex items-center gap-1 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow active:scale-95 transition-all disabled:opacity-50"
+                        className="flex items-center gap-1 bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow active:scale-95 transition-all disabled:opacity-50"
                       >
                         {loadingId === item.id ? "⏳" : "📂"}{" "}
                         {loadingId === item.id ? "Carregando..." : "Carregar"}
