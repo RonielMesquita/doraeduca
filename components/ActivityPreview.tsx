@@ -204,6 +204,44 @@ export default function ActivityPreview({
     return () => obs.disconnect();
   }, []);
 
+  // Substitui emojis de .figurinha-emoji por SVGs do Twemoji (qualidade vetorial)
+  useEffect(() => {
+    if (!contentRef.current) return;
+    const timer = setTimeout(() => {
+      const container = contentRef.current;
+      if (!container) return;
+      container.querySelectorAll(".figurinha-emoji").forEach((span) => {
+        if (span.querySelector("img")) return;
+        const rawEmoji = span.textContent?.trim() ?? "";
+        if (!rawEmoji) return;
+
+        const codePoints: string[] = [];
+        let i = 0;
+        while (i < rawEmoji.length) {
+          const cp = rawEmoji.codePointAt(i);
+          if (cp === undefined) break;
+          codePoints.push(cp.toString(16));
+          i += cp > 0xffff ? 2 : 1;
+        }
+        const hex = codePoints.filter((cp) => cp !== "fe0f").join("-");
+        const src = `https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/${hex}.svg`;
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = rawEmoji;
+        img.style.cssText = "width:3rem;height:3rem;object-fit:contain;display:block;margin:4px auto;";
+        img.loading = "lazy";
+        img.onerror = () => {
+          img.remove();
+          span.textContent = rawEmoji;
+        };
+        span.textContent = "";
+        span.appendChild(img);
+      });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [activity, editedHtml, isEditing, isReordering]);
+
   const handlePrint = () => {
     window.print();
   };
