@@ -1043,6 +1043,7 @@ img {
   }
 
   .a4-preview-wrapper {
+    display: block !important;
     background: none !important;
     padding: 0 !important;
     overflow: visible !important;
@@ -1050,6 +1051,9 @@ img {
   }
 
   .a4-scale-wrapper {
+    display: block !important;
+    width: 100% !important;
+    flex-shrink: unset !important;
     transform: none !important;
     margin-bottom: 0 !important;
     transform-origin: initial !important;
