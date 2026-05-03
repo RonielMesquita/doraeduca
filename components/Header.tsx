@@ -42,10 +42,10 @@ export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
           </div>
           <div>
             <h1 className="text-xl sm:text-3xl font-black tracking-wide drop-shadow-sm">
-              <span className="text-white">Dora</span><span className="text-purple-200">Educa</span>
+              <span className="text-white">Dora</span><span className="text-[#4C1D95]" style={{textShadow: "0 1px 3px rgba(255,255,255,0.6)"}}>Educa</span>
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm font-semibold hidden sm:block">
-              Criando aulas <span className="text-purple-200 font-black">mágicas</span> para seus alunos
+              Criando aulas <span className="text-white font-black">mágicas</span> para seus alunos
             </p>
           </div>
         </div>
