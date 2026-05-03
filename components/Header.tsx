@@ -6,7 +6,22 @@ interface Props {
   onLogout?: () => void;
 }
 
+// Nomes masculinos que terminam em 'a' (exceções à regra geral)
+const MASCULINE_ENDING_A = new Set([
+  "luca", "nikita", "joshua", "elisha", "koba", "elia", "ezra",
+]);
+
+function getGender(fullName: string): "m" | "f" {
+  const first = fullName.trim().split(/\s+/)[0].toLowerCase();
+  if (MASCULINE_ENDING_A.has(first)) return "m";
+  if (first.endsWith("a")) return "f";
+  return "m";
+}
+
 export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
+  const gender = userName ? getGender(userName) : "f";
+  const greeting = gender === "f" ? "Bem-vinda!" : "Bem-vindo!";
+  const teacherEmoji = gender === "f" ? "👩‍🏫" : "👨‍🏫";
   return (
     <header className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 shadow-lg no-print">
       {/* Decorative floating elements */}
@@ -49,12 +64,12 @@ export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
 
           {userName && (
             <div className="hidden md:flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2.5 border border-white/30">
-              <span className="text-2xl">👩‍🏫</span>
+              <span className="text-2xl">{teacherEmoji}</span>
               <div>
                 <p className="text-white font-bold text-sm leading-tight">
                   {userName}
                 </p>
-                <p className="text-amber-100 text-xs">Bem-vinda!</p>
+                <p className="text-amber-100 text-xs">{greeting}</p>
               </div>
             </div>
           )}
