@@ -32,22 +32,18 @@ export default function ChatSidebar() {
 
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-r from-orange-500 to-purple-800 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center no-print"
-        aria-label={isOpen ? "Fechar chat" : "Abrir chat"}
-      >
-        {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
+      {/* Floating Button — só aparece quando o chat está fechado */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-r from-orange-500 to-purple-800 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center no-print"
+          aria-label="Abrir chat"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
-        )}
-      </button>
+        </button>
+      )}
 
       {/* Chat Sidebar */}
       <div
@@ -57,14 +53,25 @@ export default function ChatSidebar() {
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-purple-800 p-4 text-white">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-xl">🍎</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🍎</span>
+              </div>
+              <div>
+                <h2 className="font-bold text-lg">Assistente Dora</h2>
+                <p className="text-xs text-amber-100">Tire suas duvidas</p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-bold text-lg">Assistente Dora</h2>
-              <p className="text-xs text-amber-100">Tire suas duvidas</p>
-            </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
+              aria-label="Fechar chat"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
 
