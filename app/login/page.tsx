@@ -123,9 +123,11 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl p-4 shadow-xl mb-4">
             <span className="text-5xl">🍎</span>
           </div>
-          <h1 className="text-4xl font-black text-gray-800 tracking-wide">DoraEduca</h1>
+          <h1 className="text-4xl font-black tracking-wide">
+            <span className="text-gray-800">Dora</span><span className="text-purple-800">Educa</span>
+          </h1>
           <p className="text-gray-500 font-semibold mt-1">
-            Criando aulas mágicas para seus alunos
+            Criando aulas <span className="text-purple-700 font-black">mágicas</span> para seus alunos
           </p>
         </div>
 

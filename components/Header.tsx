@@ -41,11 +41,11 @@ export default function Header({ userName, onHistoryOpen, onLogout }: Props) {
             <span className="text-2xl sm:text-3xl">🍎</span>
           </div>
           <div>
-            <h1 className="text-xl sm:text-3xl font-black text-white tracking-wide drop-shadow-sm">
-              DoraEduca
+            <h1 className="text-xl sm:text-3xl font-black tracking-wide drop-shadow-sm">
+              <span className="text-white">Dora</span><span className="text-purple-200">Educa</span>
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm font-semibold hidden sm:block">
-              Criando aulas mágicas para seus alunos
+              Criando aulas <span className="text-purple-200 font-black">mágicas</span> para seus alunos
             </p>
           </div>
         </div>
