@@ -965,7 +965,7 @@ export default function ActivityPreview({
                 }}
               />
             ) : (
-              <div dangerouslySetInnerHTML={{ __html: editedHtml ?? activity ?? "" }} />
+              <div dangerouslySetInnerHTML={{ __html: (editedHtml ?? activity ?? "").replace(/<style[\s\S]*?<\/style>/gi, "") }} />
             )}
 
 {/* Footer */}

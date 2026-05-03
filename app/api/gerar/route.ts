@@ -66,13 +66,19 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
 function cleanHtmlResponse(text: string): string {
   // Remove markdown code blocks (```html ... ``` ou ``` ... ```)
   let cleaned = text.trim();
-  
+
   // Remove ```html ou ```HTML no inicio
   cleaned = cleaned.replace(/^```(?:html|HTML)?\s*\n?/i, "");
-  
+
   // Remove ``` no final
   cleaned = cleaned.replace(/\n?```\s*$/i, "");
-  
+
+  // Remove <style> tags para evitar que CSS gerado pela IA vaze para o site inteiro
+  cleaned = cleaned.replace(/<style[\s\S]*?<\/style>/gi, "");
+
+  // Remove atributos style inline que contenham filter ou propriedades globais perigosas
+  cleaned = cleaned.replace(/\sstyle="[^"]*filter\s*:[^"]*"/gi, "");
+
   return cleaned.trim();
 }
 
