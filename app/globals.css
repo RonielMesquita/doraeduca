@@ -965,6 +965,44 @@
 }
 
 
+/* ── Clipart B&W (ilustrações de linha para impressão) ── */
+.bw-clipart {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin: 4px auto;
+  filter: none;
+}
+
+.bw-clipart-sm {
+  display: block;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin: 2px auto;
+}
+
+.bw-clipart-lg {
+  display: block;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  margin: 6px auto;
+}
+
+/* No site fica normal; na impressão garante P&B */
+@media print {
+  .bw-clipart,
+  .bw-clipart-sm,
+  .bw-clipart-lg {
+    width: 60px !important;
+    height: 60px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
 /* ── Tabela de Palavras (análise silábica/lexical) ── */
 .word-analysis-table {
   width: 100%;

@@ -248,21 +248,40 @@ REGRAS OBRIGATORIAS:
 7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
 8. NAO pare antes de completar todas as ${config.questionCount} questoes
 
-IMAGENS - USE EMOJIS EM VEZ DE URLs:
-NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
+IMAGENS — REGRAS DE ILUSTRACAO:
+O sistema possui um banco de ilustracoes B&W (preto e branco) salvas localmente.
+Quando o nome da imagem estiver na lista abaixo, use a tag <img> com a classe "bw-clipart".
+Para nomes NAO listados, use EMOJIS dentro de spans com a classe figurinha-emoji.
 
-Formato OBRIGATORIO para imagens:
+BANCO DE ILUSTRACOES B&W DISPONIVEL:
+Profissoes: BOMBEIRO, MEDICO, DENTISTA, PROFESSOR, PROFESSORA, POLICIAL, ENFERMEIRO, ENFERMEIRA, VETERINARIO, COZINHEIRO, PEDREIRO, CARTEIRO, PADEIRO
+Animais: CACHORRO, GATO, PASSARINHO, PEIXE, LEAO, ELEFANTE, BORBOLETA, SAPO, COELHO, VACA, GALINHA, CAVALO, MACACO, URSO, COBRA
+Frutas: MACA, BANANA, LARANJA, UVA, MORANGO, MELANCIA, ABACAXI, MANGA, PERA, LIMAO
+Escola: LAPIS, CADERNO, MOCHILA, LIVRO, TESOURA, REGUA, QUADRO, COLA, APONTADOR
+Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
+Transportes: CARRO, ONIBUS, AVIAO, BARCO, TREM, BICICLETA, CAMINHAO
+Corpo: MAO, PE, OLHO, CORACAO
+
+Formato para imagens do BANCO B&W (quando o nome estiver na lista acima):
+<div class="figurinha-card green">
+  <img src="/clipart/CATEGORIA/nome.svg" alt="NOME" class="bw-clipart" />
+  <span class="figurinha-name">NOME EM PORTUGUES</span>
+</div>
+
+Mapeamento de CATEGORIA para o src:
+- Profissoes: /clipart/profissoes/bombeiro.svg, /clipart/profissoes/medico.svg, /clipart/profissoes/dentista.svg, /clipart/profissoes/professor.svg, /clipart/profissoes/policial.svg, /clipart/profissoes/enfermeira.svg, /clipart/profissoes/veterinario.svg, /clipart/profissoes/cozinheiro.svg, /clipart/profissoes/pedreiro.svg, /clipart/profissoes/carteiro.svg, /clipart/profissoes/padeiro.svg
+- Animais: /clipart/animais/cachorro.svg, /clipart/animais/gato.svg, /clipart/animais/passarinho.svg, /clipart/animais/peixe.svg, /clipart/animais/leao.svg, /clipart/animais/elefante.svg, /clipart/animais/borboleta.svg, /clipart/animais/sapo.svg, /clipart/animais/coelho.svg, /clipart/animais/vaca.svg, /clipart/animais/galinha.svg, /clipart/animais/cavalo.svg, /clipart/animais/macaco.svg, /clipart/animais/urso.svg, /clipart/animais/cobra.svg
+- Frutas: /clipart/frutas/maca.svg, /clipart/frutas/banana.svg, /clipart/frutas/laranja.svg, /clipart/frutas/uva.svg, /clipart/frutas/morango.svg, /clipart/frutas/melancia.svg, /clipart/frutas/abacaxi.svg, /clipart/frutas/manga.svg, /clipart/frutas/pera.svg, /clipart/frutas/limao.svg
+- Escola: /clipart/escola/lapis.svg, /clipart/escola/caderno.svg, /clipart/escola/mochila.svg, /clipart/escola/livro.svg, /clipart/escola/tesoura.svg, /clipart/escola/regua.svg, /clipart/escola/quadro.svg, /clipart/escola/cola.svg, /clipart/escola/apontador.svg
+- Natureza: /clipart/natureza/arvore.svg, /clipart/natureza/flor.svg, /clipart/natureza/sol.svg, /clipart/natureza/lua.svg, /clipart/natureza/estrela.svg, /clipart/natureza/nuvem.svg, /clipart/natureza/chuva.svg, /clipart/natureza/arco-iris.svg, /clipart/natureza/folha.svg
+- Transportes: /clipart/transportes/carro.svg, /clipart/transportes/onibus.svg, /clipart/transportes/aviao.svg, /clipart/transportes/barco.svg, /clipart/transportes/trem.svg, /clipart/transportes/bicicleta.svg, /clipart/transportes/caminhao.svg
+- Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/coracao.svg
+
+Formato para imagens SEM ilustracao no banco (use emoji):
 <div class="figurinha-card green">
   <span class="figurinha-emoji">EMOJI</span>
   <span class="figurinha-name">NOME EM PORTUGUES</span>
 </div>
-
-EXEMPLOS de nomes em PORTUGUES:
-- Animais: CACHORRO, GATO, PASSARO, PEIXE, LEAO, ELEFANTE, BORBOLETA, SAPO, COELHO
-- Frutas: MACA, BANANA, LARANJA, UVA, MORANGO, MELANCIA, ABACAXI, MANGA, PERA
-- Escola: LIVRO, LAPIS, CADERNO, MOCHILA, QUADRO, BORRACHA, REGUA, TESOURA
-- Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
-- Corpo: CABECA, BRACO, PERNA, MAO, PE, OLHO, NARIZ, BOCA, CORACAO
 
 Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid, word-analysis-table, word-cell, emoji-cell, count-cell, blank-cell
 
@@ -284,7 +303,7 @@ Estrutura OBRIGATORIA da tabela:
   </thead>
   <tbody>
     <tr>
-      <td class="emoji-cell"><span class="figurinha-emoji">EMOJI</span></td>
+      <td class="emoji-cell"><img src="/clipart/CATEGORIA/nome.svg" alt="PALAVRA" class="bw-clipart-sm" /></td>
       <td class="word-cell">PALAVRA EM MAIUSCULAS</td>
       <td class="blank-cell"></td>
       <td class="count-cell">X</td>
