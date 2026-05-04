@@ -278,9 +278,9 @@ Mapeamento de caminhos:
 - Transportes: /clipart/transportes/carro.svg, /clipart/transportes/onibus.svg, /clipart/transportes/aviao.svg, /clipart/transportes/barco.svg, /clipart/transportes/trem.svg, /clipart/transportes/bicicleta.svg, /clipart/transportes/caminhao.svg
 - Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/coracao.svg
 
-Para nomes fora do banco, use emoji:
+Para nomes fora do banco B&W, use uma caixa de desenho (NAO use emoji colorido em modo P&B):
 <div class="figurinha-card green">
-  <span class="figurinha-emoji">EMOJI</span>
+  <div class="drawing-box small"></div>
   <span class="figurinha-name">NOME EM PORTUGUES</span>
 </div>
 ` : `IMAGENS - USE EMOJIS:

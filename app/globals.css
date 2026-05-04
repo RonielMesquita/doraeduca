@@ -73,6 +73,11 @@
   content: "✏️ Desenhe aqui";
 }
 
+/* Dentro de figurinha-card, a caixa de desenho não precisa do texto */
+.figurinha-card .drawing-box::after {
+  content: "";
+}
+
 /* Família silábica */
 .familia-box {
   border: 2px solid #f59e0b;
