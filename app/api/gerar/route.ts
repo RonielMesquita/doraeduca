@@ -224,7 +224,8 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
         }
       }
 
-      const isBW = /preto\s*e\s*branco|p\s*[&e]\s*b|p\.b\.|pb\b|black\s*and\s*white|impressao\s*pb|colorir|para\s*pintar|para\s*colorir|pintar|atividade\s*de\s*colorir|coloring/i.test(config.observations ?? "");
+      const isColorir = /colorir|para\s*pintar|para\s*colorir|pintar|atividade\s*de\s*colorir|coloring/i.test(config.observations ?? "");
+      const isBW = isColorir || /preto\s*e\s*branco|p\s*[&e]\s*b|p\.b\.|pb\b|black\s*and\s*white|impressao\s*pb/i.test(config.observations ?? "");
 
       content.push({
         type: "text",
@@ -251,37 +252,50 @@ REGRAS OBRIGATORIAS:
 8. NAO pare antes de completar todas as ${config.questionCount} questoes
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 
-${isBW ? `IMAGENS — MODO PRETO E BRANCO ATIVADO:
-A professora quer atividade para impressao preto e branco. Use ilustracoes do banco B&W local.
+${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
+A professora quer uma atividade para as criancas DESENHAREM e PINTAREM.
+NAO use emojis coloridos. NAO use imagens do banco. NAO use SVG inline.
+Use SOMENTE caixas de desenho vazias com bordas, para a crianca pintar.
 
-BANCO DE ILUSTRACOES B&W DISPONIVEL:
-Profissoes: BOMBEIRO, MEDICO, DENTISTA, PROFESSOR, PROFESSORA, POLICIAL, ENFERMEIRO, ENFERMEIRA, VETERINARIO, COZINHEIRO, PEDREIRO, CARTEIRO, PADEIRO
-Animais: CACHORRO, GATO, PASSARINHO, PEIXE, LEAO, ELEFANTE, BORBOLETA, SAPO, COELHO, VACA, GALINHA, CAVALO, MACACO, URSO, COBRA
-Frutas: MACA, BANANA, LARANJA, UVA, MORANGO, MELANCIA, ABACAXI, MANGA, PERA, LIMAO
-Escola: LAPIS, CADERNO, MOCHILA, LIVRO, TESOURA, REGUA, QUADRO, COLA, APONTADOR
-Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
-Transportes: CARRO, ONIBUS, AVIAO, BARCO, TREM, BICICLETA, CAMINHAO
-Corpo: MAO, PE, OLHO, CORACAO
-
-Formato para imagens do banco B&W:
-<div class="figurinha-card green">
-  <img src="/clipart/CATEGORIA/nome.svg" alt="NOME" class="bw-clipart" />
-  <span class="figurinha-name">NOME EM PORTUGUES</span>
+Formato OBRIGATORIO para cada item a colorir:
+<div class="coloring-card">
+  <div class="coloring-box">PINTE AQUI</div>
+  <div class="coloring-label">NOME DO ITEM</div>
+  <div class="coloring-instruction">Pinte com sua cor favorita!</div>
 </div>
 
-Mapeamento de caminhos:
-- Profissoes: /clipart/profissoes/bombeiro.svg, /clipart/profissoes/medico.svg, /clipart/profissoes/dentista.svg, /clipart/profissoes/professor.svg, /clipart/profissoes/policial.svg, /clipart/profissoes/enfermeira.svg, /clipart/profissoes/veterinario.svg, /clipart/profissoes/cozinheiro.svg, /clipart/profissoes/pedreiro.svg, /clipart/profissoes/carteiro.svg, /clipart/profissoes/padeiro.svg
-- Animais: /clipart/animais/cachorro.svg, /clipart/animais/gato.svg, /clipart/animais/passarinho.svg, /clipart/animais/peixe.svg, /clipart/animais/leao.svg, /clipart/animais/elefante.svg, /clipart/animais/borboleta.svg, /clipart/animais/sapo.svg, /clipart/animais/coelho.svg, /clipart/animais/vaca.svg, /clipart/animais/galinha.svg, /clipart/animais/cavalo.svg, /clipart/animais/macaco.svg, /clipart/animais/urso.svg, /clipart/animais/cobra.svg
-- Frutas: /clipart/frutas/maca.svg, /clipart/frutas/banana.svg, /clipart/frutas/laranja.svg, /clipart/frutas/uva.svg, /clipart/frutas/morango.svg, /clipart/frutas/melancia.svg, /clipart/frutas/abacaxi.svg, /clipart/frutas/manga.svg, /clipart/frutas/pera.svg, /clipart/frutas/limao.svg
-- Escola: /clipart/escola/lapis.svg, /clipart/escola/caderno.svg, /clipart/escola/mochila.svg, /clipart/escola/livro.svg, /clipart/escola/tesoura.svg, /clipart/escola/regua.svg, /clipart/escola/quadro.svg, /clipart/escola/cola.svg, /clipart/escola/apontador.svg
-- Natureza: /clipart/natureza/arvore.svg, /clipart/natureza/flor.svg, /clipart/natureza/sol.svg, /clipart/natureza/lua.svg, /clipart/natureza/estrela.svg, /clipart/natureza/nuvem.svg, /clipart/natureza/chuva.svg, /clipart/natureza/arco-iris.svg, /clipart/natureza/folha.svg
-- Transportes: /clipart/transportes/carro.svg, /clipart/transportes/onibus.svg, /clipart/transportes/aviao.svg, /clipart/transportes/barco.svg, /clipart/transportes/trem.svg, /clipart/transportes/bicicleta.svg, /clipart/transportes/caminhao.svg
-- Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/coracao.svg
+Organize as caixas em grade usando:
+<div class="coloring-grid"> ... </div>
 
-Para nomes fora do banco B&W, use uma caixa de desenho (NAO use emoji colorido em modo P&B):
-<div class="figurinha-card green">
+REGRAS DO MODO COLORIR:
+- Caixas grandes (minimo 120px de altura) para a crianca ter espaco para pintar
+- Sempre coloque o nome do objeto embaixo da caixa em MAIUSCULAS
+- Adicione uma instrucao simples e motivadora embaixo do nome
+- NAO use emojis dentro das caixas de colorir
+- As caixas devem ter borda solida visivel (nao tracejada) para delimitar a area
+` : isBW ? `IMAGENS — MODO PRETO E BRANCO:
+A professora quer atividade para impressao preto e branco.
+Use ilustracoes do banco B&W ou caixas de desenho — nunca emojis coloridos.
+
+BANCO DE ILUSTRACOES B&W:
+Profissoes: /clipart/profissoes/bombeiro.svg, /clipart/profissoes/medico.svg, /clipart/profissoes/dentista.svg, /clipart/profissoes/professor.svg, /clipart/profissoes/policial.svg, /clipart/profissoes/enfermeira.svg, /clipart/profissoes/veterinario.svg, /clipart/profissoes/cozinheiro.svg, /clipart/profissoes/pedreiro.svg, /clipart/profissoes/carteiro.svg, /clipart/profissoes/padeiro.svg
+Animais: /clipart/animais/cachorro.svg, /clipart/animais/gato.svg, /clipart/animais/passarinho.svg, /clipart/animais/peixe.svg, /clipart/animais/leao.svg, /clipart/animais/elefante.svg, /clipart/animais/borboleta.svg, /clipart/animais/sapo.svg, /clipart/animais/coelho.svg, /clipart/animais/vaca.svg, /clipart/animais/galinha.svg, /clipart/animais/cavalo.svg, /clipart/animais/macaco.svg, /clipart/animais/urso.svg, /clipart/animais/cobra.svg
+Frutas: /clipart/frutas/maca.svg, /clipart/frutas/banana.svg, /clipart/frutas/laranja.svg, /clipart/frutas/uva.svg, /clipart/frutas/morango.svg, /clipart/frutas/melancia.svg, /clipart/frutas/abacaxi.svg, /clipart/frutas/manga.svg, /clipart/frutas/pera.svg, /clipart/frutas/limao.svg
+Escola: /clipart/escola/lapis.svg, /clipart/escola/caderno.svg, /clipart/escola/mochila.svg, /clipart/escola/livro.svg, /clipart/escola/tesoura.svg, /clipart/escola/regua.svg, /clipart/escola/quadro.svg, /clipart/escola/cola.svg, /clipart/escola/apontador.svg
+Natureza: /clipart/natureza/arvore.svg, /clipart/natureza/flor.svg, /clipart/natureza/sol.svg, /clipart/natureza/lua.svg, /clipart/natureza/estrela.svg, /clipart/natureza/nuvem.svg, /clipart/natureza/chuva.svg, /clipart/natureza/arco-iris.svg, /clipart/natureza/folha.svg
+Transportes: /clipart/transportes/carro.svg, /clipart/transportes/onibus.svg, /clipart/transportes/aviao.svg, /clipart/transportes/barco.svg, /clipart/transportes/trem.svg, /clipart/transportes/bicicleta.svg, /clipart/transportes/caminhao.svg
+Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/coracao.svg
+
+Formato para itens do banco:
+<div class="figurinha-card">
+  <img src="/clipart/CATEGORIA/nome.svg" alt="NOME" class="bw-clipart" />
+  <span class="figurinha-name">NOME</span>
+</div>
+
+Para itens fora do banco, use caixa de desenho vazia:
+<div class="figurinha-card">
   <div class="drawing-box small"></div>
-  <span class="figurinha-name">NOME EM PORTUGUES</span>
+  <span class="figurinha-name">NOME</span>
 </div>
 ` : `IMAGENS - USE EMOJIS:
 NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
