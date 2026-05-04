@@ -249,6 +249,7 @@ REGRAS OBRIGATORIAS:
 6. IDIOMA: 100% PORTUGUES BRASILEIRO. PROIBIDO qualquer palavra em ingles, espanhol ou outro idioma.
 7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
 8. NAO pare antes de completar todas as ${config.questionCount} questoes
+9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 
 ${isBW ? `IMAGENS — MODO PRETO E BRANCO ATIVADO:
 A professora quer atividade para impressao preto e branco. Use ilustracoes do banco B&W local.
