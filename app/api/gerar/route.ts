@@ -264,7 +264,43 @@ EXEMPLOS de nomes em PORTUGUES:
 - Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
 - Corpo: CABECA, BRACO, PERNA, MAO, PE, OLHO, NARIZ, BOCA, CORACAO
 
-Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid
+Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid, word-analysis-table, word-cell, emoji-cell, count-cell, blank-cell
+
+${config.activityType === "Tabela de Palavras" ? `
+INSTRUCOES ESPECIAIS PARA TABELA DE PALAVRAS:
+Crie UMA tabela HTML com a classe "word-analysis-table" contendo EXATAMENTE ${config.questionCount} palavras relacionadas ao tema "${config.topic || "geral"}".
+
+Estrutura OBRIGATORIA da tabela:
+<table class="word-analysis-table">
+  <thead>
+    <tr>
+      <th>FIGURA</th>
+      <th>PALAVRA</th>
+      <th>SILABAS</th>
+      <th>LETRAS</th>
+      <th>VOGAIS</th>
+      <th>CONSOANTES</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="emoji-cell"><span class="figurinha-emoji">EMOJI</span></td>
+      <td class="word-cell">PALAVRA EM MAIUSCULAS</td>
+      <td class="blank-cell"></td>
+      <td class="count-cell">X</td>
+      <td class="blank-cell"></td>
+      <td class="blank-cell"></td>
+    </tr>
+  </tbody>
+</table>
+
+REGRAS DA TABELA:
+- A primeira linha da tabela deve vir com TODAS as celulas preenchidas como EXEMPLO para o aluno
+- As demais linhas: misture celulas preenchidas (count-cell com o valor) e vazias (blank-cell) para o aluno completar
+- Cada palavra DEVE ter um emoji correspondente na coluna FIGURA
+- Escolha palavras simples e adequadas ao ano "${config.year}"
+- Apos a tabela, adicione uma secao "CURIOSIDADE:" com uma frase simples sobre o tema
+` : ""}
 
 ${config.observations ? `SIGA OBRIGATORIAMENTE: ${config.observations}` : ""}
 

@@ -58,6 +58,7 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Caligrafia",
     "Separação de Sílabas",
     "Ligar as Colunas",
+    "Tabela de Palavras",
   ],
   matematica: [
     "Adição",

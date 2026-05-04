@@ -965,6 +965,77 @@
 }
 
 
+/* ── Tabela de Palavras (análise silábica/lexical) ── */
+.word-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 0.85rem;
+}
+
+.word-analysis-table th {
+  background: #1e40af;
+  color: white;
+  font-weight: 800;
+  padding: 7px 10px;
+  text-align: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  border: 1.5px solid #1e3a8a;
+}
+
+.word-analysis-table td {
+  border: 1.5px solid #d1d5db;
+  padding: 6px 10px;
+  text-align: center;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.word-analysis-table tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+.word-analysis-table .word-cell {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #1f2937;
+  text-align: left;
+  padding-left: 14px;
+  letter-spacing: 0.5px;
+}
+
+.word-analysis-table .emoji-cell {
+  width: 56px;
+  padding: 4px 6px;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.word-analysis-table .emoji-cell .figurinha-emoji {
+  font-size: 1.6rem;
+  min-height: 1.6rem;
+  margin: 0;
+}
+
+.word-analysis-table .emoji-cell .figurinha-emoji img {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto;
+}
+
+.word-analysis-table .count-cell {
+  width: 56px;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e40af;
+}
+
+.word-analysis-table .blank-cell {
+  width: 56px;
+  min-height: 32px;
+}
+
 /* A4 paper viewer — simula folha sobre mesa */
 .a4-preview-wrapper {
   background: #b8bec7;
@@ -1180,8 +1251,22 @@ img {
   .figurinha-emoji img {
     width: 20pt !important;
     height: 20pt !important;
+    filter: grayscale(1) !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .word-analysis-table th {
+    background: #374151 !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .word-analysis-table .emoji-cell .figurinha-emoji img {
+    width: 18pt !important;
+    height: 18pt !important;
+    filter: grayscale(1) !important;
   }
 
   .activity-subtitle {
