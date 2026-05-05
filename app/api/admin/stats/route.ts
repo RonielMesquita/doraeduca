@@ -1,10 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-// Usa ADMIN_EMAILS se definido, senão cai no TESTER_EMAILS
 const ADMIN_EMAILS = [
   ...(process.env.ADMIN_EMAILS ?? "").split(","),
   ...(process.env.TESTER_EMAILS ?? "").split(","),
+  "roniel.net@gmail.com",
 ]
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
