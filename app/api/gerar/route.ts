@@ -285,33 +285,42 @@ REGRAS OBRIGATORIAS:
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
-A professora quer uma atividade com ilustracoes para as criancas PINTAREM.
-NAO use emojis coloridos. NAO use SVG inline. NAO use caixas vazias.
-Use APENAS placeholders de geracao de imagem — o sistema vai gerar ilustracoes line art automaticamente.
+A professora quer ilustracoes line art para as criancas PINTAREM.
+NAO use emojis. NAO use SVG inline. NAO use caixas vazias.
 
-Formato OBRIGATORIO para cada item a colorir:
-<div class="coloring-card">
-  <img data-generate="DESCRICAO EM INGLES cute kawaii black and white line art for coloring" class="ai-clipart coloring-image" alt="NOME DO ITEM" />
-  <div class="coloring-label">NOME DO ITEM EM MAIUSCULAS</div>
-  <div class="coloring-instruction">PINTE COM SUA COR FAVORITA!</div>
+ESCOLHA O FORMATO conforme o tema:
+
+== FORMATO A: CENA GRANDE (para datas comemorativas, temas com cenario) ==
+Use quando o tema for: dia comemorativo, escola, familia, natureza, historia, cidade, etc.
+Gere UMA imagem grande de cena por questao:
+
+<div class="scene-coloring-wrapper">
+  <img data-generate="CENA COMPLETA EM INGLES: detailed scene with [PERSONAGENS E CENARIO], cute kawaii black and white line art coloring page, thick outlines, children educational" class="scene-coloring-image" alt="DESCRICAO" />
+  <div class="scene-coloring-caption">PINTE ESTA CENA COM SUAS CORES FAVORITAS!</div>
 </div>
 
-Organize os cards em grade usando:
-<div class="coloring-grid"> ... </div>
+EXEMPLOS de data-generate para cena:
+- Escola → "school building with children playing outside, kawaii black and white coloring page"
+- Familia → "happy family of four together, kawaii black and white line art coloring page"
+- Descobrimento do Brasil → "portuguese ship arriving at brazil with indigenous people and explorer, black and white coloring page"
+- Dia do Soldado → "soldier family kawaii black and white line art coloring page"
 
-EXEMPLOS de data-generate para colorir:
-- Cachorro → data-generate="dog cute kawaii black and white line art for coloring"
-- Bombeiro → data-generate="firefighter child cute kawaii black and white line art for coloring"
-- Maca → data-generate="apple cute kawaii black and white line art for coloring"
-- Arvore → data-generate="tree with fruits cute kawaii black and white line art for coloring"
+== FORMATO B: CARDS EM GRADE (para listas de itens: animais, frutas, profissoes) ==
+Use quando o tema tiver itens individuais para pintar separadamente:
 
-REGRAS ABSOLUTAS DO MODO COLORIR:
-- Use SOMENTE a classe coloring-card — NUNCA figurinha-card, NUNCA classes green/blue/yellow/pink
-- NAO adicione estilo inline (style="...") nos cards nem nas imagens
-- NAO use bordas coloridas, tracejadas ou gradientes — somente o estilo padrao da classe coloring-card
-- Sempre coloque o nome do item embaixo da imagem em MAIUSCULAS
-- Adicione uma instrucao motivadora embaixo do nome
-- NAO use emojis
+<div class="coloring-grid">
+  <div class="coloring-card">
+    <img data-generate="ITEM EM INGLES cute kawaii black and white line art for coloring" class="ai-clipart coloring-image" alt="NOME" />
+    <div class="coloring-label">NOME EM MAIUSCULAS</div>
+    <div class="coloring-instruction">PINTE COM SUA COR FAVORITA!</div>
+  </div>
+</div>
+
+REGRAS ABSOLUTAS:
+- Use SOMENTE as classes coloring-card, coloring-grid, scene-coloring-wrapper, scene-coloring-image
+- NUNCA use figurinha-card, green, blue, yellow, pink
+- NUNCA adicione style="..." inline nos cards ou imagens
+- NUNCA use bordas coloridas ou tracejadas
 ` : isBW ? `IMAGENS — MODO PRETO E BRANCO:
 A professora quer atividade para impressao preto e branco.
 Use ilustracoes do banco B&W ou caixas de desenho — nunca emojis coloridos.
@@ -344,7 +353,7 @@ Exemplos de data-generate para itens fora do banco:
 ` : `IMAGENS - USE EMOJIS:
 NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
 
-Formato OBRIGATORIO para imagens:
+Formato OBRIGATORIO para imagens em cards:
 <div class="figurinha-card green">
   <span class="figurinha-emoji">EMOJI</span>
   <span class="figurinha-name">NOME EM PORTUGUES</span>
@@ -355,7 +364,48 @@ EXEMPLOS de nomes em PORTUGUES:
 - Frutas: MACA, BANANA, LARANJA, UVA, MORANGO, MELANCIA, ABACAXI, MANGA, PERA
 - Escola: LIVRO, LAPIS, CADERNO, MOCHILA, QUADRO, BORRACHA, REGUA, TESOURA
 - Natureza: ARVORE, FLOR, SOL, LUA, ESTRELA, NUVEM, CHUVA, ARCO-IRIS, FOLHA
-- Corpo: CABECA, BRACO, PERNA, MAO, PE, OLHO, NARIZ, BOCA, CORACAO`}
+- Corpo: CABECA, BRACO, PERNA, MAO, PE, OLHO, NARIZ, BOCA, CORACAO
+
+LAYOUTS AVANCADOS — use quando o tipo de atividade pedir:
+
+1) SECOES NUMERADAS (para questoes com multiplas partes):
+<div class="activity-section-numbered">
+  <div class="activity-number-header">
+    <div class="activity-number-badge">1</div>
+    <span class="activity-number-title">INSTRUCAO DA SECAO</span>
+  </div>
+  ... conteudo ...
+</div>
+
+2) IMAGEM NA MARGEM AO LADO DE TEXTO (para musicas, poemas, historias):
+<div class="text-with-margin-image">
+  <div class="margin-clipart"><span class="figurinha-emoji">EMOJI</span></div>
+  <div class="margin-text">TEXTO DA ESTROFE OU INSTRUCAO</div>
+</div>
+
+3) GRADE NUMERICA COM IMAGENS (para sequencias numericas — substituir alguns numeros por emojis):
+<div class="number-grid">
+  <div class="number-cell">1</div>
+  <div class="number-cell">2</div>
+  <div class="number-cell with-image"><span class="figurinha-emoji" style="font-size:2rem">EMOJI</span></div>
+  <div class="number-cell">4</div>
+  <div class="number-cell">5</div>
+</div>
+
+4) MARCAR RESPOSTA CERTA (checkbox acima da imagem):
+<div class="checkbox-image-grid">
+  <div class="checkbox-image-item">
+    <div class="checkbox-square"></div>
+    <span class="figurinha-emoji" style="font-size:2.5rem">EMOJI</span>
+    <div class="checkbox-image-label">NOME</div>
+  </div>
+</div>
+
+5) LETRAS GRANDES PARA PINTAR/TRACAR:
+<div class="trace-letter-grid">
+  <span class="trace-letter">A</span>
+  <span class="trace-letter">B</span>
+</div>`}
 
 Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid, word-analysis-table, word-cell, emoji-cell, count-cell, blank-cell
 

@@ -930,6 +930,218 @@
   text-transform: uppercase;
 }
 
+/* ── Cena grande para colorir (tipo Escola, Família, Data comemorativa) ── */
+.scene-coloring-wrapper {
+  width: 100%;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.scene-coloring-image {
+  display: block;
+  width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  margin: 0 auto;
+  border: 2px solid #374151;
+  border-radius: 8px;
+  background: white;
+}
+
+.scene-coloring-caption {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #374151;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ── Clipart flutuando na margem ao lado de texto ── */
+.text-with-margin-image {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.margin-clipart {
+  flex-shrink: 0;
+  width: 70px;
+  text-align: center;
+}
+
+.margin-clipart img,
+.margin-clipart .ai-clipart {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.margin-text {
+  flex: 1;
+}
+
+/* ── Seções numeradas com círculo colorido ── */
+.activity-section-numbered {
+  margin-bottom: 16px;
+}
+
+.activity-number-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.activity-number-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1e40af;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-number-badge.green  { background: #16a34a; }
+.activity-number-badge.orange { background: #ea580c; }
+.activity-number-badge.purple { background: #7c3aed; }
+.activity-number-badge.red    { background: #dc2626; }
+
+.activity-number-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ── Grade numérica com imagens (tipo Descobrindo os Números) ── */
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: 2px solid #374151;
+  margin: 10px 0;
+}
+
+.number-cell {
+  border: 1px solid #374151;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #1f2937;
+  background: white;
+}
+
+.number-cell.with-image {
+  padding: 4px;
+}
+
+.number-cell img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+/* ── Atividade de ligar sombra ── */
+.shadow-matching {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin: 10px 0;
+}
+
+.shadow-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.shadow-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.shadow-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.shadow-item.silhouette img {
+  filter: brightness(0);
+}
+
+/* ── Checkbox acima da imagem (marque a resposta certa) ── */
+.checkbox-image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 10px 0;
+}
+
+.checkbox-image-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.checkbox-square {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #374151;
+  background: white;
+  flex-shrink: 0;
+}
+
+.checkbox-image-item img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.checkbox-image-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  border: 1.5px solid #374151;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: white;
+}
+
+/* ── Letras grandes para traçar / pintar ── */
+.trace-letter-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 10px 0;
+  justify-content: center;
+}
+
+.trace-letter {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 3px #374151;
+  line-height: 1;
+  padding: 0 4px;
+}
+
 /* Image with label (illustrated match) */
 .illustrated-list {
   display: flex;
