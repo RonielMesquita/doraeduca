@@ -88,11 +88,13 @@ export async function replaceAiImagePlaceholders(
   serie?: string
 ): Promise<string> {
   const regex = /<img[^>]+data-generate="([^"]+)"[^>]*>/g;
-  const matches: { full: string; description: string }[] = [];
+  const matches: { full: string; description: string; originalClass: string }[] = [];
 
   let m;
   while ((m = regex.exec(html)) !== null) {
-    matches.push({ full: m[0], description: m[1] });
+    const classMatch = m[0].match(/class="([^"]*)"/);
+    const originalClass = classMatch ? classMatch[1] : "ai-clipart";
+    matches.push({ full: m[0], description: m[1], originalClass });
   }
 
   if (matches.length === 0) return html;
@@ -108,14 +110,13 @@ export async function replaceAiImagePlaceholders(
   );
 
   let result = html;
-  for (const { full, description } of matches) {
+  for (const { full, description, originalClass } of matches) {
     if (urlMap[description]) {
       result = result.replace(
         full,
-        `<img src="${urlMap[description]}" alt="${description}" class="ai-clipart" style="width:100%;height:auto;object-fit:contain;border-radius:8px;" />`
+        `<img src="${urlMap[description]}" alt="${description}" class="${originalClass}" />`
       );
     } else {
-      // DALL-E falhou: substitui por caixa de desenho para a criança colorir/desenhar
       const label = description.split(" ").slice(0, 3).join(" ").toUpperCase();
       result = result.replace(
         full,

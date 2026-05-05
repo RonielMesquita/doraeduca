@@ -940,8 +940,8 @@
 .scene-coloring-image {
   display: block;
   width: 100%;
-  min-height: 500px;
-  max-height: 700px;
+  min-height: 600px;
+  max-height: 900px;
   object-fit: contain;
   margin: 0 auto;
   border: 2px solid #374151;
