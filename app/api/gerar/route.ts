@@ -259,8 +259,8 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
         }
       }
 
-      const isColorir = /colorir|para\s*pintar|para\s*colorir|pintar|atividade\s*de\s*colorir|coloring/i.test(config.observations ?? "");
-      const isBW = isColorir || /preto\s*e\s*branco|p\s*[&e]\s*b|p\.b\.|pb\b|black\s*and\s*white|impressao\s*pb/i.test(config.observations ?? "");
+      const isColorir = config.imageMode === "colorir";
+      const isBW = config.imageMode === "pb" || isColorir;
 
       content.push({
         type: "text",

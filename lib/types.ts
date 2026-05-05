@@ -1,3 +1,5 @@
+export type ImageMode = "colorido" | "pb" | "colorir";
+
 export interface ActivityConfig {
   schoolName: string;
   teacherName: string;
@@ -15,6 +17,7 @@ export interface ActivityConfig {
   useGoogleImages: boolean;
   hasMargem: boolean;
   logoBase64: string;
+  imageMode: ImageMode;
 }
 
 export const YEARS = [
@@ -140,4 +143,5 @@ export const defaultConfig: ActivityConfig = {
   useGoogleImages: true,
   hasMargem: false,
   logoBase64: "",
+  imageMode: "colorido",
 };

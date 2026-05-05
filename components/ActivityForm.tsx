@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import {
   ActivityConfig,
+  ImageMode,
   UploadedFile,
   YEARS,
   TURNOS,
@@ -299,6 +300,39 @@ export default function ActivityForm({
                   }`}
                 >
                   {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Estilo de imagens */}
+          <div>
+            <label className={labelClass}>Estilo de Imagens</label>
+            <div className="grid grid-cols-3 gap-2">
+              {(
+                [
+                  { mode: "colorido", emoji: "🎨", label: "Colorido", desc: "Emojis e cores" },
+                  { mode: "pb",       emoji: "🖨️", label: "P&B",      desc: "Impressão P&B" },
+                  { mode: "colorir",  emoji: "✏️", label: "Pintar",   desc: "Ilustrações" },
+                ] as { mode: ImageMode; emoji: string; label: string; desc: string }[]
+              ).map(({ mode, emoji, label, desc }) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => onChange({ ...config, imageMode: mode })}
+                  className={`flex flex-col items-center gap-1 py-2 px-1 rounded-xl border-2 transition-all text-center ${
+                    config.imageMode === mode
+                      ? mode === "colorido"
+                        ? "border-amber-400 bg-amber-50 text-amber-800 shadow-sm"
+                        : mode === "pb"
+                        ? "border-gray-500 bg-gray-100 text-gray-800 shadow-sm"
+                        : "border-purple-400 bg-purple-50 text-purple-800 shadow-sm"
+                      : "border-gray-100 bg-gray-50 text-gray-500 hover:border-amber-200"
+                  }`}
+                >
+                  <span className="text-lg">{emoji}</span>
+                  <span className="text-xs font-black leading-none">{label}</span>
+                  <span className="text-[10px] text-gray-400 leading-tight">{desc}</span>
                 </button>
               ))}
             </div>
