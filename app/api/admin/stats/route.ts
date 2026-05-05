@@ -1,8 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? process.env.TESTER_EMAILS ?? "")
-  .split(",")
+// Usa ADMIN_EMAILS se definido, senão cai no TESTER_EMAILS
+const ADMIN_EMAILS = [
+  ...(process.env.ADMIN_EMAILS ?? "").split(","),
+  ...(process.env.TESTER_EMAILS ?? "").split(","),
+]
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
@@ -11,8 +14,11 @@ export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user?.email || !ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-    return Response.json({ error: "Forbidden" }, { status: 403 });
+  if (!user) {
+    return Response.json({ error: "Faça login para acessar esta página." }, { status: 401 });
+  }
+  if (!user.email || !ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+    return Response.json({ error: `Acesso restrito. Seu email (${user.email}) não tem permissão de admin.` }, { status: 403 });
   }
 
   const admin = createAdminClient();
