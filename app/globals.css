@@ -891,9 +891,9 @@
 }
 
 .coloring-card {
-  border: 2px solid #d1d5db;
-  border-radius: 12px;
-  padding: 10px 8px 8px;
+  border: 2px solid #374151;
+  border-radius: 8px;
+  padding: 8px 6px 6px;
   text-align: center;
   background: white;
 }
@@ -975,6 +975,33 @@
 
 
 /* ── Clipart B&W (ilustrações de linha para impressão) ── */
+/* Imagens geradas por DALL-E */
+.ai-clipart {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  margin: 0 auto;
+  background: white;
+  border-radius: 6px;
+}
+
+/* Modo colorir: imagem maior para preencher o card */
+.coloring-image {
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  margin: 0 auto;
+  background: white;
+}
+
+/* Remove fundo colorido quando o card tem imagem AI */
+.figurinha-card:has(.ai-clipart) {
+  background: white;
+  border-color: #374151;
+}
+
 .bw-clipart {
   display: block;
   width: 80px;

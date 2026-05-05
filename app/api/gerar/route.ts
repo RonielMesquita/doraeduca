@@ -305,7 +305,10 @@ EXEMPLOS de data-generate para colorir:
 - Maca → data-generate="apple cute kawaii black and white line art for coloring"
 - Arvore → data-generate="tree with fruits cute kawaii black and white line art for coloring"
 
-REGRAS DO MODO COLORIR:
+REGRAS ABSOLUTAS DO MODO COLORIR:
+- Use SOMENTE a classe coloring-card — NUNCA figurinha-card, NUNCA classes green/blue/yellow/pink
+- NAO adicione estilo inline (style="...") nos cards nem nas imagens
+- NAO use bordas coloridas, tracejadas ou gradientes — somente o estilo padrao da classe coloring-card
 - Sempre coloque o nome do item embaixo da imagem em MAIUSCULAS
 - Adicione uma instrucao motivadora embaixo do nome
 - NAO use emojis
