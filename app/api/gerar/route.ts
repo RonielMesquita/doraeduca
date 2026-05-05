@@ -104,6 +104,9 @@ function cleanHtmlResponse(text: string): string {
   // Remove <style> tags para evitar que CSS gerado pela IA vaze para o site inteiro
   cleaned = cleaned.replace(/<style[\s\S]*?<\/style>/gi, "");
 
+  // Remove tags <svg> inline que a IA gera (proibido — causa SVGs gigantes na página)
+  cleaned = cleaned.replace(/<svg[\s\S]*?<\/svg>/gi, "");
+
   // Remove atributos style inline que contenham filter ou propriedades globais perigosas
   cleaned = cleaned.replace(/\sstyle="[^"]*filter\s*:[^"]*"/gi, "");
 

@@ -114,6 +114,13 @@ export async function replaceAiImagePlaceholders(
         full,
         `<img src="${urlMap[description]}" alt="${description}" class="ai-clipart" style="width:100%;height:auto;object-fit:contain;border-radius:8px;" />`
       );
+    } else {
+      // DALL-E falhou: substitui por caixa de desenho para a criança colorir/desenhar
+      const label = description.split(" ").slice(0, 3).join(" ").toUpperCase();
+      result = result.replace(
+        full,
+        `<div class="drawing-box" style="min-height:120px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:0.7rem;text-align:center;">${label}</div>`
+      );
     }
   }
 
