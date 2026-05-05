@@ -1,6 +1,8 @@
 import { generateMockActivity } from "@/lib/templates";
 import { ActivityConfig, UploadedFile } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
+import { getCachedImage, saveImageCache } from "@/lib/image-cache";
+import { replaceAiImagePlaceholders } from "@/lib/generate-image";
 
 const FREE_LIMIT = 5;
 
@@ -10,7 +12,17 @@ interface GoogleImageResult {
   title: string;
 }
 
-async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
+async function searchGoogleImages(
+  query: string,
+  tema?: string,
+  serie?: string
+): Promise<GoogleImageResult[]> {
+  // 1. Verifica cache antes de chamar a API do Google
+  const cached = await getCachedImage(query, tema, serie);
+  if (cached) {
+    return [{ url: cached.url, thumbnail: cached.thumbnail, title: query }];
+  }
+
   // Remove crases das chaves caso existam (problema comum ao copiar/colar)
   const apiKey = process.env.GOOGLE_API_KEY?.replace(/`/g, "").trim();
   const cseId = process.env.GOOGLE_CSE_ID?.replace(/`/g, "").trim();
@@ -48,16 +60,32 @@ async function searchGoogleImages(query: string): Promise<GoogleImageResult[]> {
     }
 
     const data = await response.json();
-    
+
     if (data.error) {
       return [];
     }
-    
-    return (data.items || []).map((item: { link: string; image?: { thumbnailLink: string }; title: string }) => ({
-      url: item.link,
-      thumbnail: item.image?.thumbnailLink || item.link,
-      title: item.title,
-    }));
+
+    const results: GoogleImageResult[] = (data.items || []).map(
+      (item: { link: string; image?: { thumbnailLink: string }; title: string }) => ({
+        url: item.link,
+        thumbnail: item.image?.thumbnailLink || item.link,
+        title: item.title,
+      })
+    );
+
+    // 2. Salva o primeiro resultado no cache para reutilização futura
+    if (results.length > 0) {
+      saveImageCache({
+        query,
+        tema,
+        serie,
+        url: results[0].url,
+        thumbnail: results[0].thumbnail,
+        fonte: "google",
+      }).catch(() => {});
+    }
+
+    return results;
   } catch {
     return [];
   }
@@ -82,10 +110,14 @@ function cleanHtmlResponse(text: string): string {
   return cleaned.trim();
 }
 
-async function replacePollinationsWithGoogleImages(html: string): Promise<string> {
+async function replacePollinationsWithGoogleImages(
+  html: string,
+  tema?: string,
+  serie?: string
+): Promise<string> {
   const pollinationsRegex = /https:\/\/image\.pollinations\.ai\/prompt\/([^?"'\s]+)[^"'\s]*/g;
   const matches: { fullUrl: string; description: string }[] = [];
-  
+
   let match;
   while ((match = pollinationsRegex.exec(html)) !== null) {
     const fullUrl = match[0];
@@ -99,19 +131,19 @@ async function replacePollinationsWithGoogleImages(html: string): Promise<string
   }
 
   const uniqueDescriptions = [...new Set(matches.map((m) => m.description))];
-  const imageCache: Record<string, string> = {};
+  const localCache: Record<string, string> = {};
 
   for (const desc of uniqueDescriptions.slice(0, 8)) {
-    const images = await searchGoogleImages(desc);
+    const images = await searchGoogleImages(desc, tema, serie);
     if (images.length > 0) {
-      imageCache[desc] = images[0].thumbnail;
+      localCache[desc] = images[0].thumbnail;
     }
   }
 
   let result = html;
   for (const m of matches) {
-    if (imageCache[m.description]) {
-      result = result.replace(m.fullUrl, imageCache[m.description]);
+    if (localCache[m.description]) {
+      result = result.replace(m.fullUrl, localCache[m.description]);
     }
   }
 
@@ -253,26 +285,30 @@ REGRAS OBRIGATORIAS:
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
-A professora quer uma atividade para as criancas DESENHAREM e PINTAREM.
-NAO use emojis coloridos. NAO use imagens do banco. NAO use SVG inline.
-Use SOMENTE caixas de desenho vazias com bordas, para a crianca pintar.
+A professora quer uma atividade com ilustracoes para as criancas PINTAREM.
+NAO use emojis coloridos. NAO use SVG inline. NAO use caixas vazias.
+Use APENAS placeholders de geracao de imagem — o sistema vai gerar ilustracoes line art automaticamente.
 
 Formato OBRIGATORIO para cada item a colorir:
 <div class="coloring-card">
-  <div class="coloring-box">PINTE AQUI</div>
-  <div class="coloring-label">NOME DO ITEM</div>
-  <div class="coloring-instruction">Pinte com sua cor favorita!</div>
+  <img data-generate="DESCRICAO EM INGLES cute kawaii black and white line art for coloring" class="ai-clipart coloring-image" alt="NOME DO ITEM" />
+  <div class="coloring-label">NOME DO ITEM EM MAIUSCULAS</div>
+  <div class="coloring-instruction">PINTE COM SUA COR FAVORITA!</div>
 </div>
 
-Organize as caixas em grade usando:
+Organize os cards em grade usando:
 <div class="coloring-grid"> ... </div>
 
+EXEMPLOS de data-generate para colorir:
+- Cachorro → data-generate="dog cute kawaii black and white line art for coloring"
+- Bombeiro → data-generate="firefighter child cute kawaii black and white line art for coloring"
+- Maca → data-generate="apple cute kawaii black and white line art for coloring"
+- Arvore → data-generate="tree with fruits cute kawaii black and white line art for coloring"
+
 REGRAS DO MODO COLORIR:
-- Caixas grandes (minimo 120px de altura) para a crianca ter espaco para pintar
-- Sempre coloque o nome do objeto embaixo da caixa em MAIUSCULAS
-- Adicione uma instrucao simples e motivadora embaixo do nome
-- NAO use emojis dentro das caixas de colorir
-- As caixas devem ter borda solida visivel (nao tracejada) para delimitar a area
+- Sempre coloque o nome do item embaixo da imagem em MAIUSCULAS
+- Adicione uma instrucao motivadora embaixo do nome
+- NAO use emojis
 ` : isBW ? `IMAGENS — MODO PRETO E BRANCO:
 A professora quer atividade para impressao preto e branco.
 Use ilustracoes do banco B&W ou caixas de desenho — nunca emojis coloridos.
@@ -292,11 +328,16 @@ Formato para itens do banco:
   <span class="figurinha-name">NOME</span>
 </div>
 
-Para itens fora do banco, use caixa de desenho vazia:
+Para itens fora do banco, use placeholder de geracao de imagem:
 <div class="figurinha-card">
-  <div class="drawing-box small"></div>
+  <img data-generate="DESCRICAO EM INGLES black and white line art" class="ai-clipart" alt="NOME" />
   <span class="figurinha-name">NOME</span>
 </div>
+
+Exemplos de data-generate para itens fora do banco:
+- Ator → data-generate="actor black and white line art"
+- Musico → data-generate="musician black and white line art"
+- Cientista → data-generate="scientist black and white line art"
 ` : `IMAGENS - USE EMOJIS:
 NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
 
@@ -366,15 +407,20 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
 
       const result = message.content[0];
       if (result.type === "text") {
-        // Limpa a resposta removendo markdown code blocks
         let activityHtml = cleanHtmlResponse(result.text);
-        
-        // Busca de imagens do Google desativada temporariamente
-        // A API do Google Custom Search precisa de configuracao adicional
-        // Por enquanto, usamos emojis que sao mais confiaveis
-        void useGoogleImages; // Evita warning de variavel nao usada
-        
-        return Response.json({ activity: activityHtml, source: "ai", imagesSource: useGoogleImages ? "google" : "pollinations" });
+
+        // Substitui placeholders data-generate por imagens DALL-E 3 (B&W e colorir)
+        if ((isBW || isColorir) && process.env.OPENAI_API_KEY) {
+          activityHtml = await replaceAiImagePlaceholders(
+            activityHtml,
+            config.topic,
+            config.year
+          );
+        }
+
+        void useGoogleImages;
+        const imagesSource = (isBW || isColorir) ? "dalle3" : "emoji";
+        return Response.json({ activity: activityHtml, source: "ai", imagesSource });
       }
     } catch (err) {
       console.error("Claude API error, falling back to template:", err);
