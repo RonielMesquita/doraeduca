@@ -33,8 +33,7 @@ function AuthForm() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        router.push("/");
-        router.refresh();
+        window.location.href = "/";
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
