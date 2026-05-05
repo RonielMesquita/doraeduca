@@ -107,6 +107,12 @@ function cleanHtmlResponse(text: string): string {
   // Remove tags <svg> inline que a IA gera (proibido — causa SVGs gigantes na página)
   cleaned = cleaned.replace(/<svg[\s\S]*?<\/svg>/gi, "");
 
+  // Remove cabeçalho duplicado que a IA gera (o sistema já exibe o cabeçalho fixo)
+  // Detecta o bloco de header escolar: tabela/div com ALUNO(A), NOME:, DATA: e PROFESSORA:
+  cleaned = cleaned.replace(/<(?:table|div)[^>]*>(?:(?!<\/(?:table|div)>)[\s\S])*?(?:ALUNO\(A\)|NOME:\s*_{3,}|PROFESSORA:\s*_{3,})[\s\S]*?<\/(?:table|div)>/gi, "");
+  // Remove também cabeçalhos de título de atividade duplicados (ex: "ATIVIDADE DE HISTÓRIA — FAMÍLIA E COMUNIDADE")
+  cleaned = cleaned.replace(/<(?:div|p|h[1-6])[^>]*class="[^"]*activity-title[^"]*"[^>]*>[\s\S]*?<\/(?:div|p|h[1-6])>/gi, "");
+
   // Remove atributos style inline que contenham filter ou propriedades globais perigosas
   cleaned = cleaned.replace(/\sstyle="[^"]*filter\s*:[^"]*"/gi, "");
 
@@ -286,6 +292,8 @@ REGRAS OBRIGATORIAS:
 7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
 8. NAO pare antes de completar todas as ${config.questionCount} questoes
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
+10. PROIBIDO gerar cabecalho escolar — o cabecalho com nome da escola, professora, aluno, data, turma e turno JA E EXIBIDO AUTOMATICAMENTE pelo sistema. Nao duplique. Comece direto nas questoes.
+11. PROIBIDO criar formas geometricas ou ilustracoes usando CSS (border-tricks para triangulos, clip-path, transform, box-shadow para desenhar casas, figuras, etc). Para espacos de desenho, use APENAS a classe drawing-box com texto descritivo dentro.
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
 A professora quer ilustracoes line art para as criancas PINTAREM.
