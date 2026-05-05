@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import RegisterSW from "@/components/RegisterSW";
-import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "DoraEduca — Assistente da Professora",
@@ -45,7 +44,6 @@ export default function RootLayout({
       <body className="min-h-screen bg-teacher-warm font-nunito">
         {children}
         <RegisterSW />
-        <Analytics />
       </body>
     </html>
   );
