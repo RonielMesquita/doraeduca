@@ -39,12 +39,10 @@ export async function getCachedImage(
 
   if (data) {
     const row = data as ImageCacheRow;
-    supabase
+    void supabase
       .from("image_cache")
       .update({ uso_count: row.uso_count + 1 })
-      .eq("id", row.id)
-      .then(() => {})
-      .catch(() => {});
+      .eq("id", row.id);
 
     return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
   }
