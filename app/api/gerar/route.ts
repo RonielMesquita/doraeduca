@@ -3,6 +3,7 @@ import { ActivityConfig, UploadedFile } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 import { getCachedImage, saveImageCache } from "@/lib/image-cache";
 import { replaceAiImagePlaceholders } from "@/lib/generate-image";
+import { getBnccObjectives } from "@/lib/bncc";
 
 const FREE_LIMIT = 5;
 
@@ -268,6 +269,8 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
       const isColorir = config.imageMode === "colorir";
       const isBW = config.imageMode === "pb" || isColorir;
 
+      const bnccObjectives = getBnccObjectives(config.year, config.subject);
+
       content.push({
         type: "text",
         text: `Crie uma atividade educacional para:
@@ -282,6 +285,11 @@ ${config.observations ? `- Observacoes: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos enviados." : ""}
 
+${bnccObjectives ? `ALINHAMENTO BNCC — ${config.year} — ${config.subject}:
+Os conteudos e exercicios devem contemplar estes objetivos de aprendizagem:
+${bnccObjectives}
+Respeite o nivel de desenvolvimento da crianca: complexidade, vocabulario e tipo de raciocinio adequados para ${config.year}.
+` : ""}
 REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
 2. CRITICO: Gere EXATAMENTE ${config.questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${config.questionCount}.
