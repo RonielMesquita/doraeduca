@@ -40,8 +40,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetch("/api/admin/stats")
-      .then((r) => {
-        if (!r.ok) throw new Error("Acesso negado ou erro no servidor.");
+      .then(async (r) => {
+        if (!r.ok) {
+          const body = await r.json().catch(() => ({}));
+          throw new Error(body.error ?? `Erro ${r.status}`);
+        }
         return r.json();
       })
       .then(setStats)

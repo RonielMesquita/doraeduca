@@ -15,10 +15,10 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return Response.json({ error: "Faça login para acessar esta página." }, { status: 401 });
+    return Response.json({ error: "Você precisa estar logado. Acesse doraeduca.vercel.app e faça login primeiro." }, { status: 401 });
   }
   if (!user.email || !ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-    return Response.json({ error: `Acesso restrito. Seu email (${user.email}) não tem permissão de admin.` }, { status: 403 });
+    return Response.json({ error: `Email sem permissão: ${user.email}. Admin esperado: roniel.net@gmail.com` }, { status: 403 });
   }
 
   const admin = createAdminClient();
