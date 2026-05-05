@@ -268,6 +268,7 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 
       const isColorir = config.imageMode === "colorir";
       const isBW = config.imageMode === "pb" || isColorir;
+      const questionCount = isColorir ? 1 : config.questionCount;
 
       const bnccObjectives = getBnccObjectives(config.year, config.subject);
 
@@ -280,7 +281,7 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
-- TOTAL DE QUESTOES: ${config.questionCount}
+- TOTAL DE QUESTOES: ${questionCount}
 ${config.observations ? `- Observacoes: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos enviados." : ""}
@@ -292,46 +293,49 @@ Respeite o nivel de desenvolvimento da crianca: complexidade, vocabulario e tipo
 ` : ""}
 REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
-2. CRITICO: Gere EXATAMENTE ${config.questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${config.questionCount}.
+2. CRITICO: Gere EXATAMENTE ${questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${questionCount}.
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS, inclusive instrucoes, enunciados, titulos e nomes
 5. Use o formato de numeracao com traco: "1- ENUNCIADO DA QUESTAO"
 6. IDIOMA: 100% PORTUGUES BRASILEIRO. PROIBIDO qualquer palavra em ingles, espanhol ou outro idioma.
 7. Linguagem SIMPLES, vocabulario facil para criancas de ${config.year}
-8. NAO pare antes de completar todas as ${config.questionCount} questoes
+8. NAO pare antes de completar todas as ${questionCount} questoes
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 10. PROIBIDO gerar cabecalho escolar — o cabecalho com nome da escola, professora, aluno, data, turma e turno JA E EXIBIDO AUTOMATICAMENTE pelo sistema. Nao duplique. Comece direto nas questoes.
 11. PROIBIDO criar formas geometricas ou ilustracoes usando CSS (border-tricks para triangulos, clip-path, transform, box-shadow para desenhar casas, figuras, etc). Para espacos de desenho, use APENAS a classe drawing-box com texto descritivo dentro.
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
-A professora quer ilustracoes line art para as criancas PINTAREM.
+A professora quer 1 FOLHA COMPLETA com 1 IMAGEM GRANDE para a crianca pintar.
 NAO use emojis. NAO use SVG inline. NAO use caixas vazias.
+PROIBIDO gerar multiplas questoes ou multiplas imagens pequenas — apenas 1 imagem grande por folha.
 
 ESCOLHA O FORMATO conforme o tema:
 
-== FORMATO A: CENA GRANDE (para datas comemorativas, temas com cenario) ==
-Use quando o tema for: dia comemorativo, escola, familia, natureza, historia, cidade, etc.
-Gere UMA imagem grande de cena por questao:
+== FORMATO A: CENA GRANDE (recomendado para maioria dos temas) ==
+Use para: datas comemorativas, escola, familia, natureza, historia, cidade, corpo humano, etc.
+Gere UMA unica imagem de cena que ocupe a folha inteira:
 
 <div class="scene-coloring-wrapper">
-  <img data-generate="CENA COMPLETA EM INGLES: detailed scene with [PERSONAGENS E CENARIO], cute kawaii black and white line art coloring page, thick outlines, children educational" class="scene-coloring-image" alt="DESCRICAO" />
-  <div class="scene-coloring-caption">PINTE ESTA CENA COM SUAS CORES FAVORITAS!</div>
+  <p class="activity-instruction">INSTRUCAO CURTA PARA A CRIANCA (ex: PINTE A CENA ABAIXO COM SUAS CORES FAVORITAS!)</p>
+  <img data-generate="CENA DETALHADA EM INGLES: detailed scene with [PERSONAGENS E CENARIO RICO], cute kawaii black and white line art coloring page, thick outlines, children educational, full page illustration" class="scene-coloring-image" alt="DESCRICAO" />
+  <div class="scene-coloring-caption">LEGENDA CURTA DA CENA EM MAIUSCULAS</div>
 </div>
 
-EXEMPLOS de data-generate para cena:
-- Escola → "school building with children playing outside, kawaii black and white coloring page"
-- Familia → "happy family of four together, kawaii black and white line art coloring page"
-- Descobrimento do Brasil → "portuguese ship arriving at brazil with indigenous people and explorer, black and white coloring page"
-- Dia do Soldado → "soldier family kawaii black and white line art coloring page"
+EXEMPLOS de data-generate para cena grande:
+- Escola → "school classroom with teacher and happy students sitting at desks, kawaii black and white coloring page full scene"
+- Familia → "happy family of four at home together, parents and two children, kawaii black and white line art coloring page"
+- Animais da Fazenda → "farm scene with cow, horse, chicken, pig and farmer, kawaii black and white coloring page"
+- Corpo Humano → "full body cartoon child showing arms legs head smiling, kawaii black and white coloring page"
 
-== FORMATO B: CARDS EM GRADE (para listas de itens: animais, frutas, profissoes) ==
-Use quando o tema tiver itens individuais para pintar separadamente:
+== FORMATO B: GRADE DE ITENS (somente quando o tema tiver 4 a 6 itens DISTINTOS para pintar) ==
+Use APENAS para: alfabeto (letras), numeros, formas geometricas, itens de uma lista.
+Gere no maximo 6 cards grandes:
 
 <div class="coloring-grid">
   <div class="coloring-card">
-    <img data-generate="ITEM EM INGLES cute kawaii black and white line art for coloring" class="ai-clipart coloring-image" alt="NOME" />
+    <img data-generate="ITEM EM INGLES cute kawaii black and white line art for coloring, large simple illustration" class="ai-clipart coloring-image" alt="NOME" />
     <div class="coloring-label">NOME EM MAIUSCULAS</div>
-    <div class="coloring-instruction">PINTE COM SUA COR FAVORITA!</div>
+    <div class="coloring-instruction">PINTE!</div>
   </div>
 </div>
 
@@ -340,6 +344,7 @@ REGRAS ABSOLUTAS:
 - NUNCA use figurinha-card, green, blue, yellow, pink
 - NUNCA adicione style="..." inline nos cards ou imagens
 - NUNCA use bordas coloridas ou tracejadas
+- FORMATO A e preferido — use FORMATO B apenas se o tema exigir itens distintos
 ` : isBW ? `IMAGENS — MODO PRETO E BRANCO:
 A professora quer atividade para impressao preto e branco.
 Use ilustracoes do banco B&W ou caixas de desenho — nunca emojis coloridos.
@@ -466,7 +471,7 @@ REGRAS DA TABELA:
 
 ${config.observations ? `SIGA OBRIGATORIAMENTE: ${config.observations}` : ""}
 
-VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE ${config.questionCount}? Se nao, complete antes de responder.`,
+VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE ${questionCount}? Se nao, complete antes de responder.`,
       });
 
       const message = await client.messages.create({

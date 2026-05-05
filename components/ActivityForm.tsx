@@ -319,24 +319,26 @@ export default function ActivityForm({
             </div>
           </div>
 
-          <div>
-            <label className={labelClass}>Quantidade de Questões</label>
-            <div className="flex gap-2 flex-wrap">
-              {[3, 5, 7, 10].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => onChange({ ...config, questionCount: n })}
-                  className={`flex-1 py-2 rounded-xl text-sm font-black border-2 transition-all ${
-                    config.questionCount === n
-                      ? "bg-amber-100 border-amber-400 text-amber-800 shadow-sm"
-                      : "bg-gray-50 border-gray-200 text-gray-500 hover:border-amber-200"
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
+          {config.imageMode !== "colorir" && (
+            <div>
+              <label className={labelClass}>Quantidade de Questões</label>
+              <div className="flex gap-2 flex-wrap">
+                {[3, 5, 7, 10].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => onChange({ ...config, questionCount: n })}
+                    className={`flex-1 py-2 rounded-xl text-sm font-black border-2 transition-all ${
+                      config.questionCount === n
+                        ? "bg-amber-100 border-amber-400 text-amber-800 shadow-sm"
+                        : "bg-gray-50 border-gray-200 text-gray-500 hover:border-amber-200"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Toggle margem ABNT */}
           <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 border-2 border-gray-100">
