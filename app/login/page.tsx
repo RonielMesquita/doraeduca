@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -165,6 +165,14 @@ function AuthForm() {
 
 /* ─── Landing Page ───────────────────────────────────────────────────────── */
 export default function LoginPage() {
+  const [showFloatingBtn, setShowFloatingBtn] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowFloatingBtn(window.scrollY > 300);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const scrollToForm = () => {
     document.getElementById("comecar")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -479,6 +487,27 @@ export default function LoginPage() {
         <p>© 2025 DoraEduca · Criando aulas mágicas para seus alunos 🍎</p>
         <p className="mt-1">🔒 Seus dados estão seguros e protegidos</p>
       </footer>
+
+      {/* ── BOTÃO FLUTUANTE MOBILE ── */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 sm:hidden transition-transform duration-300 ${
+          showFloatingBtn ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <div className="bg-white border-t border-orange-100 shadow-2xl px-4 py-3 flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-black text-gray-800 leading-tight">Crie atividades em segundos!</p>
+            <p className="text-[11px] text-gray-400 leading-tight">5 atividades grátis • Sem cartão</p>
+          </div>
+          <button
+            onClick={scrollToForm}
+            className="shrink-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm px-5 py-3 rounded-2xl shadow-lg active:scale-95 transition-all whitespace-nowrap"
+            style={{ boxShadow: "0 4px 15px rgba(249,115,22,0.5)" }}
+          >
+            Começar grátis →
+          </button>
+        </div>
+      </div>
 
     </div>
   );
