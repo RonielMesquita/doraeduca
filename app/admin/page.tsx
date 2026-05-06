@@ -41,6 +41,20 @@ export default function AdminPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const deleteUser = async (id: string, email: string) => {
+    if (!confirm(`Deletar "${email}" permanentemente? Esta ação não pode ser desfeita.`)) return;
+    setDeleting(id);
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
+      const body = await res.json();
+      if (!res.ok) { alert(body.error ?? "Erro ao deletar"); return; }
+      setStats((s) => s ? { ...s, recentUsers: s.recentUsers.filter((u) => u.id !== id), totalUsers: s.totalUsers - 1 } : s);
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   const load = () => {
     setLoading(true);
@@ -204,6 +218,7 @@ export default function AdminPage() {
                   <th className="text-left px-4 py-3">Ativo</th>
                   <th className="text-left px-4 py-3">Cadastro</th>
                   <th className="text-left px-4 py-3">Último acesso</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
@@ -222,6 +237,15 @@ export default function AdminPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{fmt(u.created_at)}</td>
                       <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{fmt(u.last_sign_in)}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => deleteUser(u.id, u.email)}
+                          disabled={deleting === u.id}
+                          className="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-40"
+                        >
+                          {deleting === u.id ? "..." : "🗑️"}
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
