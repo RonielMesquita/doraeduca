@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import { generateMockActivity } from "@/lib/templates";
 import { ActivityConfig, UploadedFile } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
@@ -168,10 +169,13 @@ const PLAN_LIMITS: Record<string, number> = {
 };
 
 export async function POST(request: Request) {
+  let currentUser: User | null = null;
+
   // Verificar limite por plano
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
+    currentUser = user;
     if (user) {
       const testerEmails = (process.env.TESTER_EMAILS ?? "")
         .split(",")
@@ -491,7 +495,7 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
       if (result.type === "text") {
         // Registra custo Claude (fire-and-forget)
         void trackClaudeCost({
-          userId: user?.id,
+          userId: currentUser?.id,
           model: "claude-sonnet-4-6",
           inputTokens: message.usage.input_tokens,
           outputTokens: message.usage.output_tokens,
