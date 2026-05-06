@@ -227,32 +227,47 @@ export default function LoginPage() {
         </div>
 
         {/* Vídeo com moldura de notebook */}
-        <div className="max-w-3xl mx-auto px-4 pb-10 anim-scale-in delay-500">
-          {/* Tela */}
-          <div className="bg-gray-800 rounded-t-2xl p-2 sm:p-3 shadow-2xl border-4 border-gray-700 ring-4 ring-white/10">
-            {/* Barra do browser */}
-            <div className="bg-gray-900 rounded-t-xl px-3 py-2 flex items-center gap-2 mb-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-400 shrink-0" />
-              <div className="w-3 h-3 rounded-full bg-yellow-400 shrink-0" />
-              <div className="w-3 h-3 rounded-full bg-green-400 shrink-0" />
-              <div className="flex-1 bg-gray-700 rounded-full h-5 mx-2 flex items-center px-3 min-w-0">
+        <div className="w-full max-w-4xl mx-auto px-2 sm:px-6 pb-10 anim-scale-in delay-500">
+          {/* Corpo do notebook */}
+          <div className="rounded-t-2xl sm:rounded-t-3xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
+               style={{ background: "linear-gradient(180deg,#4a4a4f 0%,#2d2d30 100%)" }}>
+
+            {/* Barra do browser — completa no desktop, minimalista no mobile */}
+            <div className="bg-[#1c1c1e] px-3 sm:px-4 py-2 flex items-center gap-2">
+              {/* Bolinhas */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f57] shadow-sm" />
+                <div className="w-3 h-3 rounded-full bg-[#febc2e] shadow-sm" />
+                <div className="w-3 h-3 rounded-full bg-[#28c840] shadow-sm" />
+              </div>
+              {/* Barra de URL — só desktop */}
+              <div className="hidden sm:flex flex-1 bg-[#3a3a3c] rounded-lg h-6 items-center px-3 mx-2 min-w-0">
                 <span className="text-gray-400 text-[11px] font-mono truncate">🔒 doraeduca.vercel.app</span>
               </div>
             </div>
-            {/* iframe */}
-            <div className="aspect-video rounded-b-lg overflow-hidden bg-black">
-              <iframe
-                src="https://www.youtube.com/embed/GTTqXLvquuM?autoplay=1&mute=1&loop=1&playlist=GTTqXLvquuM&rel=0&modestbranding=1&playsinline=1&controls=1&vq=hd1440"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-                title="DoraEduca — Crie atividades em segundos"
-              />
+
+            {/* Bezel interno */}
+            <div className="bg-[#111] px-1.5 pb-1.5 sm:px-2 sm:pb-2">
+              <div className="aspect-video overflow-hidden rounded-b-sm sm:rounded-b-md bg-black">
+                <iframe
+                  src="https://www.youtube.com/embed/GTTqXLvquuM?autoplay=1&mute=1&loop=1&playlist=GTTqXLvquuM&rel=0&modestbranding=1&playsinline=1&controls=1&vq=hd1440"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                  title="DoraEduca — Crie atividades em segundos"
+                />
+              </div>
             </div>
           </div>
-          {/* Base do notebook */}
-          <div className="bg-gray-700 h-4 rounded-b-lg mx-6 shadow-lg" />
-          <div className="bg-gray-600 h-2 rounded-b-2xl mx-2 shadow-xl" />
+
+          {/* Base do notebook — só desktop */}
+          <div className="hidden sm:block">
+            <div className="h-3 mx-12 rounded-b-sm shadow-lg"
+                 style={{ background: "linear-gradient(180deg,#3a3a3c,#2a2a2c)" }} />
+            <div className="h-2 mx-4 rounded-b-xl shadow-2xl"
+                 style={{ background: "linear-gradient(180deg,#2a2a2c,#1c1c1e)" }} />
+            <div className="h-3 mx-0 mt-0.5 rounded-b-2xl opacity-30 blur-sm bg-black" />
+          </div>
         </div>
       </section>
 
