@@ -226,17 +226,33 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Vídeo */}
-        <div className="max-w-2xl mx-auto px-4 pb-0 anim-scale-in delay-500">
-          <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl aspect-video bg-gray-900 border-4 border-white/20">
-            <iframe
-              src="https://www.youtube.com/embed/GTTqXLvquuM?autoplay=1&mute=1&loop=1&playlist=GTTqXLvquuM&rel=0&modestbranding=1&playsinline=1&controls=1&vq=hd1080"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-              title="DoraEduca — Crie atividades em segundos"
-            />
+        {/* Vídeo com moldura de notebook */}
+        <div className="max-w-3xl mx-auto px-4 pb-10 anim-scale-in delay-500">
+          {/* Tela */}
+          <div className="bg-gray-800 rounded-t-2xl p-2 sm:p-3 shadow-2xl border-4 border-gray-700 ring-4 ring-white/10">
+            {/* Barra do browser */}
+            <div className="bg-gray-900 rounded-t-xl px-3 py-2 flex items-center gap-2 mb-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-400 shrink-0" />
+              <div className="w-3 h-3 rounded-full bg-yellow-400 shrink-0" />
+              <div className="w-3 h-3 rounded-full bg-green-400 shrink-0" />
+              <div className="flex-1 bg-gray-700 rounded-full h-5 mx-2 flex items-center px-3 min-w-0">
+                <span className="text-gray-400 text-[11px] font-mono truncate">🔒 doraeduca.vercel.app</span>
+              </div>
+            </div>
+            {/* iframe */}
+            <div className="aspect-video rounded-b-lg overflow-hidden bg-black">
+              <iframe
+                src="https://www.youtube.com/embed/GTTqXLvquuM?autoplay=1&mute=1&loop=1&playlist=GTTqXLvquuM&rel=0&modestbranding=1&playsinline=1&controls=1&vq=hd1080"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+                title="DoraEduca — Crie atividades em segundos"
+              />
+            </div>
           </div>
+          {/* Base do notebook */}
+          <div className="bg-gray-700 h-4 rounded-b-lg mx-6 shadow-lg" />
+          <div className="bg-gray-600 h-2 rounded-b-2xl mx-2 shadow-xl" />
         </div>
       </section>
 
