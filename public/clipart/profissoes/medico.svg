@@ -1,44 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="doctor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="324px" height="325px" viewBox="0 0 324 325" enable-background="new 0 0 324 325" xml:space="preserve">
-<g id="medical_parts">
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M141.114,12h45.645
-		c24.223,0,43.866,19.637,43.866,43.859v102.294c0,24.222-19.644,43.866-43.866,43.866h-45.645
-		c-24.229,0-43.859-19.645-43.859-43.866V55.859C97.254,31.637,116.885,12,141.114,12z"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M113.199,194.594
-		v28.452c0,15.187-12.319,27.499-27.499,27.499"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M214.674,194.594
-		v28.452c0,15.187,12.313,27.499,27.498,27.499"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M84.324,250.41
-		c0,0-45.664,1.41-60.994,15s-5,46.59-5,46.59h291.34c0,0,10.003-33.18-5-46.59s-60.994-15-60.994-15"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M203.677,68.514
-		c0,12.158,9.842,22,21.994,22"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M99.591,90.508
-		c12.138,0,22-9.842,22-22"/>
-	
-		<line fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" x1="132.722" y1="111.682" x2="140.832" y2="111.682"/>
-	
-		<line fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" x1="187.175" y1="111.682" x2="195.285" y2="111.682"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M184.557,55.315
-		c0,7.271-15.4,13.749-34.373,13.749s-34.514-5.928-34.514-13.749"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M206,67.131
-		c-11.815,0-21.443-2.598-21.443-5.774"/>
-	
-		<line fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" x1="113.199" y1="226.766" x2="214.674" y2="226.766"/>
-	
-		<line fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" x1="163.933" y1="230.887" x2="163.933" y2="308.429"/>
-	<path fill="none" stroke="#000000" stroke-width="13.7493" stroke-linecap="round" stroke-linejoin="round" d="M259.493,107.01
-		v80.563c-0.067,21.617-17.576,39.112-39.18,39.193H107.7c-21.644,0-39.187-17.55-39.187-39.193V107.01"/>
-	<g>
-		<path d="M264.24,281.46c0,3.8-3.08,6.87-6.88,6.87h-5.92v5.91c0,3.8-3.08,6.88-6.87,6.88c-3.801,0-6.88-3.08-6.88-6.88v-5.91
-			h-6.04c-3.801,0-6.87-3.07-6.87-6.87s3.069-6.88,6.87-6.88h6.04v-6.04c0-3.79,3.079-6.87,6.88-6.87c3.79,0,6.87,3.08,6.87,6.87
-			v6.04h5.92C261.16,274.58,264.24,277.66,264.24,281.46z"/>
-	</g>
-</g>
-<path d="M89.514,90.702v24.244c-12,4.756-21-12.122-21-12.122S72.514,88.702,89.514,90.702z"/>
-<path d="M238.504,89.515l-0.452,24.241c11.908,4.979,21.222-11.728,21.222-11.728S255.539,87.834,238.504,89.515z"/>
-<path fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
-	M128.333,166.888c0,0,35.67,29.446,70.333,0"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Cabeça -->
+  <circle cx="50" cy="22" r="14"/>
+  <!-- Cabelo -->
+  <path d="M36 20 C36 11 64 11 64 20"/>
+  <!-- Olhos -->
+  <circle cx="44" cy="20" r="2" fill="#222" stroke="none"/>
+  <circle cx="56" cy="20" r="2" fill="#222" stroke="none"/>
+  <!-- Sorriso -->
+  <path d="M44 27 Q50 32 56 27"/>
+  <!-- Jaleco corpo -->
+  <path d="M34 36 L30 90 L70 90 L66 36 Z"/>
+  <!-- Colarinho jaleco -->
+  <path d="M44 36 L50 44 L56 36"/>
+  <!-- Linhas jaleco -->
+  <line x1="44" y1="36" x2="42" y2="60"/>
+  <line x1="56" y1="36" x2="58" y2="60"/>
+  <!-- Cruz médica no jaleco -->
+  <rect x="46" y="50" width="8" height="2.5" rx="1" fill="#222" stroke="none"/>
+  <rect x="48.75" y="47.5" width="2.5" height="8" rx="1" fill="#222" stroke="none"/>
+  <!-- Braços -->
+  <path d="M34 42 L20 62 L26 64 L36 50"/>
+  <path d="M66 42 L80 62 L74 64 L64 50"/>
+  <!-- Estetoscópio -->
+  <path d="M26 64 Q22 72 28 76 Q34 80 36 74"/>
+  <circle cx="36" cy="74" r="3"/>
+  <!-- Pernas -->
+  <path d="M40 90 L38 112 L44 112 L50 98 L56 112 L62 112 L60 90"/>
+  <!-- Sapatos -->
+  <ellipse cx="41" cy="113" rx="6" ry="3"/>
+  <ellipse cx="59" cy="113" rx="6" ry="3"/>
 </svg>

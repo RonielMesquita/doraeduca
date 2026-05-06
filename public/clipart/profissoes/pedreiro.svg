@@ -1,18 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
   <!-- Capacete -->
-  <path d="M35 35 C35 22 65 22 65 35 L67 42 L33 42 Z"/>
-  <line x1="30" y1="42" x2="70" y2="42"/>
+  <path d="M33 34 C33 20 67 20 67 34 L69 42 L31 42 Z" fill="#555" stroke="#222"/>
+  <line x1="28" y1="42" x2="72" y2="42"/>
   <!-- Cabeça -->
-  <circle cx="50" cy="52" r="11"/>
-  <!-- Corpo -->
-  <rect x="36" y="63" width="28" height="30" rx="3"/>
+  <circle cx="50" cy="54" r="13"/>
+  <!-- Olhos -->
+  <circle cx="44" cy="52" r="2" fill="#222" stroke="none"/>
+  <circle cx="56" cy="52" r="2" fill="#222" stroke="none"/>
+  <!-- Bigode/Sorriso -->
+  <path d="M44 59 Q50 64 56 59"/>
+  <!-- Corpo (camisa) -->
+  <path d="M35 68 L32 100 L68 100 L65 68 Z"/>
+  <!-- Cinto -->
+  <rect x="33" y="93" width="34" height="5" rx="1"/>
+  <!-- Alças/macacão -->
+  <line x1="44" y1="68" x2="44" y2="78"/>
+  <line x1="56" y1="68" x2="56" y2="78"/>
   <!-- Braços -->
-  <line x1="36" y1="68" x2="22" y2="80"/>
-  <line x1="64" y1="68" x2="78" y2="75"/>
+  <path d="M35 72 L18 78 L20 84 L36 80"/>
+  <path d="M65 72 L82 65 L84 71 L66 78"/>
+  <!-- Colher de pedreiro na mão direita -->
+  <path d="M84 71 L94 60"/>
+  <path d="M89 56 L96 62 L92 68 Z" fill="#888" stroke="#222"/>
   <!-- Pernas -->
-  <line x1="44" y1="93" x2="42" y2="112"/>
-  <line x1="56" y1="93" x2="58" y2="112"/>
-  <!-- Ferramenta (colher de pedreiro) -->
-  <line x1="78" y1="75" x2="88" y2="62"/>
-  <path d="M84 58 L92 58 L92 66 Z"/>
+  <path d="M40 100 L38 116 L46 116 L50 104 L54 116 L62 116 L60 100"/>
+  <!-- Botas -->
+  <path d="M36 116 Q36 120 44 120 Q46 120 46 116"/>
+  <path d="M60 116 Q60 120 64 120 Q66 120 66 116"/>
 </svg>
