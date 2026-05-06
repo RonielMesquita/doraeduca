@@ -2,7 +2,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getCachedImage, saveImageCache } from "@/lib/image-cache";
 import { trackDalleCost } from "@/lib/track-api-cost";
 
-function buildPrompt(description: string): string {
+function buildPrompt(description: string, estilo?: string): string {
+  if (estilo === "colorir") {
+    return `Full page black and white coloring page of ${description}, cute kawaii style for children, thick clean outlines, no shading, pure white background, large illustration filling the page, educational coloring worksheet`;
+  }
   return `Black and white line art clipart of ${description}, cute kawaii style for children educational worksheet, thick clean outlines, no gray shading, pure white background, simple coloring book illustration, educational clipart`;
 }
 
@@ -27,7 +30,7 @@ export async function generateOrGetImage(
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: buildPrompt(description),
+        prompt: buildPrompt(description, estilo),
         n: 1,
         size: "1024x1024",
         quality: "standard",

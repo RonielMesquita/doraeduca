@@ -318,15 +318,19 @@ Gere UMA unica imagem de cena que ocupe a folha inteira:
 
 <div class="scene-coloring-wrapper">
   <p class="activity-instruction">INSTRUCAO CURTA PARA A CRIANCA (ex: PINTE A CENA ABAIXO COM SUAS CORES FAVORITAS!)</p>
-  <img data-generate="CENA DETALHADA EM INGLES: detailed scene with [PERSONAGENS E CENARIO RICO], cute kawaii black and white line art coloring page, thick outlines, children educational, full page illustration" class="scene-coloring-image" alt="DESCRICAO" />
+  <img data-generate="ASSUNTO DA CENA EM 2-4 PALAVRAS EM INGLES (apenas o objeto principal, sem adjetivos): ex: school classroom, farm animals, happy family, human body" class="scene-coloring-image" alt="DESCRICAO EM PORTUGUES" />
   <div class="scene-coloring-caption">LEGENDA CURTA DA CENA EM MAIUSCULAS</div>
 </div>
 
-EXEMPLOS de data-generate para cena grande:
-- Escola → "school classroom with teacher and happy students sitting at desks, kawaii black and white coloring page full scene"
-- Familia → "happy family of four at home together, parents and two children, kawaii black and white line art coloring page"
-- Animais da Fazenda → "farm scene with cow, horse, chicken, pig and farmer, kawaii black and white coloring page"
-- Corpo Humano → "full body cartoon child showing arms legs head smiling, kawaii black and white coloring page"
+EXEMPLOS de data-generate para cena grande (apenas 2-4 palavras, so o sujeito):
+- Escola → data-generate="school classroom"
+- Familia → data-generate="happy family"
+- Animais da Fazenda → data-generate="farm animals"
+- Corpo Humano → data-generate="human body child"
+- Natal → data-generate="christmas scene"
+- Cidade → data-generate="city street"
+
+CRITICO: data-generate deve ter APENAS 2-4 palavras descrevendo o sujeito. NAO inclua "kawaii", "coloring", "page", "black", "white", "line", "art", "cute" etc.
 
 == FORMATO B: GRADE DE ITENS (somente quando o tema tiver 4 a 6 itens DISTINTOS para pintar) ==
 Use APENAS para: alfabeto (letras), numeros, formas geometricas, itens de uma lista.
@@ -334,7 +338,7 @@ Gere no maximo 6 cards grandes:
 
 <div class="coloring-grid">
   <div class="coloring-card">
-    <img data-generate="ITEM EM INGLES cute kawaii black and white line art for coloring, large simple illustration" class="ai-clipart coloring-image" alt="NOME" />
+    <img data-generate="NOME DO ITEM EM INGLES (1-3 palavras, apenas o sujeito): ex: butterfly, school bus, birthday cake" class="ai-clipart coloring-image" alt="NOME EM PORTUGUES" />
     <div class="coloring-label">NOME EM MAIUSCULAS</div>
     <div class="coloring-instruction">PINTE!</div>
   </div>
@@ -495,8 +499,10 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
 
         let activityHtml = cleanHtmlResponse(result.text);
 
-        // Substitui placeholders data-generate por imagens DALL-E 3 (B&W e colorir)
-        if ((isBW || isColorir) && process.env.OPENAI_API_KEY) {
+        // Substitui placeholders data-generate por imagens do pack ou DALL-E 3
+        // (sempre executa para colorir/BW — a busca no pack não requer OPENAI_API_KEY;
+        //  DALL-E só é chamado se a key estiver configurada)
+        if (isBW || isColorir) {
           activityHtml = await replaceAiImagePlaceholders(
             activityHtml,
             config.topic,
