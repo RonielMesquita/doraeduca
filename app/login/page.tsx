@@ -419,6 +419,30 @@ export default function LoginPage() {
         </div>
       </section>
 
+      {/* ── PLANO GRATUITO ── */}
+      <section className="py-10 px-4 bg-white">
+        <div className="max-w-sm mx-auto">
+          <div className="rounded-3xl border-4 border-green-200 shadow-md bg-white p-6 text-center reveal">
+            <span className="bg-green-100 text-green-700 font-black text-xs uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-3">
+              🎁 COMECE GRÁTIS
+            </span>
+            <div className="font-black text-4xl text-gray-900 mb-1">R$ 0</div>
+            <div className="text-gray-400 text-sm font-bold mb-5">para sempre</div>
+            <ul className="flex flex-col gap-2 mb-6 text-left">
+              {["5 atividades gratuitas", "Todas as disciplinas", "Impressão direta", "Sem cartão de crédito"].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm text-gray-600 font-semibold">
+                  <span className="text-green-500 font-black text-base">✓</span>{f}
+                </li>
+              ))}
+            </ul>
+            <button onClick={scrollToForm}
+              className="w-full py-3 rounded-2xl text-white font-black text-sm bg-green-500 hover:bg-green-600 border-b-4 border-green-700 transition-all active:scale-95 hover:scale-105">
+              COMEÇAR GRÁTIS AGORA
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* ── FOOTER ── */}
       <footer className="bg-gray-900 text-gray-400 text-center py-6 text-xs border-t-4 border-orange-500">
         <p className="font-bold">© 2025 DoraEduca · Criando aulas mágicas para seus alunos 🍎</p>
