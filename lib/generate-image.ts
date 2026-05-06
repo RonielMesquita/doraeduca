@@ -8,9 +8,10 @@ function buildPrompt(description: string): string {
 export async function generateOrGetImage(
   description: string,
   tema?: string,
-  serie?: string
+  serie?: string,
+  estilo?: string
 ): Promise<string | null> {
-  const cached = await getCachedImage(description, tema, serie);
+  const cached = await getCachedImage(description, tema, serie, estilo);
   if (cached) return cached.url;
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -85,7 +86,8 @@ export async function generateOrGetImage(
 export async function replaceAiImagePlaceholders(
   html: string,
   tema?: string,
-  serie?: string
+  serie?: string,
+  estilo?: string
 ): Promise<string> {
   const regex = /<img[^>]+data-generate="([^"]+)"[^>]*>/g;
   const matches: { full: string; description: string; originalClass: string }[] = [];
@@ -104,7 +106,7 @@ export async function replaceAiImagePlaceholders(
 
   await Promise.all(
     unique.map(async (desc) => {
-      const url = await generateOrGetImage(desc, tema, serie);
+      const url = await generateOrGetImage(desc, tema, serie, estilo);
       if (url) urlMap[desc] = url;
     })
   );

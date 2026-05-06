@@ -96,6 +96,9 @@ export default function AdminPage() {
             <p className="text-gray-400 text-sm mt-0.5">DoraEduca — {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}</p>
           </div>
           <div className="flex gap-2">
+            <a href="/admin/cliparts" className="text-sm font-bold text-purple-600 hover:text-purple-800 border border-purple-200 rounded-xl px-3 py-2 bg-purple-50 shadow-sm transition-colors">
+              🖼️ Cliparts
+            </a>
             <button onClick={load} className="text-sm font-bold text-gray-500 hover:text-gray-700 border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-sm transition-colors">
               🔄 Atualizar
             </button>

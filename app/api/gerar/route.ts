@@ -491,7 +491,8 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
           activityHtml = await replaceAiImagePlaceholders(
             activityHtml,
             config.topic,
-            config.year
+            config.year,
+            isColorir ? "colorir" : "bw-line-art"
           );
         }
 

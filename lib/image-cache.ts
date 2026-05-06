@@ -26,11 +26,13 @@ function normalizeQuery(q: string): string {
 export async function getCachedImage(
   query: string,
   tema?: string,
-  serie?: string
+  serie?: string,
+  estilo?: string
 ): Promise<CachedImage | null> {
   const supabase = createAdminClient();
   const normQuery = normalizeQuery(query);
 
+  // 1. Busca exata
   const { data } = await supabase
     .from("image_cache")
     .select("id, url, thumbnail, fonte, uso_count")
@@ -45,6 +47,30 @@ export async function getCachedImage(
       .eq("id", row.id);
 
     return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+  }
+
+  // 2. Busca fuzzy por palavras-chave no pack (para imagens do estilo colorir)
+  const words = normQuery.split(" ").filter((w) => w.length > 3).slice(0, 4);
+  if (words.length > 0) {
+    const estiloFilter = estilo ?? "colorir";
+    for (const word of words) {
+      const { data: fuzzy } = await supabase
+        .from("image_cache")
+        .select("id, url, thumbnail, fonte, uso_count")
+        .eq("estilo", estiloFilter)
+        .ilike("query", `%${word}%`)
+        .limit(1)
+        .maybeSingle();
+
+      if (fuzzy) {
+        const row = fuzzy as ImageCacheRow;
+        void supabase
+          .from("image_cache")
+          .update({ uso_count: row.uso_count + 1 })
+          .eq("id", row.id);
+        return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+      }
+    }
   }
 
   if (tema) {
