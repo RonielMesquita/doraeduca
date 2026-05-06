@@ -76,19 +76,23 @@ export async function getCachedImage(
       for (const word of words) {
         const { data: fuzzy } = await supabase
           .from("image_cache")
-          .select("id, url, thumbnail, fonte, uso_count")
+          .select("id, url, thumbnail, fonte, uso_count, query")
           .eq("estilo", estiloFilter)
           .ilike("query", `%${word}%`)
-          .limit(1)
-          .maybeSingle();
+          .limit(5);
 
-        if (fuzzy) {
-          const row = fuzzy as ImageCacheRow;
+        // Ignora entradas com query longa (> 7 palavras) — descrevem cenas com múltiplos
+        // animais que geram match errado para buscas de animais individuais
+        const match = (fuzzy ?? []).find(
+          (r) => (r as ImageCacheRow & { query: string }).query.split(" ").length <= 7
+        ) as (ImageCacheRow & { query: string }) | undefined;
+
+        if (match) {
           void supabase
             .from("image_cache")
-            .update({ uso_count: row.uso_count + 1 })
-            .eq("id", row.id);
-          return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+            .update({ uso_count: match.uso_count + 1 })
+            .eq("id", match.id);
+          return { url: match.url, thumbnail: match.thumbnail, fonte: match.fonte };
         }
       }
     }
