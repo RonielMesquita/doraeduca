@@ -209,7 +209,7 @@ export default function LoginPage() {
         <div className="max-w-2xl mx-auto px-4 pb-0 anim-scale-in delay-500">
           <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl aspect-video bg-gray-900">
             <iframe
-              src="https://www.youtube.com/embed/f0cORwbwPCo?autoplay=1&mute=1&loop=1&playlist=f0cORwbwPCo&rel=0&modestbranding=1&playsinline=1&controls=1"
+              src="https://www.youtube.com/embed/GTTqXLvquuM?autoplay=1&mute=1&loop=1&playlist=GTTqXLvquuM&rel=0&modestbranding=1&playsinline=1&controls=1"
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               className="w-full h-full"
