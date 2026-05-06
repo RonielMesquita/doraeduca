@@ -118,25 +118,32 @@ export async function replaceAiImagePlaceholders(
     })
   );
 
+  const drawingBoxLarge = `display:flex;align-items:center;justify-content:center;border:3px dashed #d1d5db;border-radius:12px;color:#9ca3af;font-size:1.5rem;text-align:center;`;
+  const drawingBoxSmall = `min-height:100px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;border-radius:8px;color:#9ca3af;font-size:0.7rem;text-align:center;`;
+
   let result = html;
   for (const { full, description, originalClass } of matches) {
+    const isColorirClass = originalClass.includes("scene-coloring");
+
     if (urlMap[description]) {
+      // onerror: se a URL estiver quebrada, substitui por drawing box em vez de imagem quebrada com texto em inglês
+      const fallbackStyle = isColorirClass ? drawingBoxLarge : drawingBoxSmall;
+      const fallbackText = isColorirClass ? "✏️ Desenhe aqui!" : "✏️";
+      const onerror = `var d=document.createElement('div');d.className='${isColorirClass ? originalClass : "drawing-box"}';d.setAttribute('style','${fallbackStyle}');d.textContent='${fallbackText}';this.parentNode.insertBefore(d,this);this.remove()`;
       result = result.replace(
         full,
-        `<img src="${urlMap[description]}" alt="${description}" class="${originalClass}" />`
+        `<img src="${urlMap[description]}" alt="" class="${originalClass}" onerror="${onerror}" />`
       );
     } else {
-      // Modo colorir: caixa de desenho grande sem texto em inglês
-      const isColorirClass = originalClass.includes("scene-coloring");
       if (isColorirClass) {
         result = result.replace(
           full,
-          `<div class="${originalClass}" style="display:flex;align-items:center;justify-content:center;border:3px dashed #d1d5db;border-radius:12px;color:#9ca3af;font-size:1rem;text-align:center;">✏️ Desenhe aqui!</div>`
+          `<div class="${originalClass}" style="${drawingBoxLarge}">✏️ Desenhe aqui!</div>`
         );
       } else {
         result = result.replace(
           full,
-          `<div class="drawing-box" style="min-height:100px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;border-radius:8px;color:#9ca3af;font-size:0.7rem;text-align:center;">✏️</div>`
+          `<div class="drawing-box" style="${drawingBoxSmall}">✏️</div>`
         );
       }
     }
