@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCachedImage, saveImageCache } from "@/lib/image-cache";
 import { replaceAiImagePlaceholders } from "@/lib/generate-image";
 import { getBnccObjectives } from "@/lib/bncc";
+import { trackClaudeCost } from "@/lib/track-api-cost";
 
 const FREE_LIMIT = 5;
 
@@ -484,6 +485,14 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
 
       const result = message.content[0];
       if (result.type === "text") {
+        // Registra custo Claude (fire-and-forget)
+        void trackClaudeCost({
+          userId: user?.id,
+          model: "claude-sonnet-4-6",
+          inputTokens: message.usage.input_tokens,
+          outputTokens: message.usage.output_tokens,
+        });
+
         let activityHtml = cleanHtmlResponse(result.text);
 
         // Substitui placeholders data-generate por imagens DALL-E 3 (B&W e colorir)

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 
 interface DayTrend { date: string; count: number; }
 interface MetaItem { id: string; data: string; plataforma: string; valor: number; visitantes: number; descricao: string; }
+interface ApiCosts {
+  mes: { claude: { cost: number; calls: number; tokensIn: number; tokensOut: number }; openai: { cost: number; images: number }; total: number };
+  acumulado: { claude: number; openai: number; total: number };
+}
 
 interface Stats {
   totalUsers: number; newToday: number; newWeek: number; newMonth: number;
@@ -57,16 +61,19 @@ export default function AdminPage() {
   const [metaItems, setMetaItems] = useState<MetaItem[]>([]);
   const [metaForm, setMetaForm] = useState({ data: new Date().toISOString().slice(0, 10), plataforma: "meta", valor: "", visitantes: "", descricao: "" });
   const [savingMeta, setSavingMeta] = useState(false);
+  const [apiCosts, setApiCosts] = useState<ApiCosts | null>(null);
 
   const load = () => {
     setLoading(true);
     Promise.all([
       fetch("/api/admin/stats").then(r => r.json()),
       fetch("/api/admin/meta-spend").then(r => r.json()),
-    ]).then(([s, m]) => {
+      fetch("/api/admin/api-costs").then(r => r.json()),
+    ]).then(([s, m, c]) => {
       if (s.error) throw new Error(s.error);
       setStats(s);
       setMetaItems(m.items ?? []);
+      if (!c.error) setApiCosts(c);
     }).catch((e) => setError(e.message)).finally(() => setLoading(false));
   };
 
@@ -264,6 +271,44 @@ export default function AdminPage() {
           <Stat icon="📄" label="Total Geradas" value={stats.totalActivities} sub="desde o início" color="#f59e0b" />
           <Stat icon="📈" label="Ativ. por Usuário" value={stats.totalUsers > 0 ? (stats.totalActivities / stats.totalUsers).toFixed(1) : "0"} sub="média geral" color="#22d3ee" />
         </div>
+
+        {/* ── Custos de API ── */}
+        {apiCosts && (
+          <div className="rounded-2xl border p-5" style={{ background: "rgba(13,13,26,0.9)", borderColor: "#f59e0b33", boxShadow: "0 0 40px #f59e0b10" }}>
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="font-black text-white text-sm uppercase tracking-widest">🤖 Custos de API — Mês Atual</h2>
+                <p className="text-slate-500 text-xs mt-0.5">Claude (Anthropic) · DALL-E 3 (OpenAI) · valores em USD</p>
+              </div>
+              <div className="text-right">
+                <div className="font-black text-2xl" style={{ color: "#f59e0b", textShadow: "0 0 20px #f59e0b88" }}>
+                  ${apiCosts.mes.total.toFixed(4)}
+                </div>
+                <div className="text-[10px] text-slate-600 uppercase tracking-wider">total este mês</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { icon: "🟣", label: "Claude", value: `$${apiCosts.mes.claude.cost.toFixed(4)}`, sub: `${apiCosts.mes.claude.calls} chamadas`, color: "#a855f7" },
+                { icon: "🎨", label: "DALL-E 3", value: `$${apiCosts.mes.openai.cost.toFixed(4)}`, sub: `${apiCosts.mes.openai.images} imagens`, color: "#22d3ee" },
+                { icon: "📝", label: "Tokens entrada", value: (apiCosts.mes.claude.tokensIn / 1000).toFixed(1) + "k", sub: "Claude input", color: "#4ade80" },
+                { icon: "📤", label: "Tokens saída", value: (apiCosts.mes.claude.tokensOut / 1000).toFixed(1) + "k", sub: "Claude output", color: "#f472b6" },
+              ].map(item => (
+                <div key={item.label} className="rounded-xl p-3 border" style={{ background: "rgba(7,7,15,0.8)", borderColor: `${item.color}22` }}>
+                  <div className="text-lg mb-1">{item.icon}</div>
+                  <div className="font-black text-base" style={{ color: item.color }}>{item.value}</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">{item.label}</div>
+                  <div className="text-[11px] text-slate-700 mt-0.5">{item.sub}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 pt-3 border-t flex gap-6" style={{ borderColor: "#1e293b" }}>
+              <div className="text-xs text-slate-600">Acumulado total: <span className="font-black text-slate-400">${apiCosts.acumulado.total.toFixed(4)}</span></div>
+              <div className="text-xs text-slate-600">Claude acum.: <span className="font-black" style={{ color: "#a855f7" }}>${apiCosts.acumulado.claude.toFixed(4)}</span></div>
+              <div className="text-xs text-slate-600">OpenAI acum.: <span className="font-black" style={{ color: "#22d3ee" }}>${apiCosts.acumulado.openai.toFixed(4)}</span></div>
+            </div>
+          </div>
+        )}
 
         {/* ── Gráfico 7 dias ── */}
         <NeonCard glow="#a855f7">

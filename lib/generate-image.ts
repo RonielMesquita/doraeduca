@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCachedImage, saveImageCache } from "@/lib/image-cache";
+import { trackDalleCost } from "@/lib/track-api-cost";
 
 function buildPrompt(description: string): string {
   return `Black and white line art clipart of ${description}, cute kawaii style for children educational worksheet, thick clean outlines, no gray shading, pure white background, simple coloring book illustration, educational clipart`;
@@ -76,6 +77,9 @@ export async function generateOrGetImage(
       thumbnail: publicUrl,
       fonte: "dalle3",
     });
+
+    // Registra custo DALL-E
+    void trackDalleCost({ images: 1 });
 
     return publicUrl;
   } catch {
