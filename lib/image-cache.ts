@@ -51,7 +51,20 @@ export async function getCachedImage(
 
   // 2. Busca fuzzy por palavras-chave no pack
   // As imagens do pack (estilo "colorir") são B&W line art — servem para ambos os modos.
-  const words = normQuery.split(" ").filter((w) => w.length > 3).slice(0, 4);
+  // Palavras genéricas de prompts DALL-E que não identificam o objeto — ignorar na busca
+  const STOP = new Set([
+    "cute","kawaii","black","white","line","art","coloring","page","detailed",
+    "scene","with","children","playing","simple","thick","clean","outline",
+    "outlines","illustration","educational","clipart","large","full","sheet",
+    "background","style","cartoon","drawing","image","picture","character",
+    "happy","adorable","funny","little","small","big","great","nice","pretty",
+    "beautiful","lovely","sweet","friendly","cheerful","smiling","sitting",
+    "standing","running","jumping","flying","swimming","cute","kids","child",
+    "baby","coloring","book","print","worksheet","activity",
+  ]);
+  const words = normQuery.split(" ")
+    .filter((w) => w.length > 3 && !STOP.has(w))
+    .slice(0, 5);
   if (words.length > 0) {
     // Busca no estilo solicitado primeiro, depois no pack colorir como fallback
     const estilosParaBuscar = estilo && estilo !== "colorir"

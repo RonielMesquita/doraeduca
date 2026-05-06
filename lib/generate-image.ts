@@ -123,11 +123,19 @@ export async function replaceAiImagePlaceholders(
         `<img src="${urlMap[description]}" alt="${description}" class="${originalClass}" />`
       );
     } else {
-      const label = description.split(" ").slice(0, 3).join(" ").toUpperCase();
-      result = result.replace(
-        full,
-        `<div class="drawing-box" style="min-height:120px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:0.7rem;text-align:center;">${label}</div>`
-      );
+      // Modo colorir: caixa de desenho grande sem texto em inglês
+      const isColorirClass = originalClass.includes("scene-coloring");
+      if (isColorirClass) {
+        result = result.replace(
+          full,
+          `<div class="${originalClass}" style="display:flex;align-items:center;justify-content:center;border:3px dashed #d1d5db;border-radius:12px;color:#9ca3af;font-size:1rem;text-align:center;">✏️ Desenhe aqui!</div>`
+        );
+      } else {
+        result = result.replace(
+          full,
+          `<div class="drawing-box" style="min-height:100px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;border-radius:8px;color:#9ca3af;font-size:0.7rem;text-align:center;">✏️</div>`
+        );
+      }
     }
   }
 
