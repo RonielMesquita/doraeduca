@@ -77,6 +77,7 @@ const PREVIEW_PLANS = [
 interface Props {
   config: ActivityConfig;
   activity: string | null;
+  activityId?: string | null;
   loading: boolean;
   source?: "ai" | "template" | null;
   feedback?: string;
@@ -88,6 +89,7 @@ interface Props {
 export default function ActivityPreview({
   config,
   activity,
+  activityId,
   loading,
   source,
   feedback = "",
@@ -112,6 +114,18 @@ export default function ActivityPreview({
   const [reorderBlocks, setReorderBlocks] = useState<{ before: string; sections: string[]; after: string } | null>(null);
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
   const dragIdxRef = useRef<number | null>(null);
+  const [rating, setRating] = useState<1 | -1 | null>(null);
+
+  const handleRate = async (value: 1 | -1) => {
+    if (!activityId) return;
+    const next = rating === value ? null : value;
+    setRating(next);
+    await fetch(`/api/history/${activityId}/rating`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rating: next }),
+    });
+  };
 
   const handleDownloadDocx = async () => {
     if (!activity) return;
@@ -162,6 +176,7 @@ export default function ActivityPreview({
 
   useEffect(() => {
     if (!loading) { setLoadingMsgIdx(0); return; }
+    setRating(null);
     mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     const id = setInterval(() => setLoadingMsgIdx((i: number) => (i + 1) % LOADING_MESSAGES.length), 2200);
     return () => clearInterval(id);
@@ -981,6 +996,25 @@ export default function ActivityPreview({
       </div>
       )}
       </div>
+      )}
+
+      {/* Rating */}
+      {activity && !loading && activityId && (
+        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 no-print flex items-center gap-3">
+          <span className="text-sm font-bold text-gray-500">Gostou da atividade?</span>
+          <button
+            onClick={() => handleRate(1)}
+            className={`text-2xl transition-all hover:scale-125 active:scale-95 ${rating === 1 ? "grayscale-0 drop-shadow-md" : "grayscale opacity-40 hover:opacity-80"}`}
+            title="Gostei"
+          >👍</button>
+          <button
+            onClick={() => handleRate(-1)}
+            className={`text-2xl transition-all hover:scale-125 active:scale-95 ${rating === -1 ? "grayscale-0 drop-shadow-md" : "grayscale opacity-40 hover:opacity-80"}`}
+            title="Não gostei"
+          >👎</button>
+          {rating === 1 && <span className="text-xs text-green-600 font-bold">Obrigada! Vamos gerar mais assim 🎉</span>}
+          {rating === -1 && <span className="text-xs text-orange-500 font-bold">Entendido! Use o campo abaixo para ajustar.</span>}
+        </div>
       )}
 
       {/* Feedback Section */}

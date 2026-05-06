@@ -18,6 +18,7 @@ export default function Home() {
   const didCleanUrl = useRef(false);
   const [config, setConfig] = useState<ActivityConfig>(defaultConfig);
   const [activity, setActivity] = useState<string | null>(null);
+  const [activityId, setActivityId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState<"ai" | "template" | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -97,10 +98,11 @@ export default function Home() {
 
       const data = await res.json();
       setActivity(data.activity);
+      setActivityId(null);
       setSource(data.source);
       setFeedback("");
 
-      // Auto-save to history (fire-and-forget)
+      // Auto-save to history
       if (data.activity) {
         fetch("/api/history", {
           method: "POST",
@@ -110,7 +112,11 @@ export default function Home() {
             activity: data.activity,
           }),
         })
-          .then(() => setUsageCount((c) => (c !== null ? c + 1 : null)))
+          .then((r) => r.json())
+          .then((saved) => {
+            if (saved.id) setActivityId(saved.id);
+            setUsageCount((c) => (c !== null ? c + 1 : null));
+          })
           .catch(() => {});
       }
     } catch (err) {
@@ -156,6 +162,7 @@ export default function Home() {
         <ActivityPreview
           config={config}
           activity={activity}
+          activityId={activityId}
           loading={loading}
           source={source}
           feedback={feedback}

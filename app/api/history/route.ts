@@ -29,17 +29,17 @@ export async function POST(request: Request) {
 
   const { config, activity } = await request.json();
 
-  const { error } = await supabase.from("activities").insert({
+  const { data, error } = await supabase.from("activities").insert({
     user_id: user.id,
     config,
     activity,
     subject: config.subject,
     topic: config.topic || "",
     title: config.activityTitle || "ATIVIDADE",
-  });
+  }).select("id").single();
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
-  return Response.json({ success: true });
+  return Response.json({ success: true, id: data.id });
 }
 
 export async function DELETE(request: Request) {
