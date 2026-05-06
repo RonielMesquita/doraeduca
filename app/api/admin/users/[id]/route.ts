@@ -25,6 +25,11 @@ export async function DELETE(
   }
 
   const admin = createAdminClient();
+
+  // Remove dados do usuário antes de deletar do Auth
+  await admin.from("activities").delete().eq("user_id", id);
+  await admin.from("profiles").delete().eq("id", id);
+
   const { error } = await admin.auth.admin.deleteUser(id);
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
