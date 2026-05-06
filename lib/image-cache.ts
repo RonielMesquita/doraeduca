@@ -49,26 +49,33 @@ export async function getCachedImage(
     return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
   }
 
-  // 2. Busca fuzzy por palavras-chave no pack (para imagens do estilo colorir)
+  // 2. Busca fuzzy por palavras-chave no pack
+  // As imagens do pack (estilo "colorir") são B&W line art — servem para ambos os modos.
   const words = normQuery.split(" ").filter((w) => w.length > 3).slice(0, 4);
   if (words.length > 0) {
-    const estiloFilter = estilo ?? "colorir";
-    for (const word of words) {
-      const { data: fuzzy } = await supabase
-        .from("image_cache")
-        .select("id, url, thumbnail, fonte, uso_count")
-        .eq("estilo", estiloFilter)
-        .ilike("query", `%${word}%`)
-        .limit(1)
-        .maybeSingle();
+    // Busca no estilo solicitado primeiro, depois no pack colorir como fallback
+    const estilosParaBuscar = estilo && estilo !== "colorir"
+      ? [estilo, "colorir"]
+      : ["colorir"];
 
-      if (fuzzy) {
-        const row = fuzzy as ImageCacheRow;
-        void supabase
+    for (const estiloFilter of estilosParaBuscar) {
+      for (const word of words) {
+        const { data: fuzzy } = await supabase
           .from("image_cache")
-          .update({ uso_count: row.uso_count + 1 })
-          .eq("id", row.id);
-        return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+          .select("id, url, thumbnail, fonte, uso_count")
+          .eq("estilo", estiloFilter)
+          .ilike("query", `%${word}%`)
+          .limit(1)
+          .maybeSingle();
+
+        if (fuzzy) {
+          const row = fuzzy as ImageCacheRow;
+          void supabase
+            .from("image_cache")
+            .update({ uso_count: row.uso_count + 1 })
+            .eq("id", row.id);
+          return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+        }
       }
     }
   }
