@@ -205,20 +205,16 @@ export default function LoginPage() {
           <p className="text-white/60 text-xs mt-3 anim-fade-up delay-400">5 atividades gratuitas • Sem cartão de crédito</p>
         </div>
 
-        {/* Vídeo placeholder */}
+        {/* Vídeo real */}
         <div className="max-w-2xl mx-auto px-4 pb-0 anim-scale-in delay-500">
-          <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl bg-gray-900 aspect-video flex items-center justify-center relative group cursor-pointer" onClick={scrollToForm}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/landing/atividade-pronta.jpg" alt="Atividade gerada pelo DoraEduca"
-              className="w-full h-full object-cover opacity-75 group-hover:opacity-60 transition-opacity duration-300"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-white/25 border-2 border-white/60 flex items-center justify-center mb-3 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 shadow-xl">
-                <span className="text-3xl ml-1">▶</span>
-              </div>
-              <p className="text-white font-black text-sm drop-shadow">Veja como funciona em 10 segundos</p>
-              <p className="text-white/60 text-xs mt-1">Clique para criar sua primeira atividade</p>
-            </div>
+          <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl aspect-video bg-gray-900">
+            <iframe
+              src="https://www.youtube.com/embed/f0cORwbwPCo?autoplay=1&mute=1&loop=1&playlist=f0cORwbwPCo&rel=0&modestbranding=1&playsinline=1&controls=1"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+              title="DoraEduca — Crie atividades em segundos"
+            />
           </div>
         </div>
       </section>
