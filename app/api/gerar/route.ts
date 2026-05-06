@@ -119,6 +119,15 @@ function cleanHtmlResponse(text: string): string {
   // Remove atributos style inline que contenham filter ou propriedades globais perigosas
   cleaned = cleaned.replace(/\sstyle="[^"]*filter\s*:[^"]*"/gi, "");
 
+  // Remove/substitui elementos de formulário interativos — não têm lugar em atividades impressas
+  // <input type="checkbox"> → div visual; <input type="color"> e demais → removidos
+  cleaned = cleaned.replace(/<input[^>]*type=["']checkbox["'][^>]*>/gi, '<div class="checkbox-square"></div>');
+  cleaned = cleaned.replace(/<input[^>]*>/gi, "");
+  cleaned = cleaned.replace(/<select[\s\S]*?<\/select>/gi, "");
+  cleaned = cleaned.replace(/<textarea[\s\S]*?<\/textarea>/gi, "");
+  cleaned = cleaned.replace(/<button[\s\S]*?<\/button>/gi, "");
+  cleaned = cleaned.replace(/<form[\s\S]*?<\/form>/gi, "");
+
   return cleaned.trim();
 }
 
@@ -308,6 +317,7 @@ REGRAS OBRIGATORIAS:
 9. PROIBIDO gerar tags <svg> inline no HTML — nunca escreva <svg>, <path>, <circle>, <rect> ou qualquer elemento SVG diretamente no conteudo
 10. PROIBIDO gerar cabecalho escolar — o cabecalho com nome da escola, professora, aluno, data, turma e turno JA E EXIBIDO AUTOMATICAMENTE pelo sistema. Nao duplique. Comece direto nas questoes.
 11. PROIBIDO criar formas geometricas ou ilustracoes usando CSS (border-tricks para triangulos, clip-path, transform, box-shadow para desenhar casas, figuras, etc). Para espacos de desenho, use APENAS a classe drawing-box com texto descritivo dentro.
+12. PROIBIDO usar qualquer elemento de formulario: <input>, <select>, <textarea>, <button>, <form>. Para caixas de marcar, use APENAS <div class="checkbox-square"></div>.
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
 A professora quer 1 FOLHA COMPLETA com 1 IMAGEM GRANDE para a crianca pintar.
