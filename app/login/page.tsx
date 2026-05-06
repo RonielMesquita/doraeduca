@@ -1,12 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+
+/* ─── Scroll reveal hook ─────────────────────────────────────────────────── */
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale");
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+      { threshold: 0.12 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
 
 /* ─── Auth Form ──────────────────────────────────────────────────────────── */
 function AuthForm() {
-  const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,15 +30,11 @@ function AuthForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setEmailSent("");
-    setLoading(true);
+    setError(""); setEmailSent(""); setLoading(true);
     const supabase = createClient();
     try {
       if (mode === "register") {
-        const { error } = await supabase.auth.signUp({
-          email, password, options: { data: { name } },
-        });
+        const { error } = await supabase.auth.signUp({ email, password, options: { data: { name } } });
         if (error) throw error;
         setEmailSent(email);
       } else {
@@ -38,46 +45,34 @@ function AuthForm() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
       setError(msg === "Invalid login credentials" ? "E-mail ou senha incorretos" : msg);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleGoogleLogin = async () => {
-    setLoadingGoogle(true);
-    setError("");
+    setLoadingGoogle(true); setError("");
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
-    if (error) {
-      setError("Não foi possível conectar com o Google. Tente novamente.");
-      setLoadingGoogle(false);
-    }
+    if (error) { setError("Não foi possível conectar com o Google."); setLoadingGoogle(false); }
   };
 
-  if (emailSent) {
-    return (
-      <div className="bg-white rounded-3xl shadow-2xl p-8 border border-green-100 text-center max-w-md mx-auto">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-3xl">📧</span>
-        </div>
-        <h2 className="text-2xl font-black text-gray-800 mb-2">Verifique seu e-mail!</h2>
-        <p className="text-gray-500 text-sm mb-4">Enviamos um link de confirmação para:</p>
-        <p className="font-black text-amber-600 text-base mb-5 bg-amber-50 rounded-xl px-4 py-2 break-all">{emailSent}</p>
-        <p className="text-gray-500 text-sm leading-relaxed mb-6">
-          Acesse sua caixa de entrada e clique no link para ativar sua conta. Verifique também o spam.
-        </p>
-        <button
-          onClick={() => { setEmailSent(""); setMode("login"); setEmail(""); setPassword(""); setName(""); }}
-          className="w-full py-3 rounded-2xl font-black text-white bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] transition-all active:scale-95 shadow-md"
-        >
-          Já confirmei, entrar
-        </button>
+  if (emailSent) return (
+    <div className="bg-white rounded-3xl shadow-2xl p-8 border border-green-100 text-center max-w-md mx-auto anim-scale-in">
+      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span className="text-3xl">📧</span>
       </div>
-    );
-  }
+      <h2 className="text-2xl font-black text-gray-800 mb-2">Verifique seu e-mail!</h2>
+      <p className="text-gray-500 text-sm mb-4">Enviamos um link de confirmação para:</p>
+      <p className="font-black text-amber-600 text-base mb-5 bg-amber-50 rounded-xl px-4 py-2 break-all">{emailSent}</p>
+      <p className="text-gray-500 text-sm leading-relaxed mb-6">Acesse sua caixa de entrada e clique no link. Verifique também o spam.</p>
+      <button onClick={() => { setEmailSent(""); setMode("login"); setEmail(""); setPassword(""); setName(""); }}
+        className="w-full py-3 rounded-2xl font-black text-white bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-[#3b0764] transition-all active:scale-95 shadow-md">
+        Já confirmei, entrar
+      </button>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-3xl shadow-2xl p-8 border border-amber-100 max-w-md mx-auto">
@@ -111,8 +106,7 @@ function AuthForm() {
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Seu nome</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Professora Ana"
-              className="w-full rounded-xl border-2 border-amber-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 focus:outline-none focus:border-amber-400 transition-colors"
-              required />
+              className="w-full rounded-xl border-2 border-amber-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 focus:outline-none focus:border-amber-400 transition-colors" required />
           </div>
         )}
         <div>
@@ -135,12 +129,9 @@ function AuthForm() {
             </button>
           </div>
         </div>
-        {error && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3 text-sm font-semibold text-red-600">❌ {error}</div>
-        )}
+        {error && <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3 text-sm font-semibold text-red-600">❌ {error}</div>}
         <button type="submit" disabled={loading}
-          className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 mt-2"
-          style={{ boxShadow: "0 6px 20px rgba(249,115,22,0.4)" }}>
+          className="w-full py-4 rounded-2xl font-black text-lg text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 mt-2 cta-pulse">
           {loading ? "⏳ Aguarde..." : mode === "register" ? "🚀 Gerar minha atividade grátis" : "✨ Entrar"}
         </button>
       </form>
@@ -162,6 +153,7 @@ function AuthForm() {
 /* ─── Landing Page ───────────────────────────────────────────────────────── */
 export default function LoginPage() {
   const [showFloatingBtn, setShowFloatingBtn] = useState(false);
+  useReveal();
 
   useEffect(() => {
     const onScroll = () => setShowFloatingBtn(window.scrollY > 280);
@@ -177,102 +169,108 @@ export default function LoginPage() {
     <div className="bg-white font-nunito overflow-x-hidden">
 
       {/* ── NAV ── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm anim-fade-in">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🍎</span>
+            <span className="text-xl anim-float">🍎</span>
             <span className="font-black text-lg">
               <span className="text-gray-800">Dora</span><span className="text-purple-700">Educa</span>
             </span>
           </div>
           <button onClick={scrollToForm}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm px-4 py-2 rounded-xl shadow active:scale-95 transition-all">
+            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm px-4 py-2 rounded-xl shadow active:scale-95 transition-all hover:shadow-lg hover:scale-105">
             Gerar grátis →
           </button>
         </div>
       </nav>
 
       {/* ── HERO ── */}
-      <section className="pt-16 bg-gradient-to-br from-orange-500 via-orange-400 to-purple-700 text-white">
+      <section className="pt-16 hero-gradient text-white">
         <div className="max-w-3xl mx-auto px-4 pt-10 pb-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5 text-xs font-bold mb-5">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-xs font-bold mb-5 anim-badge-pop">
             🚀 IA para professoras brasileiras
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight mb-3">
+          <h1 className="text-3xl sm:text-5xl font-black leading-tight mb-3 anim-fade-up delay-100">
             Crie atividades prontas<br />
-            <span className="text-yellow-300">em segundos</span>
+            <span className="text-yellow-300 drop-shadow-sm">em segundos</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/90 mb-6">
+          <p className="text-base sm:text-lg text-white/90 mb-7 anim-fade-up delay-200">
             Escolha a série, o tema e imprima.<br className="sm:hidden" /> Sem complicação.
           </p>
           <button onClick={scrollToForm}
-            className="bg-white text-orange-600 font-black text-lg px-8 py-4 rounded-2xl shadow-xl active:scale-95 transition-all"
+            className="bg-white text-orange-600 font-black text-lg px-8 py-4 rounded-2xl shadow-xl active:scale-95 transition-all hover:scale-105 cta-pulse anim-fade-up delay-300"
             style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.2)" }}>
             🎉 Gerar minha atividade grátis
           </button>
-          <p className="text-white/60 text-xs mt-3">5 atividades gratuitas • Sem cartão de crédito</p>
+          <p className="text-white/60 text-xs mt-3 anim-fade-up delay-400">5 atividades gratuitas • Sem cartão de crédito</p>
         </div>
 
-        {/* Placeholder de vídeo */}
-        <div className="max-w-2xl mx-auto px-4 pb-0">
-          <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl bg-gray-900 aspect-video flex items-center justify-center relative">
+        {/* Vídeo placeholder */}
+        <div className="max-w-2xl mx-auto px-4 pb-0 anim-scale-in delay-500">
+          <div className="w-full rounded-t-3xl overflow-hidden shadow-2xl bg-gray-900 aspect-video flex items-center justify-center relative group cursor-pointer" onClick={scrollToForm}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/landing/atividade-pronta.jpg" alt="Atividade gerada pelo DoraEduca"
-              className="w-full h-full object-cover opacity-80"
+              className="w-full h-full object-cover opacity-75 group-hover:opacity-60 transition-opacity duration-300"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-              <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white flex items-center justify-center mb-3 backdrop-blur-sm">
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-white/25 border-2 border-white/60 flex items-center justify-center mb-3 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 shadow-xl">
                 <span className="text-3xl ml-1">▶</span>
               </div>
-              <p className="text-white font-black text-sm">Vídeo demonstração em breve</p>
-              <p className="text-white/60 text-xs mt-1">Veja como criar uma atividade em 10 segundos</p>
+              <p className="text-white font-black text-sm drop-shadow">Veja como funciona em 10 segundos</p>
+              <p className="text-white/60 text-xs mt-1">Clique para criar sua primeira atividade</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── ANTES vs DEPOIS ── */}
-      <section className="py-12 px-4 bg-[#FFF5E4]">
+      <section className="py-14 px-4 bg-[#FFF5E4]">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-8 reveal">
             Antes e depois do <span className="text-orange-500">DoraEduca</span>
           </h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white rounded-2xl p-4 border-2 border-red-100 shadow-sm">
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-white rounded-2xl p-4 border-2 border-red-100 shadow-sm card-hover reveal-left">
               <p className="font-black text-red-500 text-sm mb-3">❌ Antes</p>
-              {["2–3h criando atividade", "Pesquisar no Google", "Formatar no Word", "Imprimir e cortar", "Sem tempo para alunos"].map(t => (
-                <p key={t} className="text-xs text-gray-500 mb-2 flex gap-2"><span>•</span>{t}</p>
+              {["2–3h por atividade", "Pesquisa manual", "Formatar no Word", "Imprimir e cortar", "Sem tempo pra alunos"].map((t, i) => (
+                <p key={t} className="text-xs text-gray-500 mb-2 flex gap-2" style={{ transitionDelay: `${i * 60}ms` }}>
+                  <span className="text-red-300">•</span>{t}
+                </p>
               ))}
             </div>
-            <div className="bg-white rounded-2xl p-4 border-2 border-green-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-4 border-2 border-green-200 shadow-sm card-hover reveal-right">
               <p className="font-black text-green-600 text-sm mb-3">✅ Com DoraEduca</p>
-              {["10 segundos", "IA gera tudo", "Pronta para imprimir", "PDF ou Word", "Mais tempo com alunos"].map(t => (
-                <p key={t} className="text-xs text-gray-700 font-semibold mb-2 flex gap-2"><span>•</span>{t}</p>
+              {["10 segundos", "IA gera tudo", "Pronta para imprimir", "PDF ou Word", "Mais tempo com alunos"].map((t, i) => (
+                <p key={t} className="text-xs text-gray-700 font-semibold mb-2 flex gap-2" style={{ transitionDelay: `${i * 60}ms` }}>
+                  <span className="text-green-400">•</span>{t}
+                </p>
               ))}
             </div>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/landing/antes-depois.jpg" alt="Antes e depois"
-            className="w-full max-w-lg mx-auto rounded-2xl shadow-lg mt-6"
+            className="w-full max-w-lg mx-auto rounded-2xl shadow-lg reveal-scale"
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
         </div>
       </section>
 
       {/* ── COMO FUNCIONA ── */}
-      <section className="py-12 px-4 bg-white">
+      <section className="py-14 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
-          <p className="text-purple-600 font-black text-xs uppercase tracking-widest text-center mb-2">Simples assim</p>
-          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-8">
+          <p className="text-purple-600 font-black text-xs uppercase tracking-widest text-center mb-2 reveal">Simples assim</p>
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-8 reveal">
             3 passos. 10 segundos.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { num: "1", color: "bg-amber-400",  icon: "🖱️", title: "Escolha", desc: "Série, disciplina e tema da atividade" },
-              { num: "2", color: "bg-purple-600", icon: "⚡", title: "Gere",    desc: "A IA cria a atividade completa em segundos" },
-              { num: "3", color: "bg-orange-500", icon: "🖨️", title: "Imprima", desc: "PDF ou Word. Pronto para a sala de aula" },
-            ].map(s => (
-              <div key={s.num} className="flex flex-col items-center text-center bg-gray-50 rounded-2xl p-5 border border-gray-100">
-                <div className={`${s.color} text-white font-black text-xl w-10 h-10 rounded-full flex items-center justify-center mb-3 shadow`}>{s.num}</div>
+              { num: "1", color: "bg-amber-400",  icon: "🖱️", title: "Escolha",  desc: "Série, disciplina e tema da atividade",       delay: "delay-100" },
+              { num: "2", color: "bg-purple-600", icon: "⚡", title: "Gere",     desc: "A IA cria a atividade completa em segundos",   delay: "delay-300" },
+              { num: "3", color: "bg-orange-500", icon: "🖨️", title: "Imprima",  desc: "PDF ou Word. Pronto para a sala de aula",      delay: "delay-500" },
+            ].map((s) => (
+              <div key={s.num} className={`step-card flex flex-col items-center text-center bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover reveal ${s.delay}`}>
+                <div className={`step-num ${s.color} text-white font-black text-xl w-11 h-11 rounded-full flex items-center justify-center mb-3 shadow-md`}>
+                  {s.num}
+                </div>
                 <span className="text-3xl mb-2">{s.icon}</span>
                 <h3 className="font-black text-gray-800 mb-1">{s.title}</h3>
                 <p className="text-gray-500 text-sm">{s.desc}</p>
@@ -281,46 +279,51 @@ export default function LoginPage() {
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/landing/como-funciona.jpg" alt="Como funciona"
-            className="w-full max-w-lg mx-auto rounded-2xl shadow-lg mt-8"
+            className="w-full max-w-lg mx-auto rounded-2xl shadow-lg mt-8 reveal-scale"
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
         </div>
       </section>
 
       {/* ── PRINTS DO SISTEMA ── */}
-      <section className="py-12 px-4 bg-gradient-to-br from-purple-50 to-amber-50">
+      <section className="py-14 px-4 bg-gradient-to-br from-purple-50 to-amber-50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-3">
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 text-center mb-2 reveal">
             Atividades <span className="text-orange-500">100% prontas</span>
           </h2>
-          <p className="text-center text-gray-500 text-sm mb-8">Com cabeçalho da escola, questões e espaços para resposta</p>
-          <div className="grid grid-cols-2 gap-4">
+          <p className="text-center text-gray-500 text-sm mb-8 reveal">Com cabeçalho da escola, questões e espaços para resposta</p>
+          <div className="grid grid-cols-2 gap-4 mb-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/landing/atividade-pronta.jpg" alt="Atividade pronta"
-              className="w-full rounded-2xl shadow-lg"
+              className="w-full rounded-2xl shadow-lg card-hover reveal-left"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/landing/tenho-tudo-pronto.jpg" alt="Resultado"
-              className="w-full rounded-2xl shadow-lg"
+              className="w-full rounded-2xl shadow-lg card-hover reveal-right"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           </div>
-          <div className="flex flex-wrap justify-center gap-2 mt-6">
-            {["✅ Alinhado à BNCC", "✅ Colorida ou P&B", "✅ Para colorir", "✅ Word e PDF", "✅ Todas as séries"].map(t => (
-              <span key={t} className="bg-white rounded-xl px-3 py-1.5 text-xs font-bold text-gray-700 border border-gray-200 shadow-sm">{t}</span>
+          <div className="flex flex-wrap justify-center gap-2 reveal">
+            {["✅ Alinhado à BNCC", "✅ Colorida ou P&B", "✅ Para colorir", "✅ Word e PDF", "✅ Todas as séries"].map((t) => (
+              <span key={t} className="bg-white rounded-xl px-3 py-1.5 text-xs font-bold text-gray-700 border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default">
+                {t}
+              </span>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── CTA + FORM ── */}
-      <section id="comecar" className="py-16 px-4 bg-gradient-to-br from-purple-700 via-purple-800 to-[#3b0764]">
-        <div className="max-w-lg mx-auto text-center mb-8">
-          <span className="text-4xl">🍎</span>
+      <section id="comecar" className="py-16 px-4 bg-gradient-to-br from-purple-700 via-purple-800 to-[#3b0764] relative overflow-hidden">
+        {/* Decoração de fundo */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-orange-500/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-400/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl pointer-events-none" />
+        <div className="max-w-lg mx-auto text-center mb-8 relative reveal">
+          <span className="text-4xl anim-float inline-block">🍎</span>
           <h2 className="text-2xl sm:text-3xl font-black text-white mt-3 mb-2">
             Comece agora. É <span className="text-yellow-300">grátis!</span>
           </h2>
           <p className="text-purple-200 text-sm">Crie sua conta em segundos e gere sua primeira atividade ainda hoje.</p>
         </div>
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto relative reveal">
           <AuthForm />
         </div>
       </section>
@@ -328,16 +331,16 @@ export default function LoginPage() {
       {/* ── PLANOS ── */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
-          <p className="text-purple-600 font-black text-xs uppercase tracking-widest text-center mb-2">Planos</p>
-          <h2 className="text-2xl font-black text-gray-800 text-center mb-8">Comece grátis, cresça no seu ritmo</h2>
+          <p className="text-purple-600 font-black text-xs uppercase tracking-widest text-center mb-2 reveal">Planos</p>
+          <h2 className="text-2xl font-black text-gray-800 text-center mb-8 reveal">Comece grátis, cresça no seu ritmo</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { name: "Gratuito", price: "R$ 0",     period: "para sempre", tag: null,          btn: "bg-gray-700", color: "border-gray-200",  features: ["5 atividades total", "Todas as disciplinas", "Impressão direta"] },
-              { name: "Básico",   price: "R$ 29,90", period: "/mês",        tag: null,          btn: "bg-gray-800", color: "border-gray-200",  features: ["50 atividades/mês", "Download Word e PDF", "Histórico 30 dias"] },
-              { name: "Pro",      price: "R$ 49,90", period: "/mês",        tag: "⭐ Popular", btn: "bg-gradient-to-r from-orange-500 to-orange-600", color: "border-amber-400", features: ["100 atividades/mês", "Word e PDF", "Histórico completo", "Suporte WhatsApp"] },
-            ].map(plan => (
+              { name: "Gratuito", price: "R$ 0",     period: "para sempre", tag: null,         btn: "bg-gray-700 hover:bg-gray-800",                                        color: "border-gray-200",  delay: "delay-100", features: ["5 atividades total", "Todas as disciplinas", "Impressão direta"] },
+              { name: "Básico",   price: "R$ 29,90", period: "/mês",        tag: null,         btn: "bg-gray-800 hover:bg-gray-900",                                        color: "border-gray-200",  delay: "delay-300", features: ["50 atividades/mês", "Download Word e PDF", "Histórico 30 dias"] },
+              { name: "Pro",      price: "R$ 49,90", period: "/mês",        tag: "⭐ Popular", btn: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600", color: "border-amber-400", delay: "delay-500", features: ["100 atividades/mês", "Word e PDF", "Histórico completo", "Suporte WhatsApp"] },
+            ].map((plan) => (
               <div key={plan.name}
-                className={`relative rounded-2xl border-2 ${plan.color} flex flex-col overflow-hidden ${plan.tag ? "shadow-xl ring-2 ring-amber-400 ring-offset-2" : "shadow-sm"}`}>
+                className={`relative rounded-2xl border-2 ${plan.color} flex flex-col overflow-hidden card-hover reveal ${plan.delay} ${plan.tag ? "shadow-xl ring-2 ring-amber-400 ring-offset-2" : "shadow-sm"}`}>
                 {plan.tag && (
                   <div className="bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-black text-center py-1.5">{plan.tag}</div>
                 )}
@@ -348,14 +351,14 @@ export default function LoginPage() {
                     <span className="text-gray-400 text-xs">{plan.period}</span>
                   </div>
                   <ul className="flex flex-col gap-2 flex-1 mb-5">
-                    {plan.features.map(f => (
+                    {plan.features.map((f) => (
                       <li key={f} className="flex items-center gap-2 text-xs text-gray-600">
                         <span className="text-green-500 font-bold shrink-0">✓</span>{f}
                       </li>
                     ))}
                   </ul>
                   <button onClick={scrollToForm}
-                    className={`w-full py-2.5 rounded-xl text-white font-black text-sm transition-all active:scale-95 ${plan.btn}`}>
+                    className={`w-full py-2.5 rounded-xl text-white font-black text-sm transition-all active:scale-95 hover:scale-105 ${plan.btn}`}>
                     Começar agora
                   </button>
                 </div>
@@ -379,7 +382,7 @@ export default function LoginPage() {
             <p className="text-[11px] text-gray-400">5 grátis • Sem cartão</p>
           </div>
           <button onClick={scrollToForm}
-            className="shrink-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm px-5 py-3 rounded-2xl shadow-lg active:scale-95 transition-all"
+            className="shrink-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm px-5 py-3 rounded-2xl shadow-lg active:scale-95 transition-all cta-pulse"
             style={{ boxShadow: "0 4px 15px rgba(249,115,22,0.5)" }}>
             Gerar grátis →
           </button>
