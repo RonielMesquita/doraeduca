@@ -62,15 +62,17 @@ export async function getCachedImage(
     "standing","running","jumping","flying","swimming","cute","kids","child",
     "baby","coloring","book","print","worksheet","activity",
     "animals","animal","pack","pack2","group","family","collection","set",
+    "vehicle","vehicles","truck","machine","machines","equipment",
   ]);
   const words = normQuery.split(" ")
     .filter((w) => w.length > 3 && !STOP.has(w))
     .slice(0, 5);
   if (words.length > 0) {
-    // Busca no estilo solicitado primeiro, depois no pack colorir como fallback
-    const estilosParaBuscar = estilo && estilo !== "colorir"
-      ? [estilo, "colorir"]
-      : ["colorir"];
+    // Para colorir: busca só colorir. Para bw-line-art: só bw-line-art (sem misturar
+    // estilos — imagens kawaii colorir têm visual diferente dos SVGs do banco B&W)
+    const estilosParaBuscar = estilo === "colorir" || !estilo
+      ? ["colorir"]
+      : [estilo];
 
     for (const estiloFilter of estilosParaBuscar) {
       for (const word of words) {
