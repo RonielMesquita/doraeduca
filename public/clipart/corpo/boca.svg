@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Lábio superior -->
+  <path d="M10 25 Q25 18 35 22 Q50 28 65 22 Q75 18 90 25"/>
+  <!-- Lábio inferior -->
+  <path d="M10 25 Q30 42 50 44 Q70 42 90 25"/>
+  <!-- Divisão central superior -->
+  <path d="M50 28 Q45 22 38 21" stroke-width="2"/>
+  <path d="M50 28 Q55 22 62 21" stroke-width="2"/>
+  <!-- Linha divisória dos lábios -->
+  <path d="M10 25 Q50 30 90 25"/>
+  <!-- Dentes -->
+  <path d="M20 26 Q50 31 80 26 L80 32 Q50 37 20 32 Z" fill="#fff" stroke="#222" stroke-width="1.5"/>
+  <line x1="32" y1="26" x2="32" y2="32" stroke-width="1.5"/>
+  <line x1="44" y1="27" x2="44" y2="33" stroke-width="1.5"/>
+  <line x1="56" y1="27" x2="56" y2="33" stroke-width="1.5"/>
+  <line x1="68" y1="26" x2="68" y2="32" stroke-width="1.5"/>
+</svg>

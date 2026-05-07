@@ -378,7 +378,7 @@ Frutas: /clipart/frutas/maca.svg, /clipart/frutas/banana.svg, /clipart/frutas/la
 Escola: /clipart/escola/lapis.svg, /clipart/escola/caderno.svg, /clipart/escola/mochila.svg, /clipart/escola/livro.svg, /clipart/escola/tesoura.svg, /clipart/escola/regua.svg, /clipart/escola/quadro.svg, /clipart/escola/cola.svg, /clipart/escola/apontador.svg
 Natureza: /clipart/natureza/arvore.svg, /clipart/natureza/flor.svg, /clipart/natureza/sol.svg, /clipart/natureza/lua.svg, /clipart/natureza/estrela.svg, /clipart/natureza/nuvem.svg, /clipart/natureza/chuva.svg, /clipart/natureza/arco-iris.svg, /clipart/natureza/folha.svg
 Transportes: /clipart/transportes/carro.svg, /clipart/transportes/onibus.svg, /clipart/transportes/aviao.svg, /clipart/transportes/barco.svg, /clipart/transportes/trem.svg, /clipart/transportes/bicicleta.svg, /clipart/transportes/caminhao.svg
-Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/coracao.svg
+Corpo: /clipart/corpo/mao.svg, /clipart/corpo/pe.svg, /clipart/corpo/olho.svg, /clipart/corpo/nariz.svg, /clipart/corpo/boca.svg, /clipart/corpo/orelha.svg, /clipart/corpo/coracao.svg
 
 Formato para itens do banco:
 <div class="figurinha-card">

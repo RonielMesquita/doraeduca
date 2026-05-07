@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Ponte do nariz -->
+  <path d="M42 20 C40 30 36 45 34 58 C32 68 35 72 40 74 C44 76 48 77 50 77 C52 77 56 76 60 74 C65 72 68 68 66 58 C64 45 60 30 58 20"/>
+  <!-- Narinas -->
+  <path d="M34 62 C30 60 26 62 27 68 C28 73 34 76 40 74"/>
+  <path d="M66 62 C70 60 74 62 73 68 C72 73 66 76 60 74"/>
+  <!-- Septal base -->
+  <path d="M40 74 Q50 78 60 74"/>
+</svg>
