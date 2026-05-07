@@ -1,3 +1,5 @@
+export const maxDuration = 60; // segundos — necessário para Claude + DALL-E + Supabase upload
+
 import type { User } from "@supabase/supabase-js";
 import { generateMockActivity } from "@/lib/templates";
 import { ActivityConfig, UploadedFile } from "@/lib/types";
