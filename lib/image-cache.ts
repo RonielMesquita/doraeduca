@@ -26,6 +26,7 @@ function normalizeQuery(q: string): string {
 
 // Palavras genéricas que não identificam o objeto — ignoradas na busca fuzzy
 const FUZZY_STOP = new Set([
+  // inglês
   "cute","kawaii","black","white","line","art","coloring","page","detailed",
   "scene","with","children","playing","simple","thick","clean","outline",
   "outlines","illustration","educational","clipart","large","full","sheet",
@@ -35,6 +36,13 @@ const FUZZY_STOP = new Set([
   "standing","running","jumping","flying","swimming","kids","child",
   "baby","coloring","book","print","worksheet","activity",
   "vehicle","vehicles","truck","machine","machines","equipment",
+  // português
+  "bonito","fofo","preto","branco","linha","arte","colorir","pintar","pagina",
+  "cena","crianca","criancas","brincando","simples","grosso","limpo","contorno",
+  "ilustracao","educacional","fundo","estilo","desenho","imagem","figura",
+  "feliz","adoravel","engraçado","pequeno","grande","legal","bonita","lindo",
+  "amigavel","sorrindo","sentado","correndo","pulando","voando","nadando",
+  "bebe","livro","impresso","atividade","folha","quadro",
 ]);
 
 export async function getCachedImage(

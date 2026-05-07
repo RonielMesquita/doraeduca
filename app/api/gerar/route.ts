@@ -334,19 +334,19 @@ Gere UMA unica imagem de cena que ocupe a folha inteira:
 
 <div class="scene-coloring-wrapper">
   <p class="activity-instruction">INSTRUCAO CURTA PARA A CRIANCA (ex: PINTE A CENA ABAIXO COM SUAS CORES FAVORITAS!)</p>
-  <img data-generate="ASSUNTO DA CENA EM 2-4 PALAVRAS EM INGLES (apenas o objeto principal, sem adjetivos): ex: school classroom, farm animals, happy family, human body" class="scene-coloring-image" alt="DESCRICAO EM PORTUGUES" />
+  <img data-generate="ASSUNTO DA CENA EM 2-4 PALAVRAS EM PORTUGUES (apenas o objeto principal, sem adjetivos): ex: sala de aula, animais da fazenda, familia feliz, corpo humano" class="scene-coloring-image" alt="DESCRICAO EM PORTUGUES" />
   <div class="scene-coloring-caption">LEGENDA CURTA DA CENA EM MAIUSCULAS</div>
 </div>
 
-EXEMPLOS de data-generate para cena grande (apenas 2-4 palavras, so o sujeito):
-- Escola → data-generate="school classroom"
-- Familia → data-generate="happy family"
-- Animais da Fazenda → data-generate="farm animals"
-- Corpo Humano → data-generate="human body child"
-- Natal → data-generate="christmas scene"
-- Cidade → data-generate="city street"
+EXEMPLOS de data-generate para cena grande (apenas 2-4 palavras EM PORTUGUES, so o sujeito):
+- Escola → data-generate="sala de aula"
+- Familia → data-generate="familia feliz"
+- Animais da Fazenda → data-generate="animais da fazenda"
+- Corpo Humano → data-generate="corpo humano crianca"
+- Natal → data-generate="cena de natal"
+- Cidade → data-generate="rua da cidade"
 
-CRITICO: data-generate deve ter APENAS 2-4 palavras descrevendo o sujeito. NAO inclua "kawaii", "coloring", "page", "black", "white", "line", "art", "cute" etc.
+CRITICO: data-generate SEMPRE EM PORTUGUES, apenas 2-4 palavras descrevendo o sujeito. NAO inclua "colorir", "pintar", "pagina", "preto", "branco", "linha", "arte", "fofo" etc.
 
 == FORMATO B: GRADE DE ITENS (somente quando o tema tiver 4 a 6 itens DISTINTOS para pintar) ==
 Use APENAS para: alfabeto (letras), numeros, formas geometricas, itens de uma lista.
@@ -354,7 +354,7 @@ Gere no maximo 6 cards grandes:
 
 <div class="coloring-grid">
   <div class="coloring-card">
-    <img data-generate="NOME DO ITEM EM INGLES (1-3 palavras, apenas o sujeito): ex: butterfly, school bus, birthday cake" class="ai-clipart coloring-image" alt="NOME EM PORTUGUES" />
+    <img data-generate="NOME DO ITEM EM PORTUGUES (1-3 palavras, apenas o sujeito): ex: borboleta, onibus escolar, bolo de aniversario" class="ai-clipart coloring-image" alt="NOME EM PORTUGUES" />
     <div class="coloring-label">NOME EM MAIUSCULAS</div>
     <div class="coloring-instruction">PINTE!</div>
   </div>
@@ -388,14 +388,16 @@ Formato para itens do banco:
 
 Para itens fora do banco, use placeholder de geracao de imagem:
 <div class="figurinha-card">
-  <img data-generate="DESCRICAO EM INGLES black and white line art" class="ai-clipart" alt="NOME" />
+  <img data-generate="NOME DO ITEM EM PORTUGUES (apenas o sujeito, 1-3 palavras)" class="ai-clipart" alt="NOME" />
   <span class="figurinha-name">NOME</span>
 </div>
 
-Exemplos de data-generate para itens fora do banco:
-- Ator → data-generate="actor black and white line art"
-- Musico → data-generate="musician black and white line art"
-- Cientista → data-generate="scientist black and white line art"
+Exemplos de data-generate para itens fora do banco (SEMPRE EM PORTUGUES):
+- Ator → data-generate="ator"
+- Musico → data-generate="musico"
+- Cientista → data-generate="cientista"
+- Colher de pedreiro → data-generate="colher de pedreiro"
+- Estetoscopio → data-generate="estetoscopio medico"
 ` : `IMAGENS — MODO COLORIDO:
 Use APENAS emojis. NUNCA gere tags <img>, <svg>, ou URLs de imagens. NUNCA use classes bw-clipart, ai-clipart, data-generate.
 
