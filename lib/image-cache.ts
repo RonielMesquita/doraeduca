@@ -61,7 +61,6 @@ export async function getCachedImage(
     "beautiful","lovely","sweet","friendly","cheerful","smiling","sitting",
     "standing","running","jumping","flying","swimming","cute","kids","child",
     "baby","coloring","book","print","worksheet","activity",
-    "animals","animal","pack","pack2","group","family","collection","set",
     "vehicle","vehicles","truck","machine","machines","equipment",
   ]);
   const words = normQuery.split(" ")

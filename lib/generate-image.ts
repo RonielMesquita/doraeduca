@@ -75,7 +75,7 @@ export async function generateOrGetImage(
       query: description,
       tema,
       serie,
-      estilo: "bw-line-art",
+      estilo: estilo ?? "bw-line-art",
       url: publicUrl,
       thumbnail: publicUrl,
       fonte: "dalle3",
