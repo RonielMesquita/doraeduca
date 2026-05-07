@@ -128,18 +128,28 @@ export async function saveImageCache(params: {
   fonte?: string;
 }): Promise<void> {
   const supabase = createAdminClient();
+  const normQuery = normalizeQuery(params.query);
+  const estilo = params.estilo ?? "colorido";
 
-  await supabase.from("image_cache").upsert(
+  // Tenta upsert por (query, estilo) — cada modo tem sua própria entrada
+  const { error } = await supabase.from("image_cache").upsert(
     {
-      query:     normalizeQuery(params.query),
+      query:     normQuery,
       tema:      normalizeQuery(params.tema ?? ""),
       serie:     params.serie ?? "",
-      estilo:    params.estilo ?? "colorido",
+      estilo,
       url:       params.url,
       thumbnail: params.thumbnail,
       fonte:     params.fonte ?? "google",
       uso_count: 0,
     },
-    { onConflict: "query" }
+    { onConflict: "query,estilo" }
   );
+
+  // Fallback: se a tabela só tem UNIQUE(query), atualiza a linha existente
+  if (error) {
+    await supabase.from("image_cache")
+      .update({ url: params.url, thumbnail: params.thumbnail, fonte: params.fonte ?? "google", estilo })
+      .eq("query", normQuery);
+  }
 }
