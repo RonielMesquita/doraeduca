@@ -113,8 +113,8 @@ function cleanHtmlResponse(text: string): string {
   cleaned = cleaned.replace(/<svg[\s\S]*?<\/svg>/gi, "");
 
   // Remove cabeçalho duplicado que a IA gera (o sistema já exibe o cabeçalho fixo)
-  // Detecta o bloco de header escolar: tabela/div com ALUNO(A), NOME:, DATA: e PROFESSORA:
-  cleaned = cleaned.replace(/<(?:table|div)[^>]*>(?:(?!<\/(?:table|div)>)[\s\S])*?(?:ALUNO\(A\)|NOME:\s*_{3,}|PROFESSORA:\s*_{3,})[\s\S]*?<\/(?:table|div)>/gi, "");
+  // Usa ALUNO(A) como âncora — evita falso-positivo com "NOME:" em layouts de Jornal
+  cleaned = cleaned.replace(/<(?:table|div)[^>]*>(?:(?!<\/(?:table|div)>)[\s\S])*?ALUNO\(A\)[\s\S]*?<\/(?:table|div)>/gi, "");
   // Remove também cabeçalhos de título de atividade duplicados (ex: "ATIVIDADE DE HISTÓRIA — FAMÍLIA E COMUNIDADE")
   cleaned = cleaned.replace(/<(?:div|p|h[1-6])[^>]*class="[^"]*activity-title[^"]*"[^>]*>[\s\S]*?<\/(?:div|p|h[1-6])>/gi, "");
 
@@ -283,6 +283,7 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
       }
 
       const isCartaoColorir = config.activityType === "Cartão para Colorir";
+      const isJornal = config.activityType === "Jornal";
       const isColorir = config.imageMode === "colorir" || isCartaoColorir;
       const isBW = config.imageMode === "pb" || isColorir;
       const questionCount = isColorir ? 1 : config.questionCount;
@@ -298,7 +299,7 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
 - Tipo de atividade: ${config.activityType}
 - Tema/Assunto: ${config.topic || "Geral"}
 - Dificuldade: ${config.difficulty}
-- TOTAL DE QUESTOES: ${questionCount}
+${!isJornal ? `- TOTAL DE QUESTOES: ${questionCount}` : ""}
 ${config.observations ? `- Observacoes: ${config.observations}` : ""}
 
 ${uploadedFiles.length > 0 ? "IMPORTANTE: Replique o estilo visual dos modelos enviados." : ""}
@@ -310,7 +311,7 @@ Respeite o nivel de desenvolvimento da crianca: complexidade, vocabulario e tipo
 ` : ""}
 REGRAS OBRIGATORIAS:
 1. Retorne APENAS HTML puro (sem DOCTYPE, html, head, body, sem markdown)
-2. CRITICO: Gere EXATAMENTE ${questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${questionCount}.
+2. ${isJornal ? "Siga EXATAMENTE a estrutura de Jornal definida nas instrucoes especiais. NAO gere questoes numeradas — use apenas os blocos do layout jornal." : `CRITICO: Gere EXATAMENTE ${questionCount} questoes. NEM MAIS NEM MENOS. Conte antes de finalizar: 1, 2, 3... ate ${questionCount}.`}
 3. Cada questao DEVE ter conteudo DIFERENTE e relevante ao tema
 4. TODO O TEXTO deve estar em LETRAS MAIUSCULAS, inclusive instrucoes, enunciados, titulos e nomes
 5. Use o formato de numeracao com traco: "1- ENUNCIADO DA QUESTAO"
@@ -663,7 +664,9 @@ REGRAS DA TABELA:
 
 ${config.observations ? `SIGA OBRIGATORIAMENTE: ${config.observations}` : ""}
 
-VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE ${questionCount}? Se nao, complete antes de responder.`,
+${isJornal
+  ? "VERIFICACAO FINAL: Voce substituiu TODOS os [PLACEHOLDERS] por texto real? Nao ha colchetes no HTML? Se sim, pode retornar."
+  : `VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE ${questionCount}? Se nao, complete antes de responder.`}`,
       });
 
       const message = await client.messages.create({
