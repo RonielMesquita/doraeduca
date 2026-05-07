@@ -12,6 +12,7 @@ interface ImageCacheRow {
   thumbnail: string;
   fonte: string;
   uso_count: number;
+  query: string;
 }
 
 function normalizeQuery(q: string): string {
@@ -23,6 +24,19 @@ function normalizeQuery(q: string): string {
     .trim();
 }
 
+// Palavras genéricas que não identificam o objeto — ignoradas na busca fuzzy
+const FUZZY_STOP = new Set([
+  "cute","kawaii","black","white","line","art","coloring","page","detailed",
+  "scene","with","children","playing","simple","thick","clean","outline",
+  "outlines","illustration","educational","clipart","large","full","sheet",
+  "background","style","cartoon","drawing","image","picture","character",
+  "happy","adorable","funny","little","small","big","great","nice","pretty",
+  "beautiful","lovely","sweet","friendly","cheerful","smiling","sitting",
+  "standing","running","jumping","flying","swimming","kids","child",
+  "baby","coloring","book","print","worksheet","activity",
+  "vehicle","vehicles","truck","machine","machines","equipment",
+]);
+
 export async function getCachedImage(
   query: string,
   tema?: string,
@@ -32,80 +46,58 @@ export async function getCachedImage(
   const supabase = createAdminClient();
   const normQuery = normalizeQuery(query);
 
-  // 1. Busca exata
-  const { data } = await supabase
-    .from("image_cache")
-    .select("id, url, thumbnail, fonte, uso_count")
-    .eq("query", normQuery)
-    .maybeSingle();
-
-  if (data) {
-    const row = data as ImageCacheRow;
-    void supabase
+  // 1. Busca exata — filtra por estilo para não misturar modos
+  {
+    let q = supabase
       .from("image_cache")
-      .update({ uso_count: row.uso_count + 1 })
-      .eq("id", row.id);
+      .select("id, url, thumbnail, fonte, uso_count, query")
+      .eq("query", normQuery);
+    if (estilo) q = q.eq("estilo", estilo);
 
-    return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+    const { data } = await q.maybeSingle();
+    if (data) {
+      const row = data as ImageCacheRow;
+      void supabase.from("image_cache").update({ uso_count: row.uso_count + 1 }).eq("id", row.id);
+      return { url: row.url, thumbnail: row.thumbnail, fonte: row.fonte };
+    }
   }
 
-  // 2. Busca fuzzy por palavras-chave no pack
-  // As imagens do pack (estilo "colorir") são B&W line art — servem para ambos os modos.
-  // Palavras genéricas de prompts DALL-E que não identificam o objeto — ignorar na busca
-  const STOP = new Set([
-    "cute","kawaii","black","white","line","art","coloring","page","detailed",
-    "scene","with","children","playing","simple","thick","clean","outline",
-    "outlines","illustration","educational","clipart","large","full","sheet",
-    "background","style","cartoon","drawing","image","picture","character",
-    "happy","adorable","funny","little","small","big","great","nice","pretty",
-    "beautiful","lovely","sweet","friendly","cheerful","smiling","sitting",
-    "standing","running","jumping","flying","swimming","cute","kids","child",
-    "baby","coloring","book","print","worksheet","activity",
-    "vehicle","vehicles","truck","machine","machines","equipment",
-  ]);
-  const words = normQuery.split(" ")
-    .filter((w) => w.length > 3 && !STOP.has(w))
+  // 2. Busca fuzzy por palavras-chave — cada modo busca apenas no seu estilo
+  const words = normQuery
+    .split(" ")
+    .filter((w) => w.length > 3 && !FUZZY_STOP.has(w))
     .slice(0, 5);
-  if (words.length > 0) {
-    // Para colorir: busca só colorir. Para bw-line-art: só bw-line-art (sem misturar
-    // estilos — imagens kawaii colorir têm visual diferente dos SVGs do banco B&W)
-    const estilosParaBuscar = estilo === "colorir" || !estilo
-      ? ["colorir"]
-      : [estilo];
 
-    for (const estiloFilter of estilosParaBuscar) {
-      for (const word of words) {
-        const { data: fuzzy } = await supabase
-          .from("image_cache")
-          .select("id, url, thumbnail, fonte, uso_count, query")
-          .eq("estilo", estiloFilter)
-          .ilike("query", `%${word}%`)
-          .limit(5);
+  if (words.length > 0 && estilo) {
+    for (const word of words) {
+      const { data: fuzzy } = await supabase
+        .from("image_cache")
+        .select("id, url, thumbnail, fonte, uso_count, query")
+        .eq("estilo", estilo)
+        .ilike("query", `%${word}%`)
+        .limit(5);
 
-        // Ignora entradas com query longa (> 7 palavras) — descrevem cenas com múltiplos
-        // animais que geram match errado para buscas de animais individuais
-        const match = (fuzzy ?? []).find(
-          (r) => (r as ImageCacheRow & { query: string }).query.split(" ").length <= 7
-        ) as (ImageCacheRow & { query: string }) | undefined;
+      // Ignora entradas com query longa (> 7 palavras) — descrevem cenas multi-item
+      // que causam match errado para buscas de itens individuais
+      const match = (fuzzy ?? []).find(
+        (r) => (r as ImageCacheRow).query.split(" ").length <= 7
+      ) as ImageCacheRow | undefined;
 
-        if (match) {
-          void supabase
-            .from("image_cache")
-            .update({ uso_count: match.uso_count + 1 })
-            .eq("id", match.id);
-          return { url: match.url, thumbnail: match.thumbnail, fonte: match.fonte };
-        }
+      if (match) {
+        void supabase.from("image_cache").update({ uso_count: match.uso_count + 1 }).eq("id", match.id);
+        return { url: match.url, thumbnail: match.thumbnail, fonte: match.fonte };
       }
     }
   }
 
-  if (tema) {
+  // 3. Fallback por tema — somente quando estilo fornecido para não misturar modos
+  if (tema && estilo) {
     const normTema = normalizeQuery(tema);
     let q = supabase
       .from("image_cache")
       .select("url, thumbnail, fonte")
-      .eq("tema", normTema);
-
+      .eq("tema", normTema)
+      .eq("estilo", estilo);
     if (serie) q = q.eq("serie", serie);
 
     const { data: byTema } = await q.limit(1).maybeSingle();

@@ -368,7 +368,8 @@ REGRAS ABSOLUTAS:
 - FORMATO A e preferido — use FORMATO B apenas se o tema exigir itens distintos
 ` : isBW ? `IMAGENS — MODO PRETO E BRANCO:
 A professora quer atividade para impressao preto e branco.
-Use ilustracoes do banco B&W ou caixas de desenho — nunca emojis coloridos.
+NUNCA use emojis coloridos (<span class="figurinha-emoji">). NUNCA use figurinha-card green/blue/yellow/pink.
+Use APENAS ilustracoes do banco B&W (img src) ou placeholder data-generate para itens fora do banco.
 
 BANCO DE ILUSTRACOES B&W:
 Profissoes: /clipart/profissoes/bombeiro.svg, /clipart/profissoes/medico.svg, /clipart/profissoes/dentista.svg, /clipart/profissoes/professor.svg, /clipart/profissoes/policial.svg, /clipart/profissoes/enfermeira.svg, /clipart/profissoes/veterinario.svg, /clipart/profissoes/cozinheiro.svg, /clipart/profissoes/pedreiro.svg, /clipart/profissoes/carteiro.svg, /clipart/profissoes/padeiro.svg
@@ -395,8 +396,8 @@ Exemplos de data-generate para itens fora do banco:
 - Ator → data-generate="actor black and white line art"
 - Musico → data-generate="musician black and white line art"
 - Cientista → data-generate="scientist black and white line art"
-` : `IMAGENS - USE EMOJIS:
-NAO use URLs de imagens. Use EMOJIS dentro de spans com a classe figurinha-emoji.
+` : `IMAGENS — MODO COLORIDO:
+Use APENAS emojis. NUNCA gere tags <img>, <svg>, ou URLs de imagens. NUNCA use classes bw-clipart, ai-clipart, data-generate.
 
 Formato OBRIGATORIO para imagens em cards:
 <div class="figurinha-card green">
@@ -515,20 +516,31 @@ VERIFICACAO FINAL OBRIGATORIA: Conte suas questoes agora: voce gerou EXATAMENTE 
 
         let activityHtml = cleanHtmlResponse(result.text);
 
-        // Substitui placeholders data-generate por imagens do pack ou DALL-E 3
-        // (sempre executa para colorir/BW — a busca no pack não requer OPENAI_API_KEY;
-        //  DALL-E só é chamado se a key estiver configurada)
-        if (isBW || isColorir) {
+        if (isColorir) {
+          // Modo Pintar: substitui data-generate pela imagem colorir (DALL-E ou pack)
           activityHtml = await replaceAiImagePlaceholders(
             activityHtml,
             config.topic,
             config.year,
-            isColorir ? "colorir" : "bw-line-art"
+            "colorir"
           );
+        } else if (isBW) {
+          // Modo P&B: substitui data-generate por clipart bw ou DALL-E linha-arte
+          // Remove emojis coloridos que o AI pode ter gerado por engano
+          activityHtml = activityHtml.replace(/<span[^>]*class="figurinha-emoji"[^>]*>[\s\S]*?<\/span>/gi, "");
+          activityHtml = await replaceAiImagePlaceholders(
+            activityHtml,
+            config.topic,
+            config.year,
+            "bw-line-art"
+          );
+        } else {
+          // Modo Colorido: remove qualquer <img> que o AI gerou incorretamente
+          activityHtml = activityHtml.replace(/<img[^>]*>/gi, "");
         }
 
         void useGoogleImages;
-        const imagesSource = (isBW || isColorir) ? "dalle3" : "emoji";
+        const imagesSource = isColorir ? "colorir" : isBW ? "bw-line-art" : "emoji";
         return Response.json({ activity: activityHtml, source: "ai", imagesSource });
       }
     } catch (err) {
