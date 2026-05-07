@@ -282,7 +282,8 @@ Use esses modelos como referência fiel para criar a nova atividade.`,
         }
       }
 
-      const isColorir = config.imageMode === "colorir";
+      const isCartaoColorir = config.activityType === "Cartão para Colorir";
+      const isColorir = config.imageMode === "colorir" || isCartaoColorir;
       const isBW = config.imageMode === "pb" || isColorir;
       const questionCount = isColorir ? 1 : config.questionCount;
 
@@ -322,9 +323,12 @@ REGRAS OBRIGATORIAS:
 12. PROIBIDO usar qualquer elemento de formulario: <input>, <select>, <textarea>, <button>, <form>. Para caixas de marcar, use APENAS <div class="checkbox-square"></div>.
 
 ${isColorir ? `IMAGENS — MODO ATIVIDADE PARA COLORIR:
-A professora quer 1 FOLHA COMPLETA com 1 IMAGEM GRANDE para a crianca pintar.
+${isCartaoColorir ? `
+ESTE E UM CARTAO PARA COLORIR — use o layout cartao-colorir-wrapper (veja instrucoes especiais acima).
+Nao use scene-coloring-wrapper. Use cartao-colorir-wrapper como container principal.
+` : `A professora quer 1 FOLHA COMPLETA com 1 IMAGEM GRANDE para a crianca pintar.
 NAO use emojis. NAO use SVG inline. NAO use caixas vazias.
-PROIBIDO gerar multiplas questoes ou multiplas imagens pequenas — apenas 1 imagem grande por folha.
+PROIBIDO gerar multiplas questoes ou multiplas imagens pequenas — apenas 1 imagem grande por folha.`}
 
 ESCOLHA O FORMATO conforme o tema:
 
@@ -456,6 +460,170 @@ LAYOUTS AVANCADOS — use quando o tipo de atividade pedir:
 </div>`}
 
 Classes CSS: activity-section, activity-subtitle, activity-instruction, figurinhas-grid, figurinhas-grid-3, figurinha-card (.green .blue .yellow .pink), figurinha-emoji, figurinha-name, figurinha-write, answer-line, drawing-box, word-box, word-tag, math-grid, word-analysis-table, word-cell, emoji-cell, count-cell, blank-cell
+Jornal: jornal-wrapper, jornal-topo, jornal-titulo-letras, jornal-subtitulo-linha, jornal-corpo, jornal-coluna, jornal-box, jornal-box-titulo, jornal-linha, jornal-lista, jornal-imagem-central, jornal-foto-slot, jornal-rodape-banner, jornal-destaque, jornal-grid-rodape
+Cartao: cartao-colorir-wrapper, cartao-titulo-decorativo, cartao-subtitulo, cartao-ilustracao, cartao-mensagem-area, cartao-mensagem-titulo, cartao-linha, cartao-assinatura, cartao-linha-assinar
+Emocoes: emocoes-grid-4, emocao-card, emocao-face-box, emocao-nome-campo, emocoes-match-wrapper, emocoes-situacoes, emocoes-rostos, emocao-situacao, emocao-ponto-ligacao, emocoes-sentir-hoje, emocao-mini-card
+
+${config.activityType === "Jornal" ? `
+INSTRUCOES ESPECIAIS — ATIVIDADE ESTILO JORNAL/REVISTA:
+Crie um layout de revista/jornal educacional temático sobre: "${config.topic || "o tema solicitado"}".
+Nao use questoes numeradas. Use APENAS as classes jornal-wrapper, jornal-topo, jornal-titulo-letras,
+jornal-subtitulo-linha, jornal-corpo, jornal-coluna, jornal-box, jornal-box-titulo, jornal-linha,
+jornal-lista, jornal-imagem-central, jornal-foto-slot, jornal-rodape-banner, jornal-destaque, jornal-grid-rodape.
+
+ESTRUTURA OBRIGATORIA (adapte os textos ao tema "${config.topic || "o tema"}"):
+
+<div class="jornal-wrapper">
+  <div class="jornal-topo">
+    <div class="jornal-titulo-letras">[TEMA EM MAIUSCULAS]</div>
+    <div class="jornal-subtitulo-linha">EDICAO ESPECIAL ♡ [FRASE TEMATICA CURTA] ♡ DATA: ___/___/___</div>
+  </div>
+
+  <div class="jornal-corpo">
+    <div class="jornal-coluna">
+      <div class="jornal-box jornal-destaque">
+        <div class="jornal-box-titulo">📰 NOTICIA DE ULTIMA HORA!</div>
+        <p style="font-size:0.7rem">[FRASE EDUCATIVA SOBRE O TEMA, 3-4 LINHAS, EM MAIUSCULAS]</p>
+      </div>
+      <div class="jornal-box">
+        <div class="jornal-box-titulo">♡ QUALIDADES</div>
+        <ul class="jornal-lista">
+          <li>[QUALIDADE 1]</li>
+          <li>[QUALIDADE 2]</li>
+          <li>[QUALIDADE 3]</li>
+          <li>[QUALIDADE 4]</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jornal-imagem-central">
+      ${isBW
+        ? `<img data-generate="[DESCRICAO DO TEMA EM 2-3 PALAVRAS]" class="ai-clipart" alt="[TEMA]" />`
+        : `<span class="figurinha-emoji" style="font-size:7rem">[EMOJI DO TEMA]</span>`}
+    </div>
+
+    <div class="jornal-coluna">
+      <div class="jornal-box">
+        <div class="jornal-box-titulo">📋 PERFIL [DO/DA TEMA]</div>
+        <div class="jornal-linha">NOME: _______________________</div>
+        <div class="jornal-linha">[CAMPO 2]: ___________________</div>
+        <div class="jornal-linha">[CAMPO 3]: ___________________</div>
+        <div class="jornal-linha">SUPERPODER: _________________</div>
+      </div>
+      <div class="jornal-box">
+        <div class="jornal-box-titulo">💬 FRASE [DO/DA TEMA]</div>
+        <p style="font-size:0.65rem;font-style:italic">O QUE MAIS FALA:</p>
+        <div class="jornal-linha"></div>
+        <div class="jornal-linha"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jornal-grid-rodape">
+    <div class="jornal-box">
+      <div class="jornal-box-titulo">♡ 5 COISAS QUE EU AMO</div>
+      <ul class="jornal-lista">
+        <li>1. ___________________</li>
+        <li>2. ___________________</li>
+        <li>3. ___________________</li>
+        <li>4. ___________________</li>
+        <li>5. ___________________</li>
+      </ul>
+    </div>
+    <div class="jornal-box">
+      <div class="jornal-box-titulo">📷 MOMENTOS ESPECIAIS</div>
+      <div class="jornal-foto-slot">📷 COLE UMA FOTO AQUI</div>
+    </div>
+    <div class="jornal-box">
+      <div class="jornal-box-titulo">✉ RECADO ESPECIAL</div>
+      <div class="jornal-linha"></div>
+      <div class="jornal-linha"></div>
+      <div class="jornal-linha"></div>
+      <div class="jornal-linha"></div>
+    </div>
+  </div>
+
+  <div class="jornal-rodape-banner">[TEMA] — [FRASE AFETIVA CURTA SOBRE O TEMA EM MAIUSCULAS]!</div>
+</div>
+
+CRITICO: Substitua TODOS os [PLACEHOLDERS] por texto real baseado no tema. Nao deixe colchetes no HTML final.
+` : ""}
+
+${isCartaoColorir ? `
+INSTRUCOES ESPECIAIS — CARTAO PARA COLORIR:
+Crie um cartão comemorativo para colorir sobre o tema: "${config.topic || "o tema solicitado"}".
+Use APENAS as classes cartao-colorir-wrapper, cartao-titulo-decorativo, cartao-subtitulo,
+cartao-ilustracao, cartao-mensagem-area, cartao-mensagem-titulo, cartao-linha, cartao-assinatura, cartao-linha-assinar.
+
+ESTRUTURA OBRIGATORIA:
+
+<div class="cartao-colorir-wrapper">
+  <div class="cartao-titulo-decorativo">[TITULO FESTIVO DO TEMA — ex: FELIZ DIA DAS MAES!]</div>
+  <div class="cartao-subtitulo">[FRASE POETICA CURTA SOBRE O TEMA]</div>
+
+  <img data-generate="[CENA DO TEMA EM 2-4 PALAVRAS EM PORTUGUES]" class="scene-coloring-image cartao-ilustracao" alt="[TEMA]" />
+
+  <div class="cartao-mensagem-area">
+    <div class="cartao-mensagem-titulo">✉ MINHA MENSAGEM:</div>
+    <div class="cartao-linha"></div>
+    <div class="cartao-linha"></div>
+    <div class="cartao-linha"></div>
+  </div>
+
+  <div class="cartao-assinatura">
+    COM AMOR: <span class="cartao-linha-assinar"></span>
+  </div>
+</div>
+
+EXEMPLOS de data-generate para o tema:
+- Dia das Maes → data-generate="mae e filho abraco"
+- Dia dos Pais → data-generate="pai e filho"
+- Pascoa → data-generate="coelho pascoa"
+- Natal → data-generate="papai noel criancas"
+- Festa Junina → data-generate="festa junina criancas"
+` : ""}
+
+${config.activityType === "Minhas Emoções" ? `
+INSTRUCOES ESPECIAIS — ATIVIDADE DE EMOCOES:
+Crie uma atividade estruturada sobre identificacao de emocoes.
+Use as classes: emocoes-grid-4, emocao-card, emocao-face-box, emocao-nome-campo,
+emocoes-match-wrapper, emocoes-situacoes, emocoes-rostos, emocao-situacao, emocao-ponto-ligacao,
+emocoes-sentir-hoje, emocao-mini-card.
+
+ESTRUTURA DAS 4 QUESTOES:
+
+1- OBSERVE AS CARINHAS E ESCREVA O NOME DE CADA EMOCAO:
+<div class="emocoes-grid-4">
+  ${["FELIZ","TRISTE","BRAVO","ASSUSTADO"].map(e => `
+  <div class="emocao-card">
+    <div class="emocao-face-box">
+      ${isBW
+        ? `<img data-generate="rosto ${e.toLowerCase()} infantil" class="ai-clipart" alt="${e}" />`
+        : `<span class="figurinha-emoji" style="font-size:2.5rem">${e==="FELIZ"?"😊":e==="TRISTE"?"😢":e==="BRAVO"?"😡":"😨"}</span>`}
+    </div>
+    <div class="emocao-nome-campo"></div>
+  </div>`).join("")}
+</div>
+
+2- LIGUE CADA SITUACAO A EMOCAO CORRETA:
+<div class="emocoes-match-wrapper">
+  <div class="emocoes-situacoes">
+    [4 SITUACOES COTIDIANAS EM CAIXAS com emocao-situacao + emocao-ponto-ligacao a direita]
+    ex: GANHEI UM PRESENTE!, MEU SORVETE CAIU NO CHAO!, OUVI UM BARULHO ALTO!, MEU BRINQUEDO QUEBROU!
+  </div>
+  <div class="emocoes-rostos">
+    [4 ROSTOS CORRESPONDENTES com emocao-face-box + emocao-ponto-ligacao a esquerda]
+  </div>
+</div>
+
+3- COMO VOCE SE SENTE HOJE? CIRCULE A CARINHA:
+<div class="emocoes-sentir-hoje">
+  [6 rostos menores com emocao-mini-card, cada um com legenda do nome da emocao]
+</div>
+
+4- ESPACO DE DESENHO:
+<div class="drawing-box" style="min-height:120px">DESENHE ALGO QUE TE DEIXA FELIZ!</div>
+` : ""}
 
 ${config.activityType === "Tabela de Palavras" ? `
 INSTRUCOES ESPECIAIS PARA TABELA DE PALAVRAS:

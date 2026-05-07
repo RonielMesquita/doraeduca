@@ -1723,3 +1723,315 @@ img {
 .step-card:hover .step-num {
   transform: scale(1.2);
 }
+
+/* ═══════════════════════════════════════════════════════
+   JORNAL / REVISTA EDUCACIONAL
+   ═══════════════════════════════════════════════════════ */
+.jornal-wrapper {
+  border: 2.5px solid #222;
+  padding: 14px;
+  font-family: Arial, sans-serif;
+}
+
+.jornal-topo {
+  text-align: center;
+  border-bottom: 3px double #222;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.jornal-titulo-letras {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.jornal-subtitulo-linha {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #444;
+  margin-top: 4px;
+}
+
+.jornal-corpo {
+  display: grid;
+  grid-template-columns: 1fr 200px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.jornal-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jornal-box {
+  border: 1.5px solid #333;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.jornal-box-titulo {
+  font-size: 0.63rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1.5px solid #333;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.jornal-linha {
+  border-bottom: 1px solid #aaa;
+  min-height: 22px;
+  margin: 3px 0;
+  font-size: 0.68rem;
+}
+
+.jornal-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.68rem;
+}
+
+.jornal-lista li {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 3px 0;
+  display: flex;
+  gap: 4px;
+}
+
+.jornal-imagem-central {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.jornal-imagem-central img {
+  width: 200px;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+.jornal-foto-slot {
+  border: 1.5px dashed #aaa;
+  border-radius: 6px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #aaa;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jornal-rodape-banner {
+  text-align: center;
+  border: 2px solid #222;
+  border-radius: 20px;
+  padding: 6px 16px;
+  margin-top: 10px;
+  font-weight: 900;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.jornal-destaque {
+  background: #f5f5f5;
+}
+
+.jornal-grid-rodape {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CARTÃO PARA COLORIR
+   ═══════════════════════════════════════════════════════ */
+.cartao-colorir-wrapper {
+  border: 3px solid #222;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+}
+
+.cartao-titulo-decorativo {
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.cartao-subtitulo {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.cartao-ilustracao {
+  display: block;
+  width: 100%;
+  min-height: 460px;
+  max-height: 600px;
+  object-fit: contain;
+  margin: 8px auto;
+}
+
+.cartao-mensagem-area {
+  border: 1.5px dashed #bbb;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 10px 0 6px;
+  text-align: left;
+}
+
+.cartao-mensagem-titulo {
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.cartao-linha {
+  border-bottom: 1px solid #bbb;
+  min-height: 24px;
+  margin: 4px 0;
+}
+
+.cartao-assinatura {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cartao-linha-assinar {
+  border-bottom: 1.5px solid #333;
+  flex: 1;
+  max-width: 180px;
+  min-height: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ATIVIDADE DE EMOÇÕES
+   ═══════════════════════════════════════════════════════ */
+.emocoes-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.emocao-card {
+  border: 1.5px solid #333;
+  border-radius: 8px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.emocao-face-box {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 6px;
+  overflow: hidden;
+  max-width: 70px;
+}
+
+.emocao-face-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.emocao-nome-campo {
+  border: 1.5px solid #555;
+  border-radius: 4px;
+  min-height: 22px;
+  margin-top: 6px;
+  background: white;
+}
+
+.emocoes-match-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+  margin: 10px 0;
+  align-items: start;
+}
+
+.emocoes-situacoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emocoes-rostos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.emocao-situacao {
+  border: 1.5px solid #333;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.emocao-ponto-ligacao {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  flex-shrink: 0;
+}
+
+.emocoes-sentir-hoje {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.emocao-mini-card {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}

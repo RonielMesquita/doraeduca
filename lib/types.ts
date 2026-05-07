@@ -62,6 +62,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Separação de Sílabas",
     "Ligar as Colunas",
     "Tabela de Palavras",
+    "Jornal",
+    "Cartão para Colorir",
   ],
   matematica: [
     "Adição",
@@ -74,6 +76,7 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Medidas",
     "Contar e Escrever",
     "Ligar ao Número",
+    "Jornal",
   ],
   natureza: [
     "Dia e Noite",
@@ -84,6 +87,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Alimentos Saudáveis",
     "Escola e Comunidade",
     "Reciclagem",
+    "Jornal",
+    "Cartão para Colorir",
   ],
   identidade: [
     "Quem Sou Eu",
@@ -93,6 +98,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Meus Direitos e Deveres",
     "Diversidade",
     "Higiene e Cuidados",
+    "Jornal",
+    "Cartão para Colorir",
   ],
   ciencias: [
     "Animais",
@@ -101,6 +108,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Meio Ambiente",
     "Alimentos Saudáveis",
     "Estados da Matéria",
+    "Jornal",
+    "Cartão para Colorir",
   ],
   historia: [
     "Família e Comunidade",
@@ -108,6 +117,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Festas e Tradições",
     "Linha do Tempo",
     "Fontes Históricas",
+    "Jornal",
+    "Cartão para Colorir",
   ],
   geografia: [
     "Paisagens",
@@ -115,6 +126,8 @@ export const ACTIVITY_TYPES: Record<string, string[]> = {
     "Mapas e Legendas",
     "Campo e Cidade",
     "Recursos Naturais",
+    "Jornal",
+    "Cartão para Colorir",
   ],
 };
 
