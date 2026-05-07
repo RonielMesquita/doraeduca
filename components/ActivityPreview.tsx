@@ -102,7 +102,9 @@ export default function ActivityPreview({
   const mainRef = useRef<HTMLElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [downloadingDocx, setDownloadingDocx] = useState(false);
+  const [printing, setPrinting] = useState(false);
   const [pageCount, setPageCount] = useState(1);
+  const [sheetHeight, setSheetHeight] = useState(A4_HEIGHT_PX + 189);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -219,6 +221,17 @@ export default function ActivityPreview({
     return () => obs.disconnect();
   }, []);
 
+  // Mede a altura real da folha para ajustar o espaço ocupado após o scale
+  useEffect(() => {
+    const el = printRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      setSheetHeight(el.offsetHeight);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   // Substitui emojis de .figurinha-emoji por SVGs do Twemoji (qualidade vetorial)
   useEffect(() => {
     if (!contentRef.current) return;
@@ -245,7 +258,6 @@ export default function ActivityPreview({
         img.src = src;
         img.alt = rawEmoji;
         img.style.cssText = "width:3rem;height:3rem;object-fit:contain;display:block;margin:4px auto;";
-        img.loading = "lazy";
         img.onerror = () => {
           img.remove();
           span.textContent = rawEmoji;
@@ -257,7 +269,21 @@ export default function ActivityPreview({
     return () => clearTimeout(timer);
   }, [activity, editedHtml, isEditing, isReordering]);
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    if (!printRef.current) { window.print(); return; }
+    setPrinting(true);
+    // Aguarda todas as imagens carregarem antes de abrir o diálogo de impressão
+    const imgs = Array.from(printRef.current.querySelectorAll("img")) as HTMLImageElement[];
+    const pending = imgs.filter((img) => !img.complete);
+    if (pending.length > 0) {
+      await Promise.allSettled(
+        pending.map((img) => new Promise<void>((resolve) => {
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        }))
+      );
+    }
+    setPrinting(false);
     window.print();
   };
 
@@ -527,9 +553,10 @@ export default function ActivityPreview({
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-purple-800 hover:to-[#3b0764] active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center"
+                  disabled={printing}
+                  className="flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold px-3 sm:px-4 py-2 rounded-xl shadow hover:shadow-lg hover:from-purple-800 hover:to-[#3b0764] active:scale-95 transition-all text-xs sm:text-sm w-full sm:w-auto justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Imprimir / PDF
+                  {printing ? "Preparando..." : "Imprimir / PDF"}
                 </button>
                 <button
                   onClick={handleDownloadDocx}
@@ -657,7 +684,7 @@ export default function ActivityPreview({
         style={{
           transform: `scale(${paperScale})`,
           transformOrigin: "top center",
-          marginBottom: `-${pageCount * 1200 * (1 - paperScale)}px`,
+          marginBottom: `-${Math.max(0, sheetHeight * (1 - paperScale))}px`,
         }}
       >
       <div
